@@ -1,0 +1,65 @@
+{
+ "kit_id": "austere-deployment-default",
+ "vials": [
+  {
+   "concentration_mg_ml": 50.0,
+   "confirm_required": false,
+   "date": "2026-10-28",
+   "drug": "ketamine",
+   "label": "500 mg / 10 mL vial",
+   "mass_mg": 500.0,
+   "signer": "clinician",
+   "volume_ml": 10.0
+  },
+  {
+   "concentration_mg_ml": 50.0,
+   "confirm_required": false,
+   "date": "2026-08-25",
+   "drug": "succinylcholine",
+   "label": "100 mg / 2 mL ampoule",
+   "mass_mg": 100.0,
+   "signer": "AI-AIM",
+   "volume_ml": 2.0
+  },
+  {
+   "concentration_mg_ml": 10.0,
+   "confirm_required": false,
+   "date": "2026-08-25",
+   "drug": "rocuronium",
+   "label": "100 mg / 10 mL vial",
+   "mass_mg": 100.0,
+   "signer": "AI-AIM",
+   "volume_ml": 10.0
+  },
+  {
+   "concentration_mg_ml": 2.0,
+   "confirm_required": false,
+   "date": "2026-08-25",
+   "drug": "lorazepam",
+   "label": "4 mg / 2 mL ampoule",
+   "mass_mg": 4.0,
+   "signer": "AI-AIM",
+   "volume_ml": 2.0
+  },
+  {
+   "concentration_mg_ml": 100.0,
+   "confirm_required": false,
+   "date": "2026-08-25",
+   "drug": "tranexamic acid",
+   "label": "1000 mg / 10 mL ampoule",
+   "mass_mg": 1000.0,
+   "signer": "AI-AIM",
+   "volume_ml": 10.0
+  },
+  {
+   "concentration_mg_ml": 0.4,
+   "confirm_required": false,
+   "date": "2026-08-25",
+   "drug": "naloxone",
+   "label": "0.4 mg / 1 mL ampoule",
+   "mass_mg": 0.4,
+   "signer": "AI-AIM",
+   "volume_ml": 1.0
+  }
+ ]
+}

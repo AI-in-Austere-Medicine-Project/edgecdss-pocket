@@ -1,0 +1,21 @@
+{
+ "bank_version": "1.4.0+2026-11-04.0b0af9b",
+ "counts": {
+  "drugs": 25,
+  "entries": 108,
+  "no_signed_dose": 173,
+  "unsigned_left_out": 10,
+  "vials": 6
+ },
+ "edgecdss_commit": "0b0af9be1199e30b28ea908ead39c6249e73504f",
+ "edgecdss_commit_date": "2026-11-04",
+ "inputs_sha256": {
+  "drug_concentrations.json": "4b2ba1f55c694ecc55cd7a8176de69af0b2ab4d775bbf01b87cdf3cf9fa81cde",
+  "drug_contracts.json": "6999ce087623d37cd6e92f3b5a5868c807dbda6e2b5dc91316c8cf38849ed20b"
+ },
+ "kit_id": "austere-deployment-default",
+ "sha256": {
+  "bank.json": "934ca9b674187f7869b8775a7af9441eddc5df810fe67107c9608bf7fa75500e",
+  "kit.json": "9632618c4b1cb6341d2a0f8f56b12e3a1ec73aa11db7c6d4d32bb744680c7949"
+ }
+}
