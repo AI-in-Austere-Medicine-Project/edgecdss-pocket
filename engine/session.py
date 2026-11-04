@@ -155,7 +155,7 @@ class Session:
         return Turn("boot",
                     f"Bank version {words.say_chars(self.bank.version)}. "
                     f"Hash {words.say_chars(short)}. "
-                    f"{words.num(len(self.bank.entries))} signed entries, "
+                    f"{words.sentence(words.num(len(self.bank.entries)))} signed entries, "
                     f"{words.num(sum(len(v) for v in self.bank.kit.values()))} signed vials.",
                     data={"bank_version": self.bank.version, "hash": short})
 
