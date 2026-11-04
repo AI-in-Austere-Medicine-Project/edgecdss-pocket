@@ -81,3 +81,23 @@ def test_ambiguous_names_never_resolve():
     assert parse("ket", VOCAB).drugs[0].generics == ("ketamine", "ketorolac")
     assert parse("ketamine", VOCAB).drugs[0].generics == ("ketamine",)
     assert parse("ketorolac", VOCAB).drugs[0].generics == ("ketorolac",)
+
+
+def test_no_drug_name_shadows_a_class_route_or_control_word():
+    from grammar.vocabulary import _reserved
+    assert not set(VOCAB.drug_terms) & (set(VOCAB.class_terms) | _reserved() | VOCAB.label_words)
+
+
+def test_a_bank_unit_with_no_words_refuses_the_bank(tmp_path):
+    import hashlib
+    import shutil
+    from engine.session import boot
+    d = tmp_path / "bank"
+    shutil.copytree(ROOT / "bank", d)
+    bank = json.loads((d / "bank.json").read_text())
+    bank["entries"][0]["rule"]["units"] = "mcg/fortnight/min"
+    (d / "bank.json").write_text(json.dumps(bank))
+    man = json.loads((d / "manifest.json").read_text())
+    man["sha256"]["bank.json"] = hashlib.sha256((d / "bank.json").read_bytes()).hexdigest()
+    (d / "manifest.json").write_text(json.dumps(man))
+    assert boot(d).announce.kind == "refused"
