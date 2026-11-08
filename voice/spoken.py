@@ -1,6 +1,8 @@
 """Typed phrase <-> what is said and heard. Vosk returns words from the grammar only;
 the parser reads them exactly as it reads typed text. The only rewrite is joining a
 spelled name ("t x a") into its token, and only for the names listed here."""
+import re
+
 from grammar.parser import tokens
 from grammar.vocabulary import CONDITIONS, DOSE_UNITS
 
@@ -33,9 +35,15 @@ def normalise(heard: str) -> str:
     return text
 
 
+def same_word(w: str) -> str:
+    """One spelling for scoring: haemorrhage/hemorrhage, apnoea/apnea. Sounds that are
+    different words ("four", "for") stay different."""
+    return re.sub(r"ae|oe", "e", w) if len(w) > 4 else w
+
+
 def word_errors(ref: str, hyp: str) -> tuple:
     """(substitutions + deletions + insertions, words in ref)."""
-    r, h = ref.split(), hyp.split()
+    r, h = [same_word(w) for w in ref.split()], [same_word(w) for w in hyp.split()]
     prev = list(range(len(h) + 1))
     for i, rw in enumerate(r, 1):
         cur = [i]
