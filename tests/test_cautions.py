@@ -3,8 +3,13 @@
 1. Dose first, always. A caution or contraindication is spoken after the dose only
    when it names a condition the medic stated for this patient ("burns"); every
    other caution goes to "why".
-2. When no volume was computed, no spoken caution says a millilitre. The signed
-   text in bank.json is unchanged; the spoken form is derived from it.
+2. When no volume was computed, no spoken caution states a volume. Concentrations
+   (mg/mL, 1:1,000) are kept (owner, 2026-11-08 second review). The signed text in
+   bank.json is unchanged; the spoken form is derived from it. Quotes under "why" are
+   read word for word.
+3. A stated contraindication holds the dose, as EdgeCDSS's A12 does: it is a gate,
+   not a caution (owner, second review). Dose first means dose before caution when
+   the dose serves.
 """
 import json
 import pathlib
@@ -20,7 +25,8 @@ from tests.test_reachable import key, request
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 BANK = load_bank(ROOT / "bank")
 VOCAB = build(BANK)
-ML = re.compile(r"(?i)(?<![a-z])(ml|cc)(?![a-z])")
+# A stated volume: "10 mL", "0.1 mL/kg", "100 cc". Not a concentration: "1 mg/mL".
+VOLUME = re.compile(r"(?i)(?<![a-z/])(ml|cc)(?![a-z])")
 SUX_RSI = "succinylcholine for rsi eighty kilos"
 
 
@@ -43,15 +49,13 @@ def test_with_no_condition_stated_nothing_follows_the_dose(s):
     assert dose.after == []
 
 
-def test_a_stated_condition_speaks_the_lines_that_name_it_after_the_dose(s):
-    readback = s.handle(f"{SUX_RSI} burns")
-    assert readback.say == "Succinylcholine, RSI, IV, eighty kilos, burns. Confirm?"
+def test_a_stated_condition_a_caution_names_is_spoken_after_the_dose(s):
+    readback = s.handle(f"{SUX_RSI} crush injury")
+    assert readback.say == "Succinylcholine, RSI, IV, eighty kilos, crush injury. Confirm?"
     dose = s.handle("confirm")
     assert dose.say == "Succinylcholine one hundred and twenty milligrams. Two point four mils of fifty."
     assert dose.after == [
-        "Contraindicated: Burns.",
-        "Caution: Contraindicated in hyperkalemia, burns >24hr, crush injury, denervation.",
-    ]
+        "Caution: Contraindicated in hyperkalemia, burns >24hr, crush injury, denervation."]
 
 
 def test_a_condition_said_on_its_own_is_noted_and_kept_for_this_patient(s):
@@ -71,24 +75,100 @@ def test_a_condition_the_entry_does_not_name_speaks_nothing(s):
 def test_new_patient_clears_the_conditions(s):
     s.handle("burns")
     s.handle("new patient")
-    s.handle(SUX_RSI)
+    assert s.handle(SUX_RSI).kind == "readback"
     assert s.handle("confirm").after == []
 
 
-def test_why_speaks_the_source_then_every_caution_and_contraindication(s):
-    s.handle(SUX_RSI)
-    s.handle("confirm")
-    why = s.handle("why")
-    e = entry("succinylcholine", "IV", "adult", "RSI")
-    assert why.say.startswith(f"Source: {e['source']}.")
-    assert why.after == ["Caution: " + c for c in e["serve_cautions"]] + [
-        "Contraindicated: Burns; Spinal cord injury; Hyperkalemia."]
+# ── 3. A stated contraindication holds ─────────────────────────────────────
+
+HELD_SUX = "Held. Succinylcholine is contraindicated with {}. Rocuronium is the signed alternative."
 
 
-def test_why_says_when_there_are_no_contraindications():
-    no_ci = next(e for e in BANK.entries if not e["contraindications"])
-    *_, why = _dose_and_why(no_ci)
-    assert why.after[-1] == "No contraindications listed."
+def test_the_owners_example_holds(s):
+    turn = s.handle("Succinylcholine, RSI, eighty kilos, burns")
+    assert (turn.kind, turn.text) == ("hold", HELD_SUX.format("burns"))
+    assert s.handle("confirm").say == "Nothing to confirm."
+    assert s.records == []
+
+
+@pytest.mark.parametrize("said,named", [
+    ("spinal cord injury", "spinal cord injury"), ("hyperkalemic", "hyperkalaemia"),
+    ("high potassium", "hyperkalaemia"), ("burns spinal cord injury", "burns and spinal cord injury"),
+])
+def test_each_signed_succinylcholine_contraindication_holds(s, said, named):
+    assert s.handle(f"{SUX_RSI} {said}").text == HELD_SUX.format(named)
+
+
+def test_a_condition_said_first_holds_the_later_request(s):
+    s.handle("burns")
+    assert s.handle(SUX_RSI).text == HELD_SUX.format("burns")
+
+
+def test_a_condition_said_at_the_read_back_holds(s):
+    assert s.handle(SUX_RSI).kind == "readback"
+    assert s.handle("burns").text == HELD_SUX.format("burns")
+    assert s.handle("confirm").say == "Nothing to confirm."
+
+
+def test_a_child_is_held_too_with_the_childs_alternative(s):
+    turn = s.handle("succinylcholine for rsi child three years fifteen kilos burns")
+    assert turn.text == HELD_SUX.format("burns")
+
+
+def test_after_the_hold_the_alternative_doses(s):
+    s.handle(f"{SUX_RSI} burns")
+    assert s.handle("rocuronium for rsi").kind == "readback"
+    dose = s.handle("confirm")
+    assert dose.say.startswith("Rocuronium") and dose.after == []
+
+
+def test_an_alternative_contraindicated_too_is_not_named(s):
+    turn = s.handle("midazolam for seizure iv eighty kilos glaucoma")
+    assert turn.kind == "hold"
+    assert turn.say.startswith("Held. Midazolam is contraindicated with glaucoma.")
+    assert "orazepam" not in turn.text    # lorazepam is contraindicated with glaucoma too
+
+
+def test_a_relative_or_qualified_contraindication_does_not_hold(s):
+    # "Uncontrolled hypertension is a relative contraindication only; otherwise none in
+    # cardiac arrest": spoken after the dose, not a gate.
+    s.handle("epinephrine for cardiac arrest iv eighty kilos hypertension")
+    dose = s.handle("confirm")
+    assert dose.kind == "dose"
+    assert dose.after[0].startswith("Contraindicated: Uncontrolled hypertension is a relative")
+
+
+def test_every_hold_names_only_signed_alternatives():
+    from engine.session import holding_conditions
+    from engine.words import say_name
+    names = {say_name(d) for d in {e["drug"] for e in BANK.entries}}
+    held = 0
+    for e in BANK.entries:
+        for cond in holding_conditions(e, CONDITION_PATTERNS):
+            said = next(k for k, v in CONDITIONS.items() if v == cond)
+            turn, _ = _walk_to(e, said)
+            assert turn.kind == "hold", (key(e), said)
+            held += 1
+            alt = turn.say.split(f"contraindicated with {cond}.")[1].strip()
+            if alt.startswith("Signed alternatives: "):
+                alts = alt[len("Signed alternatives: "):-1].split(", ")
+            elif alt:
+                alts = [alt[:-len(" is the signed alternative.")]]
+            else:
+                alts = []
+            assert {a.lower() for a in alts} <= names, alt
+            assert say_name(e["drug"]) not in {a.lower() for a in alts}
+    assert held > 0
+
+
+def _walk_to(e, said):
+    s = boot(ROOT / "bank")
+    turn = s.handle(f"{request(e)} {said}")
+    for _ in range(4):
+        if turn.kind != "ask" or not turn.say.startswith("Which one"):
+            return turn, s
+        turn = s.handle(" ".join(sorted(label_tokens(e["indication"]) & VOCAB.label_words)))
+    return turn, s
 
 
 # ── the condition words ────────────────────────────────────────────────────
@@ -115,12 +195,10 @@ def test_a_condition_is_heard_whole(s):
 
 # ── 2. No spoken mL unless a volume was computed ───────────────────────────
 
-ALL_CONDITIONS = " ".join(sorted(set(CONDITIONS)))
-
-
-def _dose_and_why(e):
+def _dose_and_why(e, conditions=""):
     s = boot(ROOT / "bank")
-    s.handle(ALL_CONDITIONS)
+    if conditions:
+        s.handle(conditions)
     turn = s.handle(request(e))
     for _ in range(4):
         if turn.kind == "readback":
@@ -131,15 +209,39 @@ def _dose_and_why(e):
     raise AssertionError(request(e))
 
 
+def _dose_and_why_no_gate(e):
+    """Every condition a caution names but no contraindication of this entry gates on."""
+    from engine.session import holding_conditions
+    said = [k for k, c in CONDITIONS.items() if c not in holding_conditions(e, CONDITION_PATTERNS)]
+    return _dose_and_why(e, " ".join(sorted(said)))
+
+
 @pytest.mark.parametrize("e", BANK.entries, ids=key)
-def test_no_spoken_caution_says_ml_unless_a_volume_was_computed(e):
-    before, dose, after = _dose_and_why(e)
+def test_no_spoken_caution_states_a_volume_unless_one_was_computed(e):
+    before, dose, after = _dose_and_why_no_gate(e)
     assert before.kind == "why" and dose.kind == "dose" and after.kind == "why"
-    assert not any(ML.search(line) for line in before.after), "why before the dose"
+    assert not any(VOLUME.search(line) for line in before.after), "why before the dose"
     if dose.data["record"]["volume_ml"] is None:
         for turn in (dose, after):
-            spoken = [line for line in turn.after if ML.search(line)]
+            spoken = [line for line in turn.after if VOLUME.search(line)]
             assert spoken == [], key(e)
+
+
+@pytest.mark.parametrize("cls,route,line", [
+    ("cardiac arrest", "iv", "Caution: Not the 1 mg/mL (1:1,000) ampoule undiluted: SMOG p.112."),
+    ("anaphylaxis", "im", "Caution: Use the 1 mg/mL concentration for the IM route."),
+])
+def test_epinephrine_concentration_warnings_are_spoken(s, cls, route, line):
+    s.handle(f"epinephrine for {cls} {route} eighty kilos")
+    assert s.handle("confirm").data["record"]["volume_ml"] is None
+    assert line in s.handle("why").after
+
+
+def test_quotes_under_why_are_word_for_word():
+    for e in BANK.entries:
+        if e["quote"] and re.search(r"(?i)ml", e["quote"]):
+            before, *_ = _dose_and_why_no_gate(e)
+            assert e["quote"] in before.say, key(e)
 
 
 def test_with_a_volume_the_signed_caution_is_spoken_whole(s):
@@ -152,7 +254,7 @@ def test_with_a_volume_the_signed_caution_is_spoken_whole(s):
     assert "mL" in e["serve_cautions"][0]
 
 
-def test_without_a_volume_only_the_sentences_with_ml_drop(s):
+def test_without_a_volume_only_the_sentences_with_a_volume_drop(s):
     # "1 g is 10 mL of 10%. Slow push into a large vein; ..." keeps its second sentence.
     s.handle("calcium chloride for hypocalcaemia adult")
     s.handle("confirm")
@@ -165,4 +267,4 @@ def test_the_signed_text_in_the_bank_is_unchanged():
     for e in BANK.entries:
         _dose_and_why(e)
     assert [e["serve_cautions"] for e in raw["entries"]] == [e["serve_cautions"] for e in BANK.entries]
-    assert sum(bool(ML.search(c)) for e in raw["entries"] for c in e["serve_cautions"]) > 0
+    assert sum(bool(VOLUME.search(c)) for e in raw["entries"] for c in e["serve_cautions"]) > 0

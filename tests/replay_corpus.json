@@ -940,21 +940,17 @@
   ]
  },
  {
-  "id": "sux-burns-read-back",
+  "id": "sux-burns-held",
   "turns": [
    [
-    "succinylcholine for rsi eighty kilos burns",
-    "readback",
-    "Succinylcholine, RSI, IV, eighty kilos, burns. Confirm?"
+    "Succinylcholine, RSI, eighty kilos, burns",
+    "hold",
+    "Held. Succinylcholine is contraindicated with burns. Rocuronium is the signed alternative."
    ],
    [
     "confirm",
-    "dose",
-    "Succinylcholine one hundred and twenty milligrams. Two point four mils of fifty.",
-    [
-     "Contraindicated: Burns.",
-     "Caution: Contraindicated in hyperkalemia, burns >24hr, crush injury, denervation."
-    ]
+    "control",
+    "Nothing to confirm."
    ]
   ]
  },
