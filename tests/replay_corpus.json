@@ -1,0 +1,1045 @@
+[
+ {
+  "id": "pain-route-asked",
+  "turns": [
+   [
+    "ketamine for pain, eighty kilos",
+    "ask",
+    "Which route: IV, IM or IN?"
+   ]
+  ]
+ },
+ {
+  "id": "pain-iv-two-entries",
+  "turns": [
+   [
+    "ketamine for pain iv eighty kilos",
+    "ask",
+    "Which one: moderate to severe pain analgesia, or background pain low-dose analgesia prolonged field care?"
+   ],
+   [
+    "severe",
+    "readback",
+    "Ketamine, moderate to severe pain analgesia, IV, eighty kilos. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Ketamine twenty milligrams. Dilute one mil of fifty in nine mils of normal saline. Four mils of the dilution, five per mil."
+   ]
+  ]
+ },
+ {
+  "id": "pain-background-range",
+  "turns": [
+   [
+    "ketamine for background pain iv eighty kilos",
+    "readback",
+    "Ketamine, background pain low-dose analgesia prolonged field care, IV, eighty kilos. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Ketamine eight milligrams. Dilute one mil of fifty in nine mils of normal saline. One point six mils of the dilution, five per mil. Signed range zero point one to zero point two milligrams per kilogram."
+   ]
+  ]
+ },
+ {
+  "id": "pain-im",
+  "turns": [
+   [
+    "ketamine for pain im eighty kilos",
+    "readback",
+    "Ketamine, pain, IM, eighty kilos. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Ketamine forty milligrams. Zero point eight mils of fifty. Signed range zero point five to one milligrams per kilogram."
+   ]
+  ]
+ },
+ {
+  "id": "pain-in",
+  "turns": [
+   [
+    "ketamine for pain in eighty kilos",
+    "readback",
+    "Ketamine, pain, IN, eighty kilos. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Ketamine forty milligrams. Zero point eight mils of fifty. Signed range zero point five to zero point seven five milligrams per kilogram."
+   ]
+  ]
+ },
+ {
+  "id": "pain-cap-at-half-mil",
+  "turns": [
+   [
+    "ketamine for moderate pain iv one hundred twenty kilos",
+    "readback",
+    "Ketamine, moderate to severe pain analgesia, IV, one hundred and twenty kilos. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Ketamine twenty-five milligrams. Capped at the signed maximum. Zero point five mils of fifty."
+   ]
+  ]
+ },
+ {
+  "id": "child-pain-k3",
+  "turns": [
+   [
+    "child ketamine for pain iv twenty kilos",
+    "readback",
+    "Ketamine, pain, IV, child, twenty kilos. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Ketamine four milligrams. Dilute one mil of fifty in nine mils of normal saline. Zero point eight mils of the dilution, five per mil."
+   ]
+  ]
+ },
+ {
+  "id": "child-by-weight",
+  "turns": [
+   [
+    "ketamine for pain iv fifteen kilos",
+    "readback",
+    "Ketamine, pain, IV, child, fifteen kilos. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Ketamine three milligrams. Dilute one mil of fifty in nine mils of normal saline. Zero point six mils of the dilution, five per mil."
+   ]
+  ]
+ },
+ {
+  "id": "child-too-small-to-draw",
+  "turns": [
+   [
+    "ketamine for pain iv five kilos",
+    "readback",
+    "Ketamine, pain, IV, child, five kilos. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Ketamine one milligram. Too small to draw from the vial. Dilute one mil of fifty in nine mils of normal saline. No volume."
+   ]
+  ]
+ },
+ {
+  "id": "which-indication",
+  "turns": [
+   [
+    "ketamine eighty kilos",
+    "ask",
+    "Which indication: sedation, pain, agitation, RSI or seizure?"
+   ]
+  ]
+ },
+ {
+  "id": "agitation-iv",
+  "turns": [
+   [
+    "ketamine iv eighty kilos agitation",
+    "readback",
+    "Ketamine, agitation, IV, eighty kilos. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Ketamine one hundred and sixty milligrams. Three point two mils of fifty."
+   ]
+  ]
+ },
+ {
+  "id": "agitation-im",
+  "turns": [
+   [
+    "ketamine for agitation im eighty kilos",
+    "readback",
+    "Ketamine, agitation, IM, eighty kilos. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Ketamine three hundred and twenty milligrams. Six point four mils of fifty."
+   ]
+  ]
+ },
+ {
+  "id": "agitation-io",
+  "turns": [
+   [
+    "ketamine for agitation io eighty kilos",
+    "readback",
+    "Ketamine, agitation, IO, eighty kilos. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Ketamine one hundred and sixty milligrams. Three point two mils of fifty."
+   ]
+  ]
+ },
+ {
+  "id": "agitation-line",
+  "turns": [
+   [
+    "ketamine for agitation line eighty kilos",
+    "readback",
+    "Ketamine, agitation, IV, eighty kilos. Confirm?"
+   ]
+  ]
+ },
+ {
+  "id": "rsi-two-labels",
+  "turns": [
+   [
+    "ketamine for rsi eighty kilos",
+    "ask",
+    "Which one: RSI induction, or RSI induction haemodynamically unstable in extremis?"
+   ],
+   [
+    "unstable",
+    "readback",
+    "Ketamine, RSI induction haemodynamically unstable in extremis, IV, eighty kilos. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Ketamine eighty milligrams. One point six mils of fifty."
+   ]
+  ]
+ },
+ {
+  "id": "rsi-first-label",
+  "turns": [
+   [
+    "ketamine for rsi eighty kilos",
+    "ask",
+    "Which one: RSI induction, or RSI induction haemodynamically unstable in extremis?"
+   ],
+   [
+    "induction",
+    "readback",
+    "Ketamine, RSI induction, IV, eighty kilos. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Ketamine one hundred and sixty milligrams. Three point two mils of fifty."
+   ]
+  ]
+ },
+ {
+  "id": "sux-adult",
+  "turns": [
+   [
+    "succinylcholine for rsi eighty kilos",
+    "readback",
+    "Succinylcholine, RSI, IV, eighty kilos. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Succinylcholine one hundred and twenty milligrams. Two point four mils of fifty."
+   ]
+  ]
+ },
+ {
+  "id": "sux-child-age-band",
+  "turns": [
+   [
+    "sux for rsi child five years twenty kilos",
+    "readback",
+    "Succinylcholine, RSI, IV, child, five years, twenty kilos. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Succinylcholine thirty milligrams. Zero point six mils of fifty."
+   ]
+  ]
+ },
+ {
+  "id": "sux-child-asks-age",
+  "turns": [
+   [
+    "sux for rsi child twenty kilos",
+    "ask",
+    "Age in years?"
+   ],
+   [
+    "three years",
+    "readback",
+    "Succinylcholine, RSI, IV, child, three years, twenty kilos. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Succinylcholine forty milligrams. Zero point eight mils of fifty."
+   ]
+  ]
+ },
+ {
+  "id": "rocuronium",
+  "turns": [
+   [
+    "rocuronium for rsi eighty kilos",
+    "readback",
+    "Rocuronium, RSI, IV, eighty kilos. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Rocuronium ninety-six milligrams. Nine point six mils of ten."
+   ]
+  ]
+ },
+ {
+  "id": "roc-close-to-rocephin",
+  "turns": [
+   [
+    "roc for rsi eighty kilos",
+    "ask",
+    "Ceftriaxone or rocuronium?"
+   ],
+   [
+    "rocuronium",
+    "readback",
+    "Rocuronium, RSI, IV, eighty kilos. Confirm?"
+   ]
+  ]
+ },
+ {
+  "id": "keto-asks",
+  "turns": [
+   [
+    "keto",
+    "ask",
+    "Ketamine or ketorolac?"
+   ]
+  ]
+ },
+ {
+  "id": "ket-asks",
+  "turns": [
+   [
+    "ket for pain",
+    "ask",
+    "Ketamine or ketorolac?"
+   ]
+  ]
+ },
+ {
+  "id": "ketorolac-holds",
+  "turns": [
+   [
+    "ketorolac for pain eighty kilos",
+    "hold",
+    "No signed dose for ketorolac."
+   ]
+  ]
+ },
+ {
+  "id": "toradol-holds",
+  "turns": [
+   [
+    "toradol",
+    "hold",
+    "No signed dose for toradol."
+   ]
+  ]
+ },
+ {
+  "id": "magnesium-holds",
+  "turns": [
+   [
+    "magnesium",
+    "hold",
+    "No signed dose for magnesium."
+   ]
+  ]
+ },
+ {
+  "id": "mag-holds",
+  "turns": [
+   [
+    "mag for seizure eighty kilos",
+    "hold",
+    "No signed dose for mag."
+   ]
+  ]
+ },
+ {
+  "id": "amiodarone-holds",
+  "turns": [
+   [
+    "amiodarone",
+    "hold",
+    "No signed dose for amiodarone."
+   ]
+  ]
+ },
+ {
+  "id": "calcium-asks",
+  "turns": [
+   [
+    "calcium",
+    "ask",
+    "Calcium chloride, calcium edta or calcium gluconate?"
+   ],
+   [
+    "calcium edta",
+    "hold",
+    "No signed dose for calcium edta."
+   ]
+  ]
+ },
+ {
+  "id": "calcium-chloride-adult",
+  "turns": [
+   [
+    "calcium chloride for hypocalcaemia",
+    "ask",
+    "Adult? Say adult, or give the age or the weight."
+   ],
+   [
+    "adult",
+    "readback",
+    "Calcium chloride, hypocalcaemia, IV, adult. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Calcium chloride one gram. No signed vial, no volume."
+   ]
+  ]
+ },
+ {
+  "id": "calcium-chloride-american",
+  "turns": [
+   [
+    "calcium chloride for hypocalcemia eighty kilos",
+    "readback",
+    "Calcium chloride, hypocalcaemia, IV, eighty kilos. Confirm?"
+   ]
+  ]
+ },
+ {
+  "id": "calcium-chloride-child-holds",
+  "turns": [
+   [
+    "calcium chloride for hypocalcaemia child twenty kilos",
+    "hold",
+    "No signed dose of calcium chloride for a child."
+   ]
+  ]
+ },
+ {
+  "id": "naloxone-adult",
+  "turns": [
+   [
+    "narcan for opioid overdose",
+    "ask",
+    "Weight?"
+   ],
+   [
+    "adult",
+    "ask",
+    "Which route: IV, IM or IN?"
+   ],
+   [
+    "iv",
+    "readback",
+    "Naloxone, opioid overdose, IV, adult. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Naloxone zero point four milligrams. One mil of zero point four. Signed range zero point four to two milligrams."
+   ]
+  ]
+ },
+ {
+  "id": "txa-adult",
+  "turns": [
+   [
+    "txa for haemorrhage eighty kilos",
+    "readback",
+    "Tranexamic acid, haemorrhage, IV, eighty kilos. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Tranexamic acid two grams. Twenty mils of one hundred."
+   ]
+  ]
+ },
+ {
+  "id": "txa-child-american",
+  "turns": [
+   [
+    "tranexamic acid for hemorrhage child twenty kilos",
+    "readback",
+    "Tranexamic acid, haemorrhage, IV, child, twenty kilos. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Tranexamic acid three hundred milligrams. Three mils of one hundred."
+   ]
+  ]
+ },
+ {
+  "id": "morphine-no-vial",
+  "turns": [
+   [
+    "morphine for pain iv seventy kilos",
+    "readback",
+    "Morphine, pain, IV, seventy kilos. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Morphine seven milligrams. No signed vial, no volume."
+   ]
+  ]
+ },
+ {
+  "id": "morphine-cap",
+  "turns": [
+   [
+    "morphine for pain iv one hundred fifty kilos",
+    "readback",
+    "Morphine, pain, IV, one hundred and fifty kilos. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Morphine ten milligrams. Capped at the signed maximum. No signed vial, no volume."
+   ]
+  ]
+ },
+ {
+  "id": "fentanyl-fixed-iv",
+  "turns": [
+   [
+    "fentanyl for pain iv eighty kilos",
+    "readback",
+    "Fentanyl, pain, IV, eighty kilos. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Fentanyl fifty micrograms. No signed vial, no volume."
+   ]
+  ]
+ },
+ {
+  "id": "fentanyl-in",
+  "turns": [
+   [
+    "fent for pain in eighty kilos",
+    "readback",
+    "Fentanyl, pain, IN, eighty kilos. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Fentanyl eighty micrograms. No signed vial, no volume."
+   ]
+  ]
+ },
+ {
+  "id": "atropine-floor",
+  "turns": [
+   [
+    "atropine for bradycardia child three kilos",
+    "readback",
+    "Atropine, bradycardia, IV, child, three kilos. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Atropine zero point one milligrams. Raised to the signed minimum. No signed vial, no volume."
+   ]
+  ]
+ },
+ {
+  "id": "norepinephrine-rate",
+  "turns": [
+   [
+    "levophed for shock eighty kilos",
+    "ask",
+    "Which one: vasodilatory haemorrhagic shock infusion, or cardiogenic shock pulmonary oedema with SBP under one hundred?"
+   ],
+   [
+    "cardiogenic",
+    "readback",
+    "Norepinephrine, cardiogenic shock pulmonary oedema with SBP under one hundred, IV, eighty kilos. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Norepinephrine zero point zero two to two micrograms per kilogram per minute. Infusion, no single volume."
+   ]
+  ]
+ },
+ {
+  "id": "epi-anaphylaxis",
+  "turns": [
+   [
+    "epi for anaphylaxis eighty kilos",
+    "readback",
+    "Epinephrine, anaphylaxis, IM, eighty kilos. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Epinephrine zero point three milligrams. No signed vial, no volume."
+   ]
+  ]
+ },
+ {
+  "id": "epi-croup-neb",
+  "turns": [
+   [
+    "epinephrine for croup child twenty kilos",
+    "readback",
+    "Epinephrine, croup, NEB, child, twenty kilos. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Epinephrine five milligrams. No signed vial, no volume."
+   ]
+  ]
+ },
+ {
+  "id": "acetaminophen-range",
+  "turns": [
+   [
+    "paracetamol for pain po eighty kilos",
+    "readback",
+    "Acetaminophen, pain, PO, eighty kilos. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Acetaminophen five hundred milligrams. No signed vial, no volume. Signed range five hundred to one thousand milligrams."
+   ]
+  ]
+ },
+ {
+  "id": "midazolam-seizure-cap",
+  "turns": [
+   [
+    "versed for seizure iv eighty kilos",
+    "readback",
+    "Midazolam, seizure, IV, eighty kilos. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Midazolam four milligrams. Capped at the signed maximum. No signed vial, no volume."
+   ]
+  ]
+ },
+ {
+  "id": "lorazepam-seizure-cap",
+  "turns": [
+   [
+    "ativan for seizure iv eighty kilos",
+    "readback",
+    "Lorazepam, seizure, IV, eighty kilos. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Lorazepam four milligrams. Capped at the signed maximum. Two mils of two."
+   ]
+  ]
+ },
+ {
+  "id": "dextrose-route",
+  "turns": [
+   [
+    "glucose for hypoglycemia eighty kilos",
+    "ask",
+    "Which route: IV or PO?"
+   ],
+   [
+    "iv",
+    "readback",
+    "Dextrose, hypoglycaemia, IV, eighty kilos. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Dextrose twenty-five grams. No signed vial, no volume."
+   ]
+  ]
+ },
+ {
+  "id": "vitamin-k",
+  "turns": [
+   [
+    "vitamin k for anticoagulant reversal adult",
+    "readback",
+    "Phytomenadione, anticoagulant reversal, IV, adult. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Phytomenadione ten milligrams. No signed vial, no volume."
+   ]
+  ]
+ },
+ {
+  "id": "route-not-signed",
+  "turns": [
+   [
+    "ketamine for rsi im eighty kilos",
+    "hold",
+    "No signed IM dose of ketamine for RSI."
+   ]
+  ]
+ },
+ {
+  "id": "indication-not-signed",
+  "turns": [
+   [
+    "morphine for seizure eighty kilos",
+    "hold",
+    "No signed dose of morphine for seizure."
+   ]
+  ]
+ },
+ {
+  "id": "estimated-does-not-dose",
+  "turns": [
+   [
+    "ketamine for agitation iv estimated eighty kilos",
+    "ask",
+    "I only have an estimate. Say the weight to confirm it."
+   ],
+   [
+    "eighty kilos",
+    "readback",
+    "Ketamine, agitation, IV, eighty kilos. Confirm?"
+   ]
+  ]
+ },
+ {
+  "id": "pounds",
+  "turns": [
+   [
+    "ketamine for agitation iv one hundred seventy six pounds",
+    "readback",
+    "Ketamine, agitation, IV, one hundred and seventy-six pounds, seventy-nine point eight kilos. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Ketamine one hundred and fifty-nine point six milligrams. Three point one nine mils of fifty."
+   ]
+  ]
+ },
+ {
+  "id": "bare-number-asks-unit",
+  "turns": [
+   [
+    "ketamine for agitation iv eighty",
+    "ask",
+    "Kilos or pounds?"
+   ],
+   [
+    "eighty kilos",
+    "readback",
+    "Ketamine, agitation, IV, eighty kilos. Confirm?"
+   ]
+  ]
+ },
+ {
+  "id": "not-in-grammar-word",
+  "turns": [
+   [
+    "aspirin please",
+    "unrecognised",
+    "Not recognised."
+   ]
+  ]
+ },
+ {
+  "id": "not-in-grammar-digits",
+  "turns": [
+   [
+    "ketamine for pain 80 kilos",
+    "unrecognised",
+    "Not recognised."
+   ]
+  ]
+ },
+ {
+  "id": "not-in-grammar-misspelt",
+  "turns": [
+   [
+    "ketamin",
+    "unrecognised",
+    "Not recognised."
+   ]
+  ]
+ },
+ {
+  "id": "two-drugs",
+  "turns": [
+   [
+    "ketamine morphine",
+    "ask",
+    "One drug at a time."
+   ]
+  ]
+ },
+ {
+  "id": "indication-only",
+  "turns": [
+   [
+    "for pain eighty kilos",
+    "ask",
+    "Which drug?"
+   ]
+  ]
+ },
+ {
+  "id": "cancel",
+  "turns": [
+   [
+    "ketamine for agitation iv eighty kilos",
+    "readback",
+    "Ketamine, agitation, IV, eighty kilos. Confirm?"
+   ],
+   [
+    "cancel",
+    "control",
+    "Cancelled."
+   ],
+   [
+    "confirm",
+    "control",
+    "Nothing to confirm."
+   ]
+  ]
+ },
+ {
+  "id": "repeat-at-read-back",
+  "turns": [
+   [
+    "ketamine for agitation iv eighty kilos",
+    "readback",
+    "Ketamine, agitation, IV, eighty kilos. Confirm?"
+   ],
+   [
+    "repeat",
+    "repeat",
+    "Ketamine, agitation, IV, eighty kilos. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Ketamine one hundred and sixty milligrams. Three point two mils of fifty."
+   ]
+  ]
+ },
+ {
+  "id": "yes-is-not-confirm",
+  "turns": [
+   [
+    "ketamine for agitation iv eighty kilos",
+    "readback",
+    "Ketamine, agitation, IV, eighty kilos. Confirm?"
+   ],
+   [
+    "yes",
+    "unrecognised",
+    "Not recognised."
+   ],
+   [
+    "confirm",
+    "dose",
+    "Ketamine one hundred and sixty milligrams. Three point two mils of fifty."
+   ]
+  ]
+ },
+ {
+  "id": "weight-changed-at-read-back",
+  "turns": [
+   [
+    "ketamine for agitation iv eighty kilos",
+    "readback",
+    "Ketamine, agitation, IV, eighty kilos. Confirm?"
+   ],
+   [
+    "ninety kilos",
+    "readback",
+    "Ketamine, agitation, IV, ninety kilos. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Ketamine one hundred and eighty milligrams. Three point six mils of fifty."
+   ]
+  ]
+ },
+ {
+  "id": "new-drug-replaces-request",
+  "turns": [
+   [
+    "ketamine for agitation iv eighty kilos",
+    "readback",
+    "Ketamine, agitation, IV, eighty kilos. Confirm?"
+   ],
+   [
+    "magnesium",
+    "hold",
+    "No signed dose for magnesium."
+   ],
+   [
+    "confirm",
+    "control",
+    "Nothing to confirm."
+   ]
+  ]
+ },
+ {
+  "id": "weight-persists-for-patient",
+  "turns": [
+   [
+    "ketamine for agitation iv eighty kilos",
+    "readback",
+    "Ketamine, agitation, IV, eighty kilos. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Ketamine one hundred and sixty milligrams. Three point two mils of fifty."
+   ],
+   [
+    "morphine for pain iv",
+    "readback",
+    "Morphine, pain, IV, eighty kilos. Confirm?"
+   ]
+  ]
+ },
+ {
+  "id": "sux-burns-held",
+  "turns": [
+   [
+    "Succinylcholine, RSI, eighty kilos, burns",
+    "hold",
+    "Held. Succinylcholine is contraindicated with burns. Rocuronium is the signed alternative."
+   ],
+   [
+    "confirm",
+    "control",
+    "Nothing to confirm."
+   ]
+  ]
+ },
+ {
+  "id": "condition-noted-then-dose",
+  "turns": [
+   [
+    "crush injury",
+    "noted",
+    "Noted: crush injury."
+   ],
+   [
+    "succinylcholine for rsi eighty kilos",
+    "readback",
+    "Succinylcholine, RSI, IV, eighty kilos, crush injury. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Succinylcholine one hundred and twenty milligrams. Two point four mils of fifty.",
+    [
+     "Caution: Contraindicated in hyperkalemia, burns >24hr, crush injury, denervation."
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "condition-cleared-by-new-patient",
+  "turns": [
+   [
+    "burns",
+    "noted",
+    "Noted: burns."
+   ],
+   [
+    "new patient",
+    "control",
+    "New patient. Weight and age cleared."
+   ],
+   [
+    "succinylcholine for rsi eighty kilos",
+    "readback",
+    "Succinylcholine, RSI, IV, eighty kilos. Confirm?"
+   ]
+  ]
+ },
+ {
+  "id": "ketamine-stated-signed-vial",
+  "turns": [
+   [
+    "ketamine for agitation iv eighty kilos fifty milligrams per mil",
+    "readback",
+    "Ketamine, agitation, IV, eighty kilos. You said fifty milligrams per mil. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Ketamine one hundred and sixty milligrams. Three point two mils of fifty."
+   ]
+  ]
+ },
+ {
+  "id": "ketamine-stated-other-vial",
+  "turns": [
+   [
+    "ketamine for agitation iv eighty kilos one hundred milligrams per mil",
+    "readback",
+    "Ketamine, agitation, IV, eighty kilos. You said one hundred milligrams per mil. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Ketamine one hundred and sixty milligrams. Stated vial not used, no volume."
+   ]
+  ]
+ },
+ {
+  "id": "readme-example",
+  "turns": [
+   [
+    "ketamine for moderate pain, IV, eighty kilos.",
+    "readback",
+    "Ketamine, moderate to severe pain analgesia, IV, eighty kilos. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Ketamine twenty milligrams. Dilute one mil of fifty in nine mils of normal saline. Four mils of the dilution, five per mil."
+   ]
+  ]
+ }
+]
