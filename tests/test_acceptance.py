@@ -91,10 +91,35 @@ def test_b1_the_parser_keeps_the_amount_as_words_only(s):
     assert parsed.age is None
 
 
-def test_b1_a_stated_vial_is_not_used_either(s):
-    play(s, "ketamine for agitation iv eighty kilos fifty milligrams per mil")
+@pytest.mark.parametrize("vial", ["fifty milligrams per mil", "fifty mg per ml",
+                                  "five hundred milligrams in ten mils"])
+def test_b1_a_stated_vial_that_is_the_signed_vial_gives_the_volume(s, vial):
+    # Owner ruling 2026-11-08. The words are compared with the signed vial's own
+    # words; the volume is the kit's, never worked out from what was said.
+    play(s, f"ketamine for agitation iv eighty kilos {vial}")
+    dose = s.handle("confirm")
+    assert dose.say == "Ketamine one hundred and sixty milligrams. Three point two mils of fifty."
+    assert dose.data["record"]["volume_ml"] == 3.2
+
+
+@pytest.mark.parametrize("vial", ["one hundred milligrams per mil", "five hundred milligrams in five mils",
+                                  "ten mils", "fifty micrograms per mil", "five milligrams per mil"])
+def test_b1_a_stated_vial_that_is_not_the_signed_vial_is_not_used(s, vial):
+    play(s, f"ketamine for agitation iv eighty kilos {vial}")
     dose = s.handle("confirm")
     assert dose.say == "Ketamine one hundred and sixty milligrams. Stated vial not used, no volume."
+    assert dose.data["record"]["volume_ml"] is None
+
+
+def test_b1_one_stated_vial_that_is_not_signed_withholds_the_volume(s):
+    play(s, "ketamine for agitation iv eighty kilos fifty milligrams per mil one hundred milligrams per mil")
+    assert s.handle("confirm").say.endswith("Stated vial not used, no volume.")
+
+
+def test_b1_another_drugs_vial_is_not_this_drugs(s):
+    # Rocuronium's signed vial is 10 mg/mL; said for ketamine it is not ketamine's.
+    play(s, "ketamine for agitation iv eighty kilos ten milligrams per mil")
+    assert s.handle("confirm").say.endswith("Stated vial not used, no volume.")
 
 
 # ── C1 ─────────────────────────────────────────────────────────────────────

@@ -30,12 +30,9 @@ def test_replay(case):
         read_back = turn.kind == "readback" or (read_back and turn.kind in ("why", "repeat", "unrecognised"))
 
 
-def test_a_dose_is_followed_by_its_first_caution_and_its_contraindications():
+def test_a_dose_with_no_condition_stated_is_followed_by_nothing():
+    # Owner ruling 2026-11-08: cautions follow the dose only when they name a stated
+    # condition; otherwise they are in "why" (tests/test_cautions.py).
     s = boot(ROOT / "bank")
     s.handle("ketamine for agitation iv eighty kilos")
-    dose = s.handle("confirm")
-    bank = json.loads((ROOT / "bank" / "bank.json").read_text())
-    e = next(x for x in bank["entries"] if x["drug"] == "ketamine" and x["route"] == "IV"
-             and x["population"] == "adult" and x["indication_class"] == "agitation")
-    assert dose.after[0] == "Caution: " + e["serve_cautions"][0]
-    assert dose.after[1] == "Contraindicated: " + "; ".join(e["contraindications"]) + "."
+    assert s.handle("confirm").after == []
