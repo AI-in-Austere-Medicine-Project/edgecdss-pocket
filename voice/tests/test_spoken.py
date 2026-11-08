@@ -62,6 +62,9 @@ def test_an_unknown_word_from_vosk_refuses_the_phrase():
     ("ketamine for pain", "morphine for pain", 1, 3),        # substitution
     ("confirm", "", 1, 1),
     ("i v", "i v", 0, 2),
+    ("t x a for haemorrhage", "t x a for hemorrhage", 0, 4),   # one word, two spellings
+    ("sleep apnoea", "sleep apnea", 0, 2),
+    ("four kilos", "for kilos", 1, 2),                          # a homophone is an error
 ])
 def test_word_errors(ref, hyp, errors, n):
     assert spoken.word_errors(ref, hyp) == (errors, n)
