@@ -75,6 +75,9 @@ def names_condition(text: str, conditions) -> bool:
 
 STOPWORDS = frozenset("and the for with without not dose doses patient incl no of or to in".split())
 MIN_STEM = 3
+# How medics say signed drugs where the bank has no such alias yet (owner, phase 2).
+# Pocket-side spoken names only; listed in docs/UPSTREAM.md for EdgeCDSS to sign.
+MEDIC_NAMES = {"ancef": "cefazolin", "cal gluc": "calcium gluconate"}
 
 
 def label_tokens(label: str) -> set:
@@ -145,6 +148,9 @@ def build(bank) -> Vocabulary:
         groups.setdefault(e["drug"], set()).update(e["aliases"])
     for n in bank.no_signed_dose:
         groups.setdefault(n["drug"], set()).update(n["aliases"])
+    for said, generic in MEDIC_NAMES.items():
+        if generic in signed:
+            groups[generic].add(said)
     for generic, aliases in sorted(groups.items(), key=lambda kv: kv[0] not in signed):
         for term in [generic, *sorted(aliases)]:
             said = _say_term(term)

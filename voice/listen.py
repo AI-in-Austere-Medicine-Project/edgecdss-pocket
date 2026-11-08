@@ -26,14 +26,30 @@ EV_KEY = 1
 _EVENT = struct.Struct("llHHi")
 
 
+def bluealsa_headset():
+    """The MAC of a headset whose HFP/HSP mic bluez-alsa offers, or None."""
+    if not shutil.which("bluealsa-cli"):
+        return None
+    out = subprocess.run(["bluealsa-cli", "list-pcms"], capture_output=True, text=True).stdout
+    for line in out.split():
+        if line.endswith(("/hfpag/source", "/hspag/source")):
+            return line.split("/")[4][4:].replace("_", ":")
+    return None
+
+
 def capture_command(source=None) -> list:
-    """Raw 16 kHz mono s16le on stdout. POCKET_CAPTURE overrides (split on spaces)."""
+    """Raw 16 kHz mono s16le on stdout. POCKET_CAPTURE overrides (split on spaces).
+    On the device: bluez-alsa's SCO PCM for the headset (mSBC is 16 kHz already)."""
     if os.getenv("POCKET_CAPTURE"):
         return os.environ["POCKET_CAPTURE"].split()
+    mac = source or bluealsa_headset()
+    if mac and shutil.which("arecord"):
+        return ["arecord", "-q", "-D", f"bluealsa:DEV={mac},PROFILE=sco", "-t", "raw",
+                "-f", "S16_LE", "-r", str(RATE), "-c", "1"]
     if shutil.which("parec"):
         cmd = ["parec", "--raw", "--format=s16le", f"--rate={RATE}", "--channels=1",
                "--latency-msec=20"]
-        return cmd + ([f"--device={source}"] if source else [])
+        return cmd
     if shutil.which("pw-record"):
         return ["pw-record", "--rate", str(RATE), "--channels", "1", "--format", "s16", "-"]
     return ["arecord", "-q", "-t", "raw", "-f", "S16_LE", "-r", str(RATE), "-c", "1"]

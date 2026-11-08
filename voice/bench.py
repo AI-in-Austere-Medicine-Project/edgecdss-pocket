@@ -31,24 +31,30 @@ CORPUS = ROOT / "tests" / "replay_corpus.json"
 GRAMMAR = ROOT / "grammar" / "vosk_grammar.json"
 RATE = 16000
 
-# Signed drugs whose names the small model does not hold, said anyway.
+# The medic forms and spelled names, said in a request (heard through spellings).
 PROBES = [
+    "rocephin for sepsis eighty kilos",
+    "ancef for wound infection prophylaxis eighty kilos",
+    "keppra for seizure eighty kilos",
+    "cal gluc eighty kilos",
     "atropine for bradycardia child three kilos",
-    "rocuronium for rsi eighty kilos",
-    "succinylcholine for rsi eighty kilos",
-    "tranexamic acid for haemorrhage eighty kilos",
-    "ceftriaxone for sepsis eighty kilos",
     "levetiracetam for seizure eighty kilos",
 ]
 
 
+def can_hear(word, entries) -> bool:
+    """In the grammar, or a name the grammar hears through a spelling."""
+    return (word in entries or word in spoken.JOINED.values()
+            or word in set(spoken.spellings().values()))
+
+
 def select(corpus, heard, n=50):
     """Whole cases in corpus order, every word hearable, until at least n phrases."""
-    out, count = [], 0
+    out, count, entries = [], 0, set(heard)
     for case in corpus:
         if count >= n:
             break
-        if all(set(spoken.prompt(p).split()) <= set(heard) for p, *_ in case["turns"]):
+        if all(can_hear(w, entries) for p, *_ in case["turns"] for w in spoken.normalise(spoken.prompt(p)).split()):
             out.append(case)
             count += len(case["turns"])
     return out
@@ -62,19 +68,6 @@ def items(corpus, heard, probes):
     if probes:
         for i, phrase in enumerate(PROBES):
             yield f"probe-{i}", 0, phrase, None, None
-
-
-class Decoder:
-    def __init__(self, model_dir, words):
-        import vosk
-        vosk.SetLogLevel(-1)
-        self.vosk = vosk
-        self.model = vosk.Model(str(model_dir))
-        self.grammar = json.dumps(words)
-
-    def new(self):
-        rec = self.vosk.KaldiRecognizer(self.model, RATE, self.grammar)
-        return rec
 
 
 def _wav_write(path, pcm):
@@ -91,11 +84,12 @@ def _wav_read(path):
         return w.readframes(w.getnframes())
 
 
-def score(phrase, heard_raw, vocab):
-    said = spoken.prompt(phrase)
-    errors, n = spoken.word_errors(said, " ".join(heard_raw.split()))
-    text = spoken.normalise(heard_raw)
-    return said, text, errors, n, parse(text, vocab) == parse(phrase, vocab)
+def score(phrase, text, vocab):
+    """Word errors on the parser's text against the phrase as said with names whole
+    (a spelling heard and mapped back to its name is the name); parse against typed."""
+    said = spoken.normalise(spoken.prompt(phrase), {})
+    errors, n = spoken.word_errors(said, text)
+    return spoken.prompt(phrase), errors, n, parse(text, vocab) == parse(phrase, vocab)
 
 
 def run(args):
@@ -104,7 +98,10 @@ def run(args):
     todo = list(items(corpus, g["words"], args.probes))
     out = pathlib.Path(args.out or ROOT / "bench-out" / datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))
     out.mkdir(parents=True, exist_ok=True)
-    dec = Decoder(args.model, g["words"])
+    import vosk
+    from voice.hear import Hearing
+    vosk.SetLogLevel(-1)
+    hearing = Hearing(vosk.Model(str(args.model)), g, boot(ROOT / "bank").vocab)
 
     mic = button = None
     if not args.wavs:
@@ -131,12 +128,12 @@ def run(args):
         said = spoken.prompt(phrase)
         (out / "next.txt").write_text(f"{k + 1}/{len(todo)} {cid}: {said}\n")
         print(f"[{k + 1}/{len(todo)}] say: {said}", flush=True)
-        rec = dec.new()
+        u = hearing.start()
         pcm = bytearray()
         if args.wavs:
             data = _wav_read(pathlib.Path(args.wavs) / f"{k + 1:03d}.wav")
             for i in range(0, len(data), 640):
-                rec.AcceptWaveform(data[i:i + 640])
+                u.feed(data[i:i + 640])
             pcm += data
             t_release = time.monotonic()
         else:
@@ -145,20 +142,20 @@ def run(args):
 
             def sink(d):
                 pcm.extend(d)
-                rec.AcceptWaveform(d)
+                u.feed(d)
             mic.start(sink)
             t_release, _ = button.release()
             mic.stop()
-        heard = json.loads(rec.FinalResult())["text"]
+        heard, text, which = u.finish()
         t_text = time.monotonic()
-        said, text, errors, n, parse_ok = score(phrase, heard, session.vocab)
+        said, errors, n, parse_ok = score(phrase, text, session.vocab)
         turn = session.handle(text) if text else None
         t_turn = time.monotonic()
         if not args.wavs:
             _wav_write(out / f"{k + 1:03d}.wav", bytes(pcm))
         got = (turn.kind, turn.say) if turn else (None, None)
         r = {"n": k + 1, "case": cid, "turn": ti, "typed": phrase, "said": said, "heard": heard,
-             "parsed_from": text, "errors": errors, "words": n, "parse_ok": parse_ok,
+             "decoder": which, "parsed_from": text, "errors": errors, "words": n, "parse_ok": parse_ok,
              "expected": [kind, say], "got": list(got),
              "turn_ok": None if kind is None else list(got) == [kind, say],
              "audio_s": round(len(pcm) / 2 / RATE, 2),

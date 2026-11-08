@@ -28,10 +28,11 @@ def test_every_signed_drug_has_a_name_the_model_can_hear():
 
 
 def test_a_spelling_uses_only_words_that_mean_nothing_else_to_the_parser():
+    # Its own name's words excepted: "push dose amie" spells "push dose epi".
     meaningful = VOCAB.words() | {w for c in CONTROLS for w in c.split()}
-    for token, spellings in SOUNDS["spellings"].items():
+    for name, spellings in SOUNDS["spellings"].items():
         for s in spellings:
-            assert not set(s.split()) & meaningful, (token, s)
+            assert not (set(s.split()) - set(name.split())) & meaningful, (name, s)
 
 
 def test_no_spelling_belongs_to_two_names():
@@ -85,6 +86,8 @@ def test_the_dry_run_heard_every_medic_form():
         assert rows and all(r["heard_as"] == [drug] for r in rows), (said, rows)
 
 
-def test_the_dry_run_never_heard_one_signed_drug_as_another():
+def test_the_dry_run_never_heard_one_drug_as_another():
+    # Signed, or unsigned: an unsigned name heard would show as its hold.
     for r in DRYRUN["rows"]:
         assert set(r["heard_as"]) <= {r["drug"]} | set(r["asks"]), r
+        assert not r["turn"].startswith("No signed dose for"), r

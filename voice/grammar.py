@@ -12,19 +12,27 @@ import sys
 
 from engine.bank import load_bank
 from grammar.vocabulary import build
-from voice.spoken import prompt
+from voice.spoken import JOINED, prompt, spellings
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 LETTERS = set("abcdefghijklmnopqrstuvwxyz")
 
 
-def grammar_words(vocab, known) -> tuple:
-    """(sorted grammar words, sorted bank words the model does not know)."""
+def grammar_words(vocab, known, sounds=None) -> tuple:
+    """(sorted grammar entries, sorted bank words the model does not know). Entries are
+    the bank words it knows, the letters, every phonetic spelling as one phrase, and
+    "[unk]"."""
     words = vocab.words()
     missing = sorted(w for w in words if not known(w))
-    letters = {w for term in words for w in term.split() if len(w) == 1} | LETTERS
-    heard = {w for w in words if known(w)} | {x for x in letters if known(x)}
-    return sorted(heard | {"[unk]"}), missing
+    heard = {w for w in words if known(w)} | {x for x in LETTERS if known(x)}
+    sounds = spellings() if sounds is None else sounds
+    phrases = {s for s in sounds if all(known(w) for w in s.split())}
+    return sorted(heard | phrases | {"[unk]"}), missing
+
+
+def hearable(word, known, sounds) -> bool:
+    """The model can hear it: in its word list, spelled by letters, or spelled phonetically."""
+    return known(word) or word in JOINED.values() or word in set(sounds.values())
 
 
 def model_id(model_dir) -> dict:
@@ -37,7 +45,8 @@ def unsayable_drugs(vocab, known) -> list:
     """Signed drugs none of whose names the model can hear."""
     out = []
     for drug in sorted(vocab.signed):
-        if not any(all(known(w) for w in prompt(t).split()) for t in vocab.named(drug)):
+        sounds = spellings()
+        if not any(all(hearable(w, known, sounds) for w in t.split()) for t in vocab.named(drug)):
             out.append(drug)
     return out
 
@@ -52,8 +61,9 @@ def generate(model_dir, bank_dir=ROOT / "bank") -> dict:
     def known(w):
         return model.vosk_model_find_word(w) >= 0
     words, missing = grammar_words(vocab, known)
+    base, _ = grammar_words(vocab, known, sounds={})
     return {**model_id(model_dir), "bank_version": bank.version, "bank_hash": bank.hash,
-            "words": words, "not_in_model": missing,
+            "base_words": base, "words": words, "not_in_model": missing,
             "signed_drugs_not_sayable": unsayable_drugs(vocab, known)}
 
 

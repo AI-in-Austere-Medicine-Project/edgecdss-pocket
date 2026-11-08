@@ -74,7 +74,7 @@ def test_word_errors(ref, hyp, errors, n):
 
 def test_the_grammar_is_the_bank_words_the_model_knows_plus_letters_and_unk():
     known = {"ketamine", "for", "pain", "i", "v", "confirm"}
-    words, missing = grammar_words(VOCAB, lambda w: w in known)
+    words, missing = grammar_words(VOCAB, lambda w: w in known, sounds={})
     assert "[unk]" in words
     assert set(words) - {"[unk]"} <= VOCAB.words() | set("abcdefghijklmnopqrstuvwxyz")
     assert "ketamine" in words and "atropine" not in words
@@ -85,7 +85,8 @@ def test_the_grammar_is_the_bank_words_the_model_knows_plus_letters_and_unk():
 def test_the_committed_grammar_file_matches_the_bank():
     g = json.loads((ROOT / "grammar" / "vosk_grammar.json").read_text())
     assert g["bank_hash"] == BANK.hash
-    assert set(g["words"]) - {"[unk]"} <= VOCAB.words() | set("abcdefghijklmnopqrstuvwxyz")
+    phrases = set(spoken.spellings())
+    assert set(g["words"]) - {"[unk]"} <= VOCAB.words() | set("abcdefghijklmnopqrstuvwxyz") | phrases
     assert set(g["not_in_model"]) <= VOCAB.words()
     assert not set(g["words"]) & set(g["not_in_model"])
 
@@ -101,7 +102,8 @@ def test_the_spoken_replay_is_fifty_phrases_of_whole_cases_the_model_can_hear():
     ids = [c["id"] for c in CORPUS]
     assert [c["id"] for c in cases] == sorted((c["id"] for c in cases), key=ids.index)
     for phrase, *_ in phrases:
-        assert set(spoken.prompt(phrase).split()) <= heard, phrase
+        for w in spoken.normalise(spoken.prompt(phrase)).split():
+            assert bench.can_hear(w, heard), (phrase, w)
 
 
 # ── the text path stays ───────────────────────────────────────────────────
