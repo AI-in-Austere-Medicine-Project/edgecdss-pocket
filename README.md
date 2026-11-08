@@ -45,8 +45,9 @@ Drug names and aliases from the bank; indication names from the bank; routes (IV
 
 - "New patient" clears weight and age and says so.
 - A phrase with drug + indication (+ route, + weight) goes to the engine. A missing weight gets "Weight?"; a missing indication for a multi-indication drug gets "Which indication: pain or agitation?"; a name close to two drugs (ketamine / ketorolac) always asks.
-- Read-back, then "confirm" → dose in mg and mL from the kit vial or signed dilution. Dose first, always. After it, only a caution or contraindication that names a condition the medic stated: "no succinylcholine with burns" only if burns was said. Logged.
-- "Why" speaks the source, then every caution and contraindication. When no volume was given, a spoken caution leaves out any sentence that states a millilitre; the signed text in `bank.json` is unchanged.
+- A stated condition that a signed contraindication names holds the dose: no read-back, no dose. "Succinylcholine, RSI, eighty kilos, burns" → "Held. Succinylcholine is contraindicated with burns. Rocuronium is the signed alternative." The alternative is another signed drug for the same indication that this patient's conditions do not hold. A contraindication the signed text itself qualifies ("relative", "unless", "except") is spoken after the dose instead.
+- Read-back, then "confirm" → dose in mg and mL from the kit vial or signed dilution. Dose first, then only the cautions that name a condition the medic stated. Logged.
+- "Why" speaks the source (quotes word for word), then every caution and contraindication. When no volume was given, a spoken caution leaves out what states a volume ("10 mL", "0.1 mL/kg"); concentrations ("1 mg/mL", "1:1,000") stay. The signed text in `bank.json` is unchanged.
 - A stated vial that is the kit's signed vial ("fifty milligrams per mil" for ketamine) gives the volume; any other stated vial gives milligrams only. The words are compared with the signed vial's; nothing is computed from them.
 - Unsigned drug: "No signed dose for magnesium." Nothing else.
 

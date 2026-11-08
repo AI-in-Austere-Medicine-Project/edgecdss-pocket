@@ -282,4 +282,4 @@ def test_a_condition_gates_only_on_what_the_contraindication_says(s):
     for word in ("diabetic", "diabetes", "alcohol"):
         assert word not in CONDITIONS
     assert s.handle("versed for seizure iv eighty kilos intoxicated").kind == "readback"
-    assert s.handle("midazolam for sedation iv eighty kilos alcohol intoxication").kind == "hold"
+    assert s.handle("midazolam for procedural sedation iv eighty kilos alcohol intoxication").kind == "hold"

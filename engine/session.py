@@ -20,7 +20,8 @@ from typing import Callable, Optional
 from engine import contracts, vials, words
 from engine.bank import Bank, BankRefused, load_bank
 from grammar.parser import Age, Parsed, parse
-from grammar.vocabulary import VOLUME_UNITS, build, label_tokens, names_condition
+from grammar.vocabulary import (CONDITION_PATTERNS, VOLUME_UNITS, build, label_tokens,
+                                names_condition)
 
 PEDIATRIC_WEIGHT_CEILING_KG = 40.0  # EdgeCDSS openai_client: not spoken, a gate
 ROUTE_ORDER = ("IV", "IM", "IN", "PO", "NEB")
@@ -30,8 +31,11 @@ RAISED = "Raised to the signed minimum."
 ASK_ADULT = "Adult? Say adult, or give the age or the weight."  # ADULT_CONFIRM_ASK
 ASK_ESTIMATE = "I only have an estimate. Say the weight to confirm it."  # WEIGHT_CONFIRM_ASK
 NO_CONTRAINDICATIONS = "No contraindications listed."
-_ML = re.compile(r"(?i)(?<![a-z])(ml|cc)(?![a-z])")
+# A stated volume ("10 mL", "0.1 mL/kg", "100 cc"); "1 mg/mL" is a concentration, kept.
+_VOLUME = re.compile(r"(?i)(?<![a-z/])(ml|cc)(?![a-z])")
 _SENTENCE = re.compile(r"(?<=[.!?])\s+")
+# A contraindication the signed text itself qualifies is spoken, not a gate.
+_QUALIFIED = re.compile(r"(?i)\brelative\b|\bunless\b|\bexcept\b|^none\b|\bnot contraindicated\b")
 
 
 @dataclasses.dataclass
@@ -118,12 +122,29 @@ class Request:
 
 def spoken_line(text: str, volume: bool):
     """The spoken form of a signed line: whole when a volume was computed; otherwise
-    without the sentences that state a millilitre (owner ruling 2026-11-08). None when
-    nothing is left. The signed text itself is never changed."""
-    if volume or not _ML.search(text):
+    without what states a volume (owner rulings 2026-11-08). A sentence that states one
+    is dropped, unless the volume comes after an em dash: then the sentence is cut there.
+    Concentrations stay. None when nothing is left. The signed text is never changed."""
+    if volume or not _VOLUME.search(text):
         return text
-    kept = [s for s in _SENTENCE.split(text) if not _ML.search(s)]
+    kept = []
+    for sentence in _SENTENCE.split(text):
+        head = []
+        for part in sentence.split(" — "):
+            if _VOLUME.search(part):
+                break
+            head.append(part)
+        if head:
+            cut = " — ".join(head)
+            kept.append(cut if cut[-1] in ".!?\"" else cut + ".")
     return " ".join(kept) or None
+
+
+def holding_conditions(e: dict, conditions) -> list:
+    """The stated conditions a signed contraindication of this entry holds on."""
+    lines = [c for c in e["contraindications"] if not _QUALIFIED.search(c)]
+    return [c for c in conditions
+            if any(re.search(CONDITION_PATTERNS[c], line, re.I) for line in lines)]
 
 
 def caution_lines(e: dict, volume: bool, conditions=None) -> list:
@@ -379,7 +400,32 @@ class Session:
         entry = [e for e in fit if e["indication"] == labels[0]]
         if len(entry) != 1:
             return self._hold(f"No single signed dose of {name}.")
+        held = holding_conditions(entry[0], patient.conditions)
+        if held:
+            return self._contraindicated(entry[0], name, held, years)
         return self._read_back(entry[0], name, cls, several > 1, route_said)
+
+    def _contraindicated(self, entry, name, held, years) -> Turn:
+        """A gate, as EdgeCDSS's A12: no read-back, no dose. Names the other signed drugs
+        for the same indication that this patient's conditions do not hold."""
+        base = entry["indication"].split(" — ")[0]
+        alts = []
+        for e in self.bank.entries:
+            if (e["drug"] == entry["drug"] or e["indication_class"] != entry["indication_class"]
+                    or e["indication"].split(" — ")[0] != base
+                    or not contracts.fits_population(e, self.patient.is_child)
+                    or contracts.age_exclusion(e, years) is not None
+                    or holding_conditions(e, self.patient.conditions)):
+                continue
+            alt = words.sentence(words.say_name(e["drug"]))
+            if alt not in alts:
+                alts.append(alt)
+        say = f"Held. {words.sentence(name)} is contraindicated with {_choice(held, ' and ')}."
+        if len(alts) == 1:
+            say += f" {alts[0]} is the signed alternative."
+        elif alts:
+            say += f" Signed alternatives: {', '.join(alts)}."
+        return self._hold(say)
 
     def _read_back(self, entry, name, cls, name_label, route_said) -> Turn:
         self._pending = entry

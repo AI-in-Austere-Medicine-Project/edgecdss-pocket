@@ -25,23 +25,24 @@ NUMBERS = ("zero one two three four five six seven eight nine ten eleven twelve 
 # Conditions a medic can state for this patient (owner ruling 2026-11-08). A caution or
 # contraindication is spoken after the dose only when its signed text names one; the rest
 # are in "why". Spoken term -> condition; condition -> what it names in the signed text.
-# Left out because the word already means something else to the grammar: hyperkalaemia and
-# shock (indications), TBI and hypotension (label words), seizure (an indication).
+# Left out because the word already means something else to the grammar: shock and seizure
+# (indications), TBI and hypotension (label words). Hyperkalaemia is an indication too, so
+# it is said as "hyperkalemic" or "high potassium" and read back as "hyperkalaemia".
 CONDITION_PATTERNS = {
     "burns": r"\bburns?\b", "crush injury": r"\bcrush", "spinal cord injury": r"spinal cord",
     "denervation": r"denervation", "head injury": r"head (injur|trauma)", "raised icp": r"\bicp\b",
     "hypertension": r"hypertens", "hypovolaemia": r"hypovol|volume.deplet|volume deficit",
     "hypoxia": r"hypox", "asthma": r"asthma", "sleep apnoea": r"sleep apno?ea",
     "respiratory depression": r"respiratory (insufficiency/)?depression", "glaucoma": r"glaucoma",
-    "alcohol": r"alcohol", "liver disease": r"hepatic|liver", "renal failure": r"renal|dialysis",
-    "elderly": r"elderly", "pregnant": r"\blabou?r\b|pregnan", "egg allergy": r"\beggs?\b",
+    "alcohol intoxication": r"alcohol (intoxication|toxicity)", "liver disease": r"hepatic|liver", "renal failure": r"renal|dialysis",
+    "elderly": r"elderly", "in labour": r"\blabou?r\b", "hyperkalaemia": r"hyperkal", "egg allergy": r"\beggs?\b",
     "soy allergy": r"\bsoy", "peanut allergy": r"peanut", "penicillin allergy": r"penicillin",
-    "cephalosporin allergy": r"cephalosporin", "diabetic": r"diabet",
+    "cephalosporin allergy": r"cephalosporin", "diabetic coma": r"diabetic coma",
     "hyperglycaemia": r"hyperglyc", "hypercalcaemia": r"hypercalc", "hypokalaemia": r"hypokal",
     "digoxin toxicity": r"digoxin|digitalis", "maoi": r"\bmaoi", "hypothermia": r"hypotherm",
     "eye injury": r"eye injur", "altered mental status": r"altered mental",
     "unable to swallow": r"swallow", "aortic aneurysm": r"aneurysm|dissection",
-    "qt prolongation": r"\bqt\b", "ileus": r"ileus", "arrhythmia": r"arrhythmi",
+    "qt prolongation": r"\bqt\b", "ileus": r"ileus",
     "subarachnoid haemorrhage": r"subarachnoid", "intracranial bleed": r"intracranial|intracerebral",
     "thrombosis": r"thromb|\bdvt\b", "enlarged prostate": r"prostat",
     "pyloric stenosis": r"pyloric", "sarcoidosis": r"sarcoid", "brain tumour": r"brain tumou?r",
@@ -52,9 +53,10 @@ _CONDITION_VARIANTS = {
     "head trauma": "head injury", "icp": "raised icp", "i c p": "raised icp",
     "hypertensive": "hypertension", "hypovolemia": "hypovolaemia", "hypovolemic": "hypovolaemia",
     "hypovolaemic": "hypovolaemia", "hypoxic": "hypoxia", "asthmatic": "asthma",
-    "sleep apnea": "sleep apnoea", "intoxicated": "alcohol", "liver failure": "liver disease",
-    "kidney failure": "renal failure", "dialysis": "renal failure", "in labour": "pregnant",
-    "in labor": "pregnant", "pregnancy": "pregnant", "diabetes": "diabetic",
+    "sleep apnea": "sleep apnoea", "intoxicated": "alcohol intoxication", "drunk": "alcohol intoxication", "liver failure": "liver disease",
+    "kidney failure": "renal failure", "dialysis": "renal failure", "in labor": "in labour",
+    "hyperkalemic": "hyperkalaemia", "hyperkalaemic": "hyperkalaemia",
+    "high potassium": "hyperkalaemia",
     "hyperglycemia": "hyperglycaemia", "hypercalcemia": "hypercalcaemia",
     "hypokalemia": "hypokalaemia", "on digoxin": "digoxin toxicity", "m a o i": "maoi",
     "hypothermic": "hypothermia", "altered": "altered mental status",
@@ -62,7 +64,9 @@ _CONDITION_VARIANTS = {
     "subarachnoid hemorrhage": "subarachnoid haemorrhage", "dvt": "thrombosis",
     "blood clot": "thrombosis", "brain tumor": "brain tumour",
 }
-CONDITIONS = {**{c: c for c in CONDITION_PATTERNS}, **_CONDITION_VARIANTS}
+_NOT_SAID_AS_ITSELF = {"hyperkalaemia"}
+CONDITIONS = {**{c: c for c in CONDITION_PATTERNS if c not in _NOT_SAID_AS_ITSELF},
+              **_CONDITION_VARIANTS}
 
 
 def names_condition(text: str, conditions) -> bool:
