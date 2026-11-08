@@ -122,11 +122,16 @@ def test_after_the_hold_the_alternative_doses(s):
     assert dose.say.startswith("Rocuronium") and dose.after == []
 
 
+def test_an_alternative_is_named_only_when_this_patient_can_have_it(s):
+    # Lorazepam lists glaucoma; midazolam's seizure entry does not.
+    assert s.handle("lorazepam for seizure iv eighty kilos glaucoma").text == (
+        "Held. Lorazepam is contraindicated with glaucoma. Midazolam is the signed alternative.")
+
+
 def test_an_alternative_contraindicated_too_is_not_named(s):
-    turn = s.handle("midazolam for seizure iv eighty kilos glaucoma")
-    assert turn.kind == "hold"
-    assert turn.say.startswith("Held. Midazolam is contraindicated with glaucoma.")
-    assert "orazepam" not in turn.text    # lorazepam is contraindicated with glaucoma too
+    # Both list sleep apnoea.
+    assert s.handle("midazolam for seizure iv eighty kilos sleep apnea").text == (
+        "Held. Midazolam is contraindicated with sleep apnoea.")
 
 
 def test_a_relative_or_qualified_contraindication_does_not_hold(s):
@@ -268,3 +273,13 @@ def test_the_signed_text_in_the_bank_is_unchanged():
         _dose_and_why(e)
     assert [e["serve_cautions"] for e in raw["entries"]] == [e["serve_cautions"] for e in BANK.entries]
     assert sum(bool(VOLUME.search(c)) for e in raw["entries"] for c in e["serve_cautions"]) > 0
+
+
+def test_a_condition_gates_only_on_what_the_contraindication_says(s):
+    # "Diabetic coma" holds dextrose; being diabetic does not. "Acute alcohol
+    # intoxication" holds midazolam; "alcohol" alone is not a condition.
+    assert s.handle("dextrose for hypoglycemia iv eighty kilos diabetic coma").kind == "hold"
+    for word in ("diabetic", "diabetes", "alcohol"):
+        assert word not in CONDITIONS
+    assert s.handle("versed for seizure iv eighty kilos intoxicated").kind == "readback"
+    assert s.handle("midazolam for sedation iv eighty kilos alcohol intoxication").kind == "hold"
