@@ -24,14 +24,20 @@ if [ ! -d "models/$MODEL" ]; then
 fi
 du -sh "models/$MODEL"
 
-echo "== grammar from bank.json"
-"$PY" -m voice.grammar "models/$MODEL" models/vosk_grammar.device.json
-if cmp -s <(python3 -c "import json,sys; d=json.load(open('models/vosk_grammar.device.json')); print(json.dumps(d['words']))") \
-          <(python3 -c "import json,sys; d=json.load(open('grammar/vosk_grammar.json')); print(json.dumps(d['words']))"); then
-  echo "grammar on the device = grammar/vosk_grammar.json"
-else
-  echo "WARNING: the device grammar differs from grammar/vosk_grammar.json"
-fi
+echo "== grammar"
+# The grammar is generated on the bench (python3 -m voice.grammar MODEL); here only check
+# that it was made for this model and this bank. Loading the model twice on a Zero 2 W
+# (415 MB) is avoided.
+"$PY" - "models/$MODEL" <<'PYEOF'
+import json, pathlib, sys
+from engine.bank import load_bank
+from voice.grammar import model_id
+g = json.loads(pathlib.Path("grammar/vosk_grammar.json").read_text())
+m = model_id(sys.argv[1])
+assert g["model_am_sha256"] == m["model_am_sha256"], "grammar/vosk_grammar.json is for another model"
+assert g["bank_hash"] == load_bank("bank").hash, "grammar/vosk_grammar.json is for another bank"
+print(f"grammar ok: {len(g['words'])} entries, model {m['model']}, bank {g['bank_hash'][:8]}")
+PYEOF
 
 echo "== headset mic (bluez-alsa HFP/HSP)"
 # The headset's mic is its HFP/HSP profile. bluez-alsa on Raspberry Pi OS starts with
