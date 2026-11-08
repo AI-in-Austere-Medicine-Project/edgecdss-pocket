@@ -35,7 +35,7 @@ for _ in range(rounds):
     for case in corpus:
         session.patient, session.req = type(session.patient)(), type(session.req)()
         session._pending = session._last_entry = None
-        for phrase, _kind, _say in case["turns"]:
+        for phrase, *_ in case["turns"]:
             t = time.perf_counter()
             session.handle(phrase)
             phrase_us.append((time.perf_counter() - t) * 1e6)

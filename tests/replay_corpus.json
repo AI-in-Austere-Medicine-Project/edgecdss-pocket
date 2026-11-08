@@ -938,5 +938,112 @@
     "Morphine, pain, IV, eighty kilos. Confirm?"
    ]
   ]
+ },
+ {
+  "id": "sux-burns-read-back",
+  "turns": [
+   [
+    "succinylcholine for rsi eighty kilos burns",
+    "readback",
+    "Succinylcholine, RSI, IV, eighty kilos, burns. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Succinylcholine one hundred and twenty milligrams. Two point four mils of fifty.",
+    [
+     "Contraindicated: Burns.",
+     "Caution: Contraindicated in hyperkalemia, burns >24hr, crush injury, denervation."
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "condition-noted-then-dose",
+  "turns": [
+   [
+    "crush injury",
+    "noted",
+    "Noted: crush injury."
+   ],
+   [
+    "succinylcholine for rsi eighty kilos",
+    "readback",
+    "Succinylcholine, RSI, IV, eighty kilos, crush injury. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Succinylcholine one hundred and twenty milligrams. Two point four mils of fifty.",
+    [
+     "Caution: Contraindicated in hyperkalemia, burns >24hr, crush injury, denervation."
+    ]
+   ]
+  ]
+ },
+ {
+  "id": "condition-cleared-by-new-patient",
+  "turns": [
+   [
+    "burns",
+    "noted",
+    "Noted: burns."
+   ],
+   [
+    "new patient",
+    "control",
+    "New patient. Weight and age cleared."
+   ],
+   [
+    "succinylcholine for rsi eighty kilos",
+    "readback",
+    "Succinylcholine, RSI, IV, eighty kilos. Confirm?"
+   ]
+  ]
+ },
+ {
+  "id": "ketamine-stated-signed-vial",
+  "turns": [
+   [
+    "ketamine for agitation iv eighty kilos fifty milligrams per mil",
+    "readback",
+    "Ketamine, agitation, IV, eighty kilos. You said fifty milligrams per mil. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Ketamine one hundred and sixty milligrams. Three point two mils of fifty."
+   ]
+  ]
+ },
+ {
+  "id": "ketamine-stated-other-vial",
+  "turns": [
+   [
+    "ketamine for agitation iv eighty kilos one hundred milligrams per mil",
+    "readback",
+    "Ketamine, agitation, IV, eighty kilos. You said one hundred milligrams per mil. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Ketamine one hundred and sixty milligrams. Stated vial not used, no volume."
+   ]
+  ]
+ },
+ {
+  "id": "readme-example",
+  "turns": [
+   [
+    "ketamine for moderate pain, IV, eighty kilos.",
+    "readback",
+    "Ketamine, moderate to severe pain analgesia, IV, eighty kilos. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Ketamine twenty milligrams. Dilute one mil of fifty in nine mils of normal saline. Four mils of the dilution, five per mil."
+   ]
+  ]
  }
 ]

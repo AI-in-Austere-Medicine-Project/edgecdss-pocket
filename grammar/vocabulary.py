@@ -22,6 +22,53 @@ FILLERS = ("for", "give", "dose", "and", "the", "of", "per")
 NUMBERS = ("zero one two three four five six seven eight nine ten eleven twelve thirteen "
            "fourteen fifteen sixteen seventeen eighteen nineteen twenty thirty forty fifty "
            "sixty seventy eighty ninety hundred thousand point").split()
+# Conditions a medic can state for this patient (owner ruling 2026-11-08). A caution or
+# contraindication is spoken after the dose only when its signed text names one; the rest
+# are in "why". Spoken term -> condition; condition -> what it names in the signed text.
+# Left out because the word already means something else to the grammar: hyperkalaemia and
+# shock (indications), TBI and hypotension (label words), seizure (an indication).
+CONDITION_PATTERNS = {
+    "burns": r"\bburns?\b", "crush injury": r"\bcrush", "spinal cord injury": r"spinal cord",
+    "denervation": r"denervation", "head injury": r"head (injur|trauma)", "raised icp": r"\bicp\b",
+    "hypertension": r"hypertens", "hypovolaemia": r"hypovol|volume.deplet|volume deficit",
+    "hypoxia": r"hypox", "asthma": r"asthma", "sleep apnoea": r"sleep apno?ea",
+    "respiratory depression": r"respiratory (insufficiency/)?depression", "glaucoma": r"glaucoma",
+    "alcohol": r"alcohol", "liver disease": r"hepatic|liver", "renal failure": r"renal|dialysis",
+    "elderly": r"elderly", "pregnant": r"\blabou?r\b|pregnan", "egg allergy": r"\beggs?\b",
+    "soy allergy": r"\bsoy", "peanut allergy": r"peanut", "penicillin allergy": r"penicillin",
+    "cephalosporin allergy": r"cephalosporin", "diabetic": r"diabet",
+    "hyperglycaemia": r"hyperglyc", "hypercalcaemia": r"hypercalc", "hypokalaemia": r"hypokal",
+    "digoxin toxicity": r"digoxin|digitalis", "maoi": r"\bmaoi", "hypothermia": r"hypotherm",
+    "eye injury": r"eye injur", "altered mental status": r"altered mental",
+    "unable to swallow": r"swallow", "aortic aneurysm": r"aneurysm|dissection",
+    "qt prolongation": r"\bqt\b", "ileus": r"ileus", "arrhythmia": r"arrhythmi",
+    "subarachnoid haemorrhage": r"subarachnoid", "intracranial bleed": r"intracranial|intracerebral",
+    "thrombosis": r"thromb|\bdvt\b", "enlarged prostate": r"prostat",
+    "pyloric stenosis": r"pyloric", "sarcoidosis": r"sarcoid", "brain tumour": r"brain tumou?r",
+    "delirium tremens": r"delirium tremens", "intubated": r"\bintubated\b",
+}
+_CONDITION_VARIANTS = {
+    "burn": "burns", "crush": "crush injury", "spinal injury": "spinal cord injury",
+    "head trauma": "head injury", "icp": "raised icp", "i c p": "raised icp",
+    "hypertensive": "hypertension", "hypovolemia": "hypovolaemia", "hypovolemic": "hypovolaemia",
+    "hypovolaemic": "hypovolaemia", "hypoxic": "hypoxia", "asthmatic": "asthma",
+    "sleep apnea": "sleep apnoea", "intoxicated": "alcohol", "liver failure": "liver disease",
+    "kidney failure": "renal failure", "dialysis": "renal failure", "in labour": "pregnant",
+    "in labor": "pregnant", "pregnancy": "pregnant", "diabetes": "diabetic",
+    "hyperglycemia": "hyperglycaemia", "hypercalcemia": "hypercalcaemia",
+    "hypokalemia": "hypokalaemia", "on digoxin": "digoxin toxicity", "m a o i": "maoi",
+    "hypothermic": "hypothermia", "altered": "altered mental status",
+    "aneurysm": "aortic aneurysm", "aortic dissection": "aortic aneurysm", "long qt": "qt prolongation",
+    "subarachnoid hemorrhage": "subarachnoid haemorrhage", "dvt": "thrombosis",
+    "blood clot": "thrombosis", "brain tumor": "brain tumour",
+}
+CONDITIONS = {**{c: c for c in CONDITION_PATTERNS}, **_CONDITION_VARIANTS}
+
+
+def names_condition(text: str, conditions) -> bool:
+    return any(re.search(CONDITION_PATTERNS[c], text, re.I) for c in conditions)
+
+
 STOPWORDS = frozenset("and the for with without not dose doses patient incl no of or to in".split())
 MIN_STEM = 3
 
@@ -49,7 +96,7 @@ class Vocabulary:
     def words(self) -> set:
         out = set(NUMBERS) | set(PATIENT) | set(WEIGHT_UNITS) | set(AGE_UNITS)
         out |= set(DOSE_UNITS) | set(VOLUME_UNITS) | set(FILLERS) | self.label_words
-        for group in (CONTROLS, ROUTES, self.drug_terms, self.class_terms):
+        for group in (CONTROLS, ROUTES, CONDITIONS, self.drug_terms, self.class_terms):
             for term in group:
                 out.update(term.split())
         return out

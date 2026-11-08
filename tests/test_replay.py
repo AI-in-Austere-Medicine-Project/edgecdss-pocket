@@ -21,9 +21,11 @@ def test_the_corpus_has_fifty_cases():
 def test_replay(case):
     s = boot(ROOT / "bank")
     read_back = False
-    for phrase, kind, say in case["turns"]:
+    for phrase, kind, say, *after in case["turns"]:
         turn = s.handle(phrase)
         assert (turn.kind, turn.say) == (kind, say), phrase
+        if after:   # what follows the dose, where the case states it
+            assert turn.after == after[0], phrase
         # Rule 2 on every path: a dose only straight after a read-back and "confirm".
         if turn.kind == "dose":
             assert phrase == "confirm" and read_back

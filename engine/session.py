@@ -14,12 +14,13 @@ import dataclasses
 import datetime
 import json
 import os
+import re
 from typing import Callable, Optional
 
 from engine import contracts, vials, words
 from engine.bank import Bank, BankRefused, load_bank
 from grammar.parser import Age, Parsed, parse
-from grammar.vocabulary import build, label_tokens
+from grammar.vocabulary import VOLUME_UNITS, build, label_tokens, names_condition
 
 PEDIATRIC_WEIGHT_CEILING_KG = 40.0  # EdgeCDSS openai_client: not spoken, a gate
 ROUTE_ORDER = ("IV", "IM", "IN", "PO", "NEB")
@@ -28,6 +29,9 @@ CAPPED = "Capped at the signed maximum."
 RAISED = "Raised to the signed minimum."
 ASK_ADULT = "Adult? Say adult, or give the age or the weight."  # ADULT_CONFIRM_ASK
 ASK_ESTIMATE = "I only have an estimate. Say the weight to confirm it."  # WEIGHT_CONFIRM_ASK
+NO_CONTRAINDICATIONS = "No contraindications listed."
+_ML = re.compile(r"(?i)(?<![a-z])(ml|cc)(?![a-z])")
+_SENTENCE = re.compile(r"(?<=[.!?])\s+")
 
 
 @dataclasses.dataclass
@@ -49,6 +53,7 @@ class Patient:
     age: Optional[Age] = None
     child_said: bool = False
     adult_said: bool = False
+    conditions: list = dataclasses.field(default_factory=list)
 
     @property
     def weight_kg(self) -> Optional[float]:
@@ -72,6 +77,7 @@ class Patient:
             self.age = p.age
         self.child_said = self.child_said or p.child
         self.adult_said = self.adult_said or p.adult
+        self.conditions += [c for c in dict.fromkeys(p.conditions) if c not in self.conditions]
         # A hedged weight is not good enough to dose from and is good enough to gate from.
         for kg in (self.weight_kg, self.estimate_kg):
             if kg is not None and kg < PEDIATRIC_WEIGHT_CEILING_KG:
@@ -90,7 +96,7 @@ class Patient:
                 parts.append(f"{words.num(w.kg)} kilos")
         elif self.adult_said and not self.age and not self.is_child:
             parts.append("adult")
-        return parts
+        return parts + self.conditions
 
 
 @dataclasses.dataclass
@@ -108,6 +114,32 @@ class Request:
     def empty(self) -> bool:
         return not (self.drug or self.options or self.cls or self.route or self.labels
                     or self.stated or self.stated_vial)
+
+
+def spoken_line(text: str, volume: bool):
+    """The spoken form of a signed line: whole when a volume was computed; otherwise
+    without the sentences that state a millilitre (owner ruling 2026-11-08). None when
+    nothing is left. The signed text itself is never changed."""
+    if volume or not _ML.search(text):
+        return text
+    kept = [s for s in _SENTENCE.split(text) if not _ML.search(s)]
+    return " ".join(kept) or None
+
+
+def caution_lines(e: dict, volume: bool, conditions=None) -> list:
+    """Contraindications, then cautions, as spoken lines. With `conditions`, only the
+    lines that name one of them; without, every line ("why")."""
+    def pick(lines):
+        lines = [x for x in lines if conditions is None or names_condition(x, conditions)]
+        return [s for s in (spoken_line(x, volume) for x in lines) if s]
+    out = []
+    ci = pick(e["contraindications"])
+    if ci:
+        out.append("Contraindicated: " + "; ".join(ci) + ".")
+    elif conditions is None:
+        out.append(NO_CONTRAINDICATIONS)
+    cautions = ["Caution: " + c for c in pick(e["serve_cautions"])]
+    return cautions + out if conditions is None else out + cautions
 
 
 def why_text(e: dict) -> str:
@@ -145,6 +177,7 @@ class Session:
         self.patient, self.req = Patient(), Request()
         self._pending = None   # the entry a read-back is waiting on
         self._last_entry = None
+        self._last_volume = False
         self._last_say = None
         self.announce = self._boot_turn()
 
@@ -182,6 +215,7 @@ class Session:
             controls.remove("new patient")
             self.patient, self.req = Patient(), Request()
             self._pending = self._last_entry = None
+            self._last_volume = False
             lead = "New patient. Weight and age cleared."
             if not controls and not p.has_slots():
                 return Turn("control", lead)
@@ -207,7 +241,10 @@ class Session:
             return Turn("repeat", last.say, list(last.after), dict(last.data))
         if word == "why":
             entry = self._pending or self._last_entry
-            return Turn("why", why_text(entry)) if entry else Turn("control", "No dose to explain.")
+            if not entry:
+                return Turn("control", "No dose to explain.")
+            volume = self._last_volume and not self._pending
+            return Turn("why", why_text(entry), caution_lines(entry, volume))
         if word == "log":
             return Turn("control", f"{words.num(self._logged)} doses logged.")
         return Turn("control", "Battery is not read on the bench.")
@@ -263,6 +300,7 @@ class Session:
 
     def _hold(self, say: str) -> Turn:
         self.req, self._pending, self._last_entry = Request(), None, None
+        self._last_volume = False
         return Turn("hold", say)
 
     def _next(self) -> Turn:
@@ -359,6 +397,7 @@ class Session:
         entry, req = self._pending, self.req
         self._pending = None
         self._last_entry = entry
+        self._last_volume = False
         weight = self.patient.weight_kg
         r = contracts.resolve_dose(entry, weight)
         name = words.sentence(words.say_name(entry["drug"]))
@@ -380,12 +419,13 @@ class Session:
             if r["floor_applied"]:
                 parts.append(RAISED)
             vol = vials.dose_volume(self.bank.kit, entry, round(r["dose_mg"], 4))
-            parts.append(_volume_words(vol, bool(req.stated_vial)))
+            withheld = not self._stated_vial_is_signed(entry["drug"])
+            parts.append(_volume_words(vol, withheld))
             if rule["min"] != rule["max"]:
                 parts.append(f"Signed range {words.span(rule['min'], rule['max'], rule['units'])}.")
             say = " ".join(parts)
             record["dose"] = f"{r['display_value']:g} {r['display_units']}"
-            if not req.stated_vial:
+            if not withheld:
                 record.update(volume_ml=vol["volume_ml"], diluted=vol["diluted"],
                               concentration_mg_ml=vol["concentration_mg_ml"])
 
@@ -396,14 +436,20 @@ class Session:
         self._log(record)
         self._logged += 1
         self.req = Request()
-        after = []
-        if entry["serve_cautions"]:
-            after.append("Caution: " + entry["serve_cautions"][0])
-        if entry["contraindications"]:
-            after.append("Contraindicated: " + "; ".join(entry["contraindications"]) + ".")
-        else:
-            after.append("No contraindications listed.")
+        # Dose first. After it, only the lines that name a condition stated for this
+        # patient; the rest are in "why" (owner ruling 2026-11-08).
+        self._last_volume = record["volume_ml"] is not None
+        after = caution_lines(entry, self._last_volume, self.patient.conditions)
         return Turn("dose", say, after, data={"record": record})
+
+    def _stated_vial_is_signed(self, drug: str) -> bool:
+        """True when no vial was stated, or every stated one is, word for word, a signed
+        kit vial of this drug. The words are compared; nothing is computed from them."""
+        stated = self.req.stated_vial
+        if not stated:
+            return True
+        signed = {p for v in self.bank.kit.get(drug) or [] for p in _vial_phrasings(v)}
+        return all(_vial_words(s) in signed for s in stated)
 
 
 def _class_labels(bank, drug, cls, route, patient, years) -> int:
@@ -417,9 +463,33 @@ def _class_labels(bank, drug, cls, route, patient, years) -> int:
     return len({e["indication"] for e in pool})
 
 
-def _volume_words(vol: dict, stated_vial: bool) -> str:
-    if stated_vial:
-        return "Stated vial not used, no volume."   # K1: never computed on
+_MG = {"milligrams", "milligram", "mg"}
+
+
+def _vial_words(text: str) -> str:
+    """Stated vial words, normalised for comparison only: unit spellings, "and", hyphens,
+    and a leading "zero" before "point"."""
+    toks = text.lower().replace("-", " ").split()
+    out = []
+    for i, w in enumerate(toks):
+        if w == "and" or (w == "zero" and toks[i + 1:i + 2] == ["point"] and not out):
+            continue
+        out.append("mg" if w in _MG else "ml" if w in VOLUME_UNITS else w)
+    return " ".join(out)
+
+
+def _vial_phrasings(v: dict) -> set:
+    """How a signed vial can be said: its strength per mil, or its mass in its volume."""
+    conc, mass, vol = (words.num(v[k]) for k in ("concentration_mg_ml", "mass_mg", "volume_ml"))
+    said = [f"{conc} mg per ml", f"{conc} mg per one ml", f"{conc} mg in one ml"]
+    if v.get("mass_mg") and v.get("volume_ml"):
+        said += [f"{mass} mg in {vol} ml", f"{mass} mg per {vol} ml"]
+    return {_vial_words(s) for s in said}
+
+
+def _volume_words(vol: dict, withheld: bool) -> str:
+    if withheld:
+        return "Stated vial not used, no volume."   # K1: not the signed vial
     if vol["diluted"]:
         return (f"{_recipe(vol['recipe'])} {words.sentence(words.mils(vol['volume_ml']))} "
                 f"of the dilution, {words.num(vol['concentration_mg_ml'])} per mil.")

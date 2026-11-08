@@ -8,7 +8,7 @@ import dataclasses
 import re
 from typing import Optional
 
-from grammar.vocabulary import (AGE_UNITS, CONTROLS, DOSE_UNITS, FILLERS, NUMBERS, PATIENT, ROUTES,
+from grammar.vocabulary import (AGE_UNITS, CONDITIONS, CONTROLS, DOSE_UNITS, FILLERS, NUMBERS, PATIENT, ROUTES,
                                 VOLUME_UNITS, WEIGHT_UNITS, Vocabulary)
 
 _ONES = {w: i for i, w in enumerate("zero one two three four five six seven eight nine".split())}
@@ -61,13 +61,14 @@ class Parsed:
     adult: bool = False
     stated: list = dataclasses.field(default_factory=list)  # words, never numbers
     stated_vial: list = dataclasses.field(default_factory=list)  # words, never numbers
+    conditions: list = dataclasses.field(default_factory=list)
     bare_number: bool = False
     bad_number: bool = False
     unknown: list = dataclasses.field(default_factory=list)
 
     def has_slots(self) -> bool:
         return bool(self.drugs or self.classes or self.labels or self.routes or self.weight
-                    or self.age or self.child or self.adult or self.stated or self.stated_vial
+                    or self.age or self.child or self.adult or self.stated or self.stated_vial or self.conditions
                     or self.bare_number or self.bad_number)
 
 
@@ -176,6 +177,11 @@ def parse(text: str, vocab: Vocabulary) -> Parsed:
             p.adult = p.adult or t == "adult"
             estimated = estimated or t == "estimated"
             i += 1
+            continue
+        term, n = _match(toks, i, CONDITIONS, 3)
+        if term:
+            p.conditions.append(CONDITIONS[term])
+            i += n
             continue
         term, n = _match(toks, i, vocab.drug_terms)
         if term:
