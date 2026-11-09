@@ -71,6 +71,13 @@ def test_the_dry_run_is_of_this_grammar():
     assert DRYRUN["grammar_sha256"] == digest
 
 
+# The synthetic dry run missed 6 of 183 clips (3 drugs, 3 medic forms, see
+# voice/dryrun_drugs.json). The owner made the medic's own voice the gate instead (phase 2):
+# these stay as written, expected to fail on this record, and turn red if they pass.
+SYNTHETIC_GATE = pytest.mark.xfail(strict=True, reason="synthetic dry run 177/183; the owner's voice is the gate")
+
+
+@SYNTHETIC_GATE
 def test_the_dry_run_heard_all_25_signed_drugs_in_every_held_out_voice():
     voices = DRYRUN["voices"]
     assert len(voices) >= 3 and not set(voices) & set(SOUNDS["voices"])
@@ -80,6 +87,7 @@ def test_the_dry_run_heard_all_25_signed_drugs_in_every_held_out_voice():
         assert all(r["heard_as"] == [drug] for r in rows), (drug, rows)
 
 
+@SYNTHETIC_GATE
 def test_the_dry_run_heard_every_medic_form():
     for said, drug in MEDIC_FORMS.items():
         rows = [r for r in DRYRUN["rows"] if r["name"] == said]
