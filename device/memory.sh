@@ -2,8 +2,10 @@
 # Memory guard on the Pi Zero 2 W (415 MB). Safe to run again.
 #   bash device/memory.sh
 #
-# 1. A 512 MB swap file, so a spike slows the board instead of the kernel killing
-#    whatever it picks. Swappiness 10: the model's pages stay in RAM unless memory is short.
+# 1. A 512 MB swap file on the SD card, so a spike slows the board instead of the kernel
+#    killing whatever it picks. Raspberry Pi OS already swaps to zram (compressed, in RAM,
+#    priority 100); the file sits under it (priority 10) and is used once zram is full.
+#    Swappiness is left at the default, which suits zram in front.
 # 2. pocket.slice (systemd, user): everything the pocket runs goes in it, with a hard
 #    ceiling (MemoryMax) and a small swap allowance (MemorySwapMax). A runaway process
 #    is killed by its own cgroup at the ceiling, before the OS runs short.
@@ -18,18 +20,16 @@ MEMORY_MAX=${POCKET_MEMORY_MAX:-300M}     # killed here
 MEMORY_SWAP_MAX=${POCKET_MEMORY_SWAP_MAX:-96M}
 
 echo "== swap"
-if ! swapon --show=NAME --noheadings | grep -qx "$SWAPFILE"; then
+if ! awk 'NR>1{print $1}' /proc/swaps | grep -qx "$SWAPFILE"; then
   if [ ! -f "$SWAPFILE" ]; then
     sudo fallocate -l ${SWAP_MB}M "$SWAPFILE" || sudo dd if=/dev/zero of="$SWAPFILE" bs=1M count=$SWAP_MB status=none
     sudo chmod 600 "$SWAPFILE"
     sudo mkswap -q "$SWAPFILE"
   fi
-  sudo swapon "$SWAPFILE"
+  sudo swapon -p 10 "$SWAPFILE"
 fi
-grep -q "^$SWAPFILE " /etc/fstab || echo "$SWAPFILE none swap sw 0 0" | sudo tee -a /etc/fstab >/dev/null
-echo "vm.swappiness=10" | sudo tee /etc/sysctl.d/90-pocket-swap.conf >/dev/null
-sudo sysctl -q -p /etc/sysctl.d/90-pocket-swap.conf
-swapon --show
+grep -q "^$SWAPFILE " /etc/fstab || echo "$SWAPFILE none swap sw,pri=10 0 0" | sudo tee -a /etc/fstab >/dev/null
+cat /proc/swaps
 echo "swappiness $(cat /proc/sys/vm/swappiness)"
 
 echo "== pocket.slice"
