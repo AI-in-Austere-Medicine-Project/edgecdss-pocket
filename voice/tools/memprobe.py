@@ -24,7 +24,7 @@ def _status(pid="self"):
     out = {}
     for line in pathlib.Path(f"/proc/{pid}/status").read_text().splitlines():
         k, _, v = line.partition(":")
-        if k in ("VmRSS", "VmHWM"):
+        if k in ("VmRSS", "VmHWM", "VmSwap"):
             out[k] = int(v.split()[0]) // 1024
     return out
 
@@ -54,6 +54,7 @@ def main():
              "child_rss_mb": child, **_meminfo()}
         rows.append(r)
         print(f"{name:<28} rss {r['vmrss_mb']:>4} MB  peak {r['vmhwm_mb']:>4} MB  "
+              f"swapped {r.get('vmswap_mb', 0):>4} MB  "
               f"child {child:>3} MB  available {r['available_mb']:>4} MB  swap {r['swap_used_mb']:>3} MB",
               flush=True)
 
@@ -91,7 +92,9 @@ def main():
     else:
         for i in range(0, len(data), 640):
             u.feed(data[i:i + 640])
+    t = time.monotonic()
     heard = u.finish()
+    rows.append({"listen_finish_ms": round((time.monotonic() - t) * 1000)})
     stage("vosk listening")
 
     if a.piper:
@@ -107,10 +110,22 @@ def main():
                 voice.synthesize(SAY, w)
         rows.append({"piper_say_ms": round((time.monotonic() - t) * 1000)})
         stage("piper spoke")
+        # Back to listening after speaking: what the next phrase costs once Piper has run.
+        u = hearing.start()
+        t = time.monotonic()
+        for i in range(0, len(data), 640):
+            u.feed(data[i:i + 640])
+        t_fed = time.monotonic()
+        heard_again = u.finish()
+        rows.append({"listen_again_feed_ms": round((t_fed - t) * 1000),
+                     "listen_again_finish_ms": round((time.monotonic() - t_fed) * 1000),
+                     "audio_ms": round(len(data) / 32), "heard": heard_again})
+        stage("vosk listening again")
 
     if mic:
         mic.close()
     if a.json:
+        pathlib.Path(a.json).parent.mkdir(parents=True, exist_ok=True)
         pathlib.Path(a.json).write_text(json.dumps({"heard": heard, "rows": rows}, indent=1) + "\n")
 
 

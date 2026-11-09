@@ -48,5 +48,5 @@ sudo loginctl enable-linger "$USER"
 systemctl --user daemon-reload
 grep -q memory "/sys/fs/cgroup/user.slice/user-$(id -u).slice/user@$(id -u).service/cgroup.controllers" \
   && echo "memory controller delegated to the user manager" \
-  || echo "WARNING: memory controller not delegated; the limit would not hold"
+  || echo "WARNING: no memory controller; the limit does not hold. Raspberry Pi firmware puts cgroup_disable=memory on the kernel command line of low-RAM boards: append cgroup_enable=memory to /boot/firmware/cmdline.txt and reboot."
 systemctl --user show pocket.slice -p MemoryHigh -p MemoryMax -p MemorySwapMax
