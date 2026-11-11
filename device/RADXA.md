@@ -76,6 +76,83 @@ to spare. Step 8 measures it.
      the owner says the 25 names and 6 medic forms, and each must be heard as its drug.
    - Then the replay without `--names`: 50 phrases, WER and release-to-parse latency.
 
+## Measured on the ZERO 3W (2026-11-11)
+
+Board: ZERO 3W, AIC8800 module, 8 GB, Radxa OS bookworm KDE b1 (kernel 6.1.84), booted to
+the console. User `radxa`, hostname `radxa-zero3` (not `andrew`/`pocket`).
+
+**Why the pocket is on a USB mic for now.** Debian 12's bluez-alsa (4.0.0) is built with
+CVSD only for HFP/HSP, so every Bluetooth headset mic is 8 kHz on the stock package, and
+Debian 12 does not ship `bluealsa-cli` (`voice/listen.py` uses it to find the headset).
+The test speaker, a JBL Clip 3 (2C:FD:B4:DD:BD:A5), also connected over HSP, which is
+always CVSD.
+
+**The mSBC rebuild happened.** bluez-alsa v4.3.1 built on the board from
+https://github.com/arkq/bluez-alsa (`--enable-msbc --enable-cli --enable-aplay
+--enable-systemd`, prefix `/usr`, ALSA plugins in `/usr/lib/aarch64-linux-gnu/alsa-lib`).
+Debian's `bluez-alsa-utils` and `libasound2-plugin-bluez` were removed (`apt install` them
+back to undo). `bluealsa --help` then lists `hfp-*: CVSD, mSBC`. Drop-in
+`/etc/systemd/system/bluealsa.service.d/pocket-hfp.conf`:
+
+    ExecStart=/usr/bin/bluealsa -S --a2dp-force-audio-cd -p a2dp-source -p a2dp-sink -p hfp-ag
+
+- `hsp-ag` is left out: a headset that connects over HSP never gets mSBC.
+- `--a2dp-force-audio-cd`: 4.3.1 configured the JBL's A2DP link as 16 kHz mono, and the
+  JBL played nothing on it. At 44.1 kHz stereo it plays.
+- The AIC8800 advertises transparent SCO and eSCO (LMP features `bf 2e 4d fe d8 3f 7b 87`),
+  and bluealsa's AG offers codec negotiation (`+BRSF:2784`).
+- **JBL Clip 3: 8 kHz only, on any host.** Its `AT+BRSF=31` lacks codec negotiation and it
+  sends no `AT+BAC`; HFP still selects CVSD after the rebuild. Its mic works (speech heard
+  at 8 kHz on both stacks).
+- **TK-01: not yet tested.** Whether the AIC8800 and the TK-01 negotiate mSBC is still open.
+
+**Interim audio path.** Mic: a USB mic (KTMicro, 12d1:0010, 44.1/48 kHz mono; capture gain
+was 0 %, set to 80 % and saved with `alsactl store`), resampled to 16 kHz by
+`~/.asoundrc`:
+
+    pcm.pocketmic { type plug  slave { pcm "hw:CARD=Microphone,DEV=0" rate 48000 }
+                    rate_converter "speexrate_medium" }
+
+(`libasound2-plugins` for speexrate). Run with
+`POCKET_CAPTURE="arecord -q -D pocketmic -t raw -f S16_LE -r 16000 -c 1"`; without it
+`voice/listen.py` picks a connected headset's SCO mic first. Speech out: the JBL over A2DP.
+
+**Button.** The JBL's play/pause sends `KEY_PLAYCD` down and up 0.1 s apart however long it
+is held, and its other buttons send nothing: `--mode toggle` with the JBL.
+
+**Memory** (`memprobe --mic` with the USB mic, console boot): peak 329 MB (Piper spoke),
+7132 MB available at the lowest, nothing in swap; Vosk finish 122 ms after release, 8 s of
+audio decoded in 3.3 s, Piper says the dose sentence in 1.86 s. `memory.sh` run with
+`POCKET_MEMORY_HIGH=450M POCKET_MEMORY_MAX=500M` (about 1.5x the peak); the memory
+controller is delegated and the swap file sits under zram (3.8 GB, priority 100).
+
+**Drug-name gate, owner's voice** (USB mic, JBL button in toggle mode, prompts spoken
+through the JBL; `bench-out/gate-radxa-usbmic-20261111`, not committed): **24 of 31 heard as
+their drug, 0 as another signed drug.** One was heard as an unsigned drug: ertapenem as
+"rifampin", which the bank names with no signed dose, so the pocket held. All 7 misses ended
+as not recognised, a hold or a question; none reached a dose. Mic levels on the misses were normal (peak 0.32-0.35, RMS 0.04-0.05).
+
+| Said | Heard | Turn | Synthetic voices (dry-run) heard |
+|---|---|---|---|
+| cefazolin | suffers own | not recognised | zephyrs allen (3/3 ok) |
+| ertapenem | rifampin (base decoder) | hold | rape numb (2/3 ok) |
+| levetiracetam | levitt trick them | not recognised | levitt tourists adam (3/3 ok) |
+| moxifloxacin | marx if locks him | not recognised | marx if locks isn't (2/3 ok) |
+| phytomenadione | fido tim might own | not recognised | fido may die any (2/3 ok) |
+| rocephin | role seven | ask | rose finn (3/3 ok) |
+| roc | rock rock your roni him | ask | rock / rog (3/3 ok) |
+
+The owner's voice decodes to different sound-alikes than the synthetic voices, so the
+spellings made from the dry-run do not cover them. The recordings are saved
+(`NNN.wav`), so a spellings change can be scored again with `voice.bench --names --wavs`
+without saying the names again.
+
+**Other findings.**
+- Debian 12's image has no `rsync`, `unzip`, `rfkill` (in `/usr/sbin`), `sox` or venv
+  support (`python3-venv`); SSH was not enabled on first boot.
+- The first `sudo systemctl reboot` hung after "Journal stopped" for about 9 minutes and
+  came back, probably via the 10-minute hardware watchdog. Not yet rechecked.
+
 ## What changes from the Pi
 
 - **Memory.** The memory floor is met on a 1 GB or larger board. The memory controller is
