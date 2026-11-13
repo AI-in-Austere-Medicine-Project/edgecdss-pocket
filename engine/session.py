@@ -471,15 +471,16 @@ class Session:
             return self._hold(f"No signed dose of {words.say_name(entry['drug'])} can be worked out.")
         else:
             parts = [f"{name} {words.amount(r['display_value'], r['display_units'])}."]
+            signed = "test-set" if self.bank.test else "signed"
             if r["capped"] and not r["floor_applied"]:
-                parts.append(CAPPED)
+                parts.append(CAPPED.replace("signed", signed))
             if r["floor_applied"]:
-                parts.append(RAISED)
+                parts.append(RAISED.replace("signed", signed))
             vol = vials.dose_volume(self.bank.kit, entry, round(r["dose_mg"], 4))
             withheld = not self._stated_vial_is_signed(entry["drug"])
             parts.append(_volume_words(vol, withheld))
             if rule["min"] != rule["max"]:
-                parts.append(f"Signed range {words.span(rule['min'], rule['max'], rule['units'])}.")
+                parts.append(f"{'Test range' if self.bank.test else 'Signed range'} {words.span(rule['min'], rule['max'], rule['units'])}.")
             say = " ".join(parts)
             record["dose"] = f"{r['display_value']:g} {r['display_units']}"
             if not withheld:
