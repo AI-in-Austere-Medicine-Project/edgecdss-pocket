@@ -9,6 +9,10 @@ whenever more than one is signed, an entry whenever a class holds more than one,
 Rule 1: every number spoken comes from the bank, or is the weight or age read back.
 Rule 2: a dose only after a read-back, on "confirm" alone.
 Rule 3: every confirmed dose goes to `log` with a time.
+
+A test bank (POCKET_TEST=1, owner ruling 2026-11-13) says TEST_NOTICE at boot and
+before every read-back, logs test:true on every line, and says "Unverified." before
+a dose whose entry is check_failed.
 """
 import dataclasses
 import datetime
@@ -31,6 +35,8 @@ RAISED = "Raised to the signed minimum."
 ASK_ADULT = "Adult? Say adult, or give the age or the weight."  # ADULT_CONFIRM_ASK
 ASK_ESTIMATE = "I only have an estimate. Say the weight to confirm it."  # WEIGHT_CONFIRM_ASK
 NO_CONTRAINDICATIONS = "No contraindications listed."
+TEST_NOTICE = "Test set. Not for patient use."
+UNVERIFIED = "Unverified."
 # A stated volume ("10 mL", "0.1 mL/kg", "100 cc"); "1 mg/mL" is a concentration, kept.
 _VOLUME = re.compile(r"(?i)(?<![a-z/])(ml|cc)(?![a-z])")
 _SENTENCE = re.compile(r"(?<=[.!?])\s+")
@@ -206,12 +212,15 @@ class Session:
         if self.refused:
             return Turn("refused", f"Bank refused: {self.refused}. No doses.")
         short = self.bank.hash[:8]
-        return Turn("boot",
-                    f"Bank version {words.say_chars(self.bank.version)}. "
-                    f"Hash {words.say_chars(short)}. "
-                    f"{words.sentence(words.num(len(self.bank.entries)))} signed entries, "
-                    f"{words.num(sum(len(v) for v in self.bank.kit.values()))} signed vials.",
-                    data={"bank_version": self.bank.version, "hash": short})
+        kind = "test entries, unsigned" if self.bank.test else "signed entries"
+        say = (f"Bank version {words.say_chars(self.bank.version)}. "
+               f"Hash {words.say_chars(short)}. "
+               f"{words.sentence(words.num(len(self.bank.entries)))} {kind}, "
+               f"{words.num(sum(len(v) for v in self.bank.kit.values()))} signed vials.")
+        if self.bank.test:
+            say = f"{TEST_NOTICE} {say}"
+        return Turn("boot", say, data={"bank_version": self.bank.version, "hash": short,
+                                       "test": self.bank.test})
 
     def parse(self, text: str) -> Parsed:
         return parse(text, self.vocab)
@@ -432,6 +441,8 @@ class Session:
         what = words.say_name(entry["indication"]) if name_label else _say_class(cls)
         parts = [words.sentence(name), what, route_said, *self.patient.said()]
         say = ", ".join(parts) + "."
+        if self.bank.test:
+            say = f"{TEST_NOTICE} {say}"
         stated = self.req.stated + self.req.stated_vial
         if stated:
             say += f" You said {_choice(stated, ', ')}."
@@ -475,6 +486,10 @@ class Session:
                 record.update(volume_ml=vol["volume_ml"], diluted=vol["diluted"],
                               concentration_mg_ml=vol["concentration_mg_ml"])
 
+        if self.bank.test:
+            if entry["check_failed"]:
+                say = f"{UNVERIFIED} {say}"
+            record.update(test=True, check_failed=list(entry["check_failed"]))
         record.update(time=self._now(), drug=entry["drug"], indication=entry["indication"],
                       route=req.route or entry["route"], population=entry["population"],
                       weight_kg=weight, stated=req.stated + req.stated_vial,
