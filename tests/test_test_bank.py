@@ -187,3 +187,15 @@ def test_every_log_line_carries_test_true(tmp_path, testing):
     lines = [json.loads(l) for l in log.read_text().splitlines()]
     assert len(lines) == 3
     assert all(l["test"] is True for l in lines)
+
+
+def test_a_test_dose_never_calls_its_numbers_signed(tmp_path, testing):
+    """Range, cap and floor come from an unsigned entry: "signed" would be false.
+    (Vials stay "signed": the test bank's kit is the signed EMS kit.)"""
+    s = boot(make_test_bank(tmp_path))
+    for phrase in ("ketamine for pain im eighty kilos", "ketamine for agitation iv eighty kilos",
+                   "ketamine for agitation iv two hundred kilos"):
+        _, dose = _dose(s, phrase)
+        if dose.kind == "dose":
+            assert "Signed range" not in dose.text and "signed maximum" not in dose.text \
+                and "signed minimum" not in dose.text, dose.text
