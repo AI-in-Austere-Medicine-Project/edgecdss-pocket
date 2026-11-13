@@ -69,6 +69,20 @@ Drug names and aliases from the bank; indication names from the bank; routes (IV
 - E1 unsigned or EXAMPLE bank: device announces it and refuses all dose flows.
 - G1 "why" speaks the source for every entry; boot announces bank version and hash.
 
+## Test bank (bench only)
+
+A test bank is never a bank for patients. EdgeCDSS writes one only with `export_pocket_bank.py --test`: `bank-ems-test.json`, `kit-ems-test.json` and `manifest-ems-test.json` with `"test": true`. Its entries are unsigned and have status "test". The kit is the signed EMS kit. Pocket loads it only when started with `POCKET_TEST=1` (exactly `1`), and then it loads nothing else. Without that, anything marked test is refused, whatever its file names.
+
+In test mode Pocket:
+- says "Test set. Not for patient use." at boot and at the start of every read-back;
+- puts `test: true` and the entry's `check_failed` reasons on every log record;
+- says "Unverified." before a dose whose entry failed a transcription check or contradicts its own card;
+- calls a test entry's range, cap and floor "test", never "signed".
+
+Pocket does not read an entry's `kit_vial` yet. So a volume comes from the drug's one signed vial even where the formulary row names another strength.
+
+    POCKET_TEST=1 python3 -m engine <dir holding bank-ems-test.json>
+
 ## Repo layout
 
 ```
