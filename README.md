@@ -79,7 +79,7 @@ In test mode Pocket:
 - says "Unverified." before a dose whose entry failed a transcription check or contradicts its own card;
 - calls a test entry's range, cap and floor "test", never "signed".
 
-Pocket does not read an entry's `kit_vial` yet. So a volume comes from the drug's one signed vial even where the formulary row names another strength.
+Pocket does not read an entry's `kit_vial` yet. Until it does, an entry that names its vial (a strength, or "none") speaks milligrams only: "Milligrams only, no volume." An entry with a null `kit_vial`, and every PFC entry (they carry none), takes its volume from the drug's one signed vial, as before. This applies in any bank, test or signed.
 
     POCKET_TEST=1 python3 -m engine <dir holding bank-ems-test.json>
 

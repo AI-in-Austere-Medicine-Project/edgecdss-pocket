@@ -37,6 +37,11 @@ ASK_ESTIMATE = "I only have an estimate. Say the weight to confirm it."  # WEIGH
 NO_CONTRAINDICATIONS = "No contraindications listed."
 TEST_NOTICE = "Test set. Not for patient use."
 UNVERIFIED = "Unverified."
+# An entry that names its vial (kit_vial: a strength, or "none") gets no volume until
+# Pocket reads kit_vial: the drug's one signed vial is not necessarily the one the
+# entry names (owner, 2026-11-14). null (the vial question stays) and no kit_vial
+# (PFC) work the volume out as before.
+PINNED_VIAL = "Milligrams only, no volume."
 # A stated volume ("10 mL", "0.1 mL/kg", "100 cc"); "1 mg/mL" is a concentration, kept.
 _VOLUME = re.compile(r"(?i)(?<![a-z/])(ml|cc)(?![a-z])")
 _SENTENCE = re.compile(r"(?<=[.!?])\s+")
@@ -476,9 +481,10 @@ class Session:
                 parts.append(CAPPED.replace("signed", signed))
             if r["floor_applied"]:
                 parts.append(RAISED.replace("signed", signed))
+            pinned = entry.get("kit_vial") is not None
             vol = vials.dose_volume(self.bank.kit, entry, round(r["dose_mg"], 4))
-            withheld = not self._stated_vial_is_signed(entry["drug"])
-            parts.append(_volume_words(vol, withheld))
+            withheld = pinned or not self._stated_vial_is_signed(entry["drug"])
+            parts.append(PINNED_VIAL if pinned else _volume_words(vol, withheld))
             if rule["min"] != rule["max"]:
                 parts.append(f"{'Test range' if self.bank.test else 'Signed range'} {words.span(rule['min'], rule['max'], rule['units'])}.")
             say = " ".join(parts)
