@@ -22,7 +22,7 @@ Part of the [AI in Austere Medicine Project](https://github.com/AI-in-Austere-Me
 |---|---|
 | Board | Raspberry Pi Zero 2 W |
 | Audio | Any Bluetooth headset (mic + earpiece in one pairing); the headset button is push-to-talk |
-| Power | 2,000 mAh LiPo with a charge/boost board; about a day |
+| Power | 3400 mAh LiPo with a charge/boost board; about a day | Solar compatible 
 | Storage | microSD, read-only root, separate log partition |
 | Case | Printed, forearm strap or clip |
 
