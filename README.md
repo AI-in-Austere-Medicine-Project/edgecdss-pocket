@@ -16,15 +16,29 @@ Part of the [AI in Austere Medicine Project](https://github.com/AI-in-Austere-Me
 2. **Read-back before any dose.** The device repeats drug, indication, route and weight and acts only on "confirm."
 3. **Every confirmed dose is logged with a time.** The log leaves the device only by deliberate export.
 
-## Hardware (about $40)
+## Hardware (about $75, plus any Bluetooth headset)
 
-| Part | Choice |
-|---|---|
-| Board | Raspberry Pi Zero 2 W |
-| Audio | Any Bluetooth headset (mic + earpiece in one pairing); the headset button is push-to-talk |
-| Power | 3400 mAh LiPo with a charge/boost board; about a day | Solar compatible 
-| Storage | microSD, read-only root, separate log partition |
-| Case | Printed, forearm strap or clip |
+| Part | Choice | List price |
+|---|---|---|
+| Board | Radxa ZERO 3W, 1 GB, no eMMC (recommended; see Boards tested below) | $20.00 (Radxa's store, Arace) |
+| Sound out | Any Bluetooth headset; its button is push-to-talk. It pairs with any headset, so it is not in the totals. | — |
+| Speech in | A USB mini microphone on a USB-C OTG adapter, until the headset mic is verified at 16 kHz. On the board's Debian the headset mic is 8 kHz, so the USB mic is used meanwhile ([device/RADXA.md](device/RADXA.md)). | $5.95 mic (Adafruit 3367) + $0.95 adapter (Adafruit 5030) |
+| Power | 3.7 V LiPo, 3,400 mAh or more, with a 5 V / 1 A charge-boost board; solar compatible. Runtime on the ZERO 3W is not yet measured. | $19.95 battery (Adafruit 354, 4,400 mAh) + $18.50 charge-boost board (SparkFun LiPo Charger/Booster 5V/1A) |
+| Storage | microSD, 16 GB or more; read-only root, separate log partition | about $8 (a 32 GB card) |
+| Case | Printed, forearm strap or clip | about $2 of filament |
+
+Prices are list prices on 2026-11-16, before shipping and tax.
+
+### Boards tested
+
+| | Radxa ZERO 3W, 1 GB (recommended) | Raspberry Pi Zero 2 W |
+|---|---|---|
+| Parts total, without the headset | about $75 | about $76 (a micro-USB OTG adapter, $2.95 Adafruit 2910, in place of the USB-C one) |
+| Board price and availability | $20.00 at Radxa's store (Arace); out of stock on 2026-11-16 | $19.05 at Adafruit (5291); out of stock on 2026-11-16 |
+| Memory (Vosk, Piper and the engine in one process) | Peak 329 MB, nothing in swap (2026-11-11, an 8 GB module on the bench). Clears the 100 MB floor on the 1 GB model. | About 300 MB, of which about 165 MB is in swap, against the 415 MB that reaches Linux; 66–89 MB available. Below the 100 MB floor (2026-11-09). |
+| Time to a spoken answer, from release | About 2 s: Vosk finishes 0.12 s after release, then Piper says the dose sentence in 1.86 s. | About 4–6 s: Vosk finishes 0.17 s after release, then Piper takes 3.4–5.6 s. Once Piper has run, Vosk is slower than real time, because its pages come back from swap. |
+
+The Pi Zero 2 W runs Pocket, but below the memory floor. The Radxa ZERO 3W is recommended. The measurements are in [device/RADXA.md](device/RADXA.md) and [docs/BOARDS.md](docs/BOARDS.md).
 
 ## Software
 
