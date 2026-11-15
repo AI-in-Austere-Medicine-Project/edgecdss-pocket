@@ -1,0 +1,15 @@
+{
+ "note": "Pairs the owner's clips or the sound-alike checks confuse (owner, 2026-11-15, hearing fixes): hearing either one always asks \"X or Y?\" before the read-back. A pair is asked only while both are signed; a pair with an unsigned member is listed under resolved, with why.",
+ "drugs": [
+  {"pair": ["epinephrine", "norepinephrine"],
+   "source": "sound-alike check (voice/tools/make_spellings.py): adrenaline and noradrenaline were both heard as \"adrenalin\" (sounds_like.json shared_spellings_dropped)"}
+ ],
+ "routes": [
+  {"pair": ["IM", "IN"], "terms": ["i m", "im", "i n", "in"],
+   "source": "route sound-alike check (2026-11-15, Piper en_US-lessac-low, 20 per route): \"i m\" heard as \"i n\" in 2 of 20 and 5 of 20; \"intramuscular\" and \"intranasal\" were heard right 20 of 20 and do not ask"}
+ ],
+ "resolved": [
+  {"pair": ["ertapenem", "rifampin"],
+   "why": "the owner's gate clip 010 (ertapenem) was heard as rifampin; rifampin is unsigned, so it is no longer in the grammar and cannot be heard (the clip is now \"Not recognised.\")"}
+ ]
+}

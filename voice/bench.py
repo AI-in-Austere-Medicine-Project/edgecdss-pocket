@@ -163,7 +163,7 @@ def run(args):
         heard, text, which = u.finish()
         t_text = time.monotonic()
         said, errors, n, parse_ok = score(phrase, text, session.vocab)
-        turn = session.handle(text) if text else None
+        turn = session.handle(text, spoken=True) if text else None
         t_turn = time.monotonic()
         if not args.wavs:
             _wav_write(out / f"{k + 1:03d}.wav", bytes(pcm))

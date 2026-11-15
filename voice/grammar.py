@@ -12,21 +12,50 @@ import sys
 
 from engine.bank import load_bank
 from grammar.vocabulary import build
-from voice.spoken import JOINED, prompt, spellings
+from voice.spoken import JOINED, SPELLED, prompt, spellings
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 LETTERS = set("abcdefghijklmnopqrstuvwxyz")
+# Grammar entries left out although the parser reads them (owner, 2026-11-15, hearing
+# fixes): each one took the "v" of a spoken "i v" (the W1 tunnel clips: "i dvt kilos",
+# "ip eighty kilos"). The typed parser still reads "dvt"; said, it is "blood clot" or
+# "thrombosis". "norepi" is still heard as norepinephrine, levophed and noradrenaline.
+NOT_IN_GRAMMAR = {"dvt": "took the v of i v (i dvt kilos)",
+                  "no ip": "norepi: its ip took the v of i v",
+                  "nor ip": "norepi: its ip took the v of i v"}
+
+
+def letters_needed(keep: set) -> set:
+    """The letters a kept word is spelled with ("i v", "t x a"); no other single letter is
+    in the grammar, where it could take part of a spelled word."""
+    out = set()
+    for token, spelled in SPELLED.items():
+        if token in keep:
+            out |= set(spelled.split())
+    for spelled, token in JOINED.items():
+        if token in keep:
+            out |= set(spelled.split())
+    return out & LETTERS
 
 
 def grammar_words(vocab, known, sounds=None) -> tuple:
     """(sorted grammar entries, sorted bank words the model does not know). Entries are
-    the bank words it knows, the letters, every phonetic spelling as one phrase, and
-    "[unk]"."""
-    words = vocab.words()
+    the bank words it knows, the letters, the phonetic spellings as one phrase each, and
+    "[unk]".
+
+    Drug words come from signed drugs only (owner, 2026-11-15): an unsigned drug's name,
+    and any spelling of it, is not in the grammar, so it cannot be heard as itself or
+    pull a nearby sound to it; it comes back "[unk]", "Not recognised.". A spelling is
+    kept only when what it spells is a word the grammar keeps."""
+    words = vocab.words(signed_only=True)
     missing = sorted(w for w in words if not known(w))
-    heard = {w for w in words if known(w)} | {x for x in LETTERS if known(x)}
+    keep = words | {t for s, t in JOINED.items() if t in vocab.signed_terms()}
+    heard = {w for w in words if known(w) and w not in NOT_IN_GRAMMAR}
+    heard |= {x for x in letters_needed(keep | set(SPELLED)) if known(x)}
     sounds = spellings() if sounds is None else sounds
-    phrases = {s for s in sounds if all(known(w) for w in s.split())}
+    phrases = {s for s, token in sounds.items()
+               if set(token.split()) <= keep | set(SPELLED) and s not in NOT_IN_GRAMMAR
+               and all(known(w) for w in s.split())}
     return sorted(heard | phrases | {"[unk]"}), missing
 
 

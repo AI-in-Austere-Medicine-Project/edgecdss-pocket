@@ -1,5 +1,5 @@
 {
- "grammar_sha256": "20f15a357677e1f7a4efaf236ddfb154fe7946d8a9b71c6726a735aef99f39cb",
+ "grammar_sha256": "9f51e150eb64554d1050edff8c8d6cc382b98f1b204e61e1c632d127f70c57be",
  "voices": [
   "af_nicole",
   "am_liam",
@@ -7,7 +7,7 @@
  ],
  "names": 61,
  "clips": 183,
- "heard": 177,
+ "heard": 176,
  "heard_as_another_drug": 0,
  "rows": [
   {
@@ -172,7 +172,7 @@
    "primary": "atropine",
    "asks": [],
    "voice": "af_nicole",
-   "heard": "that your pine",
+   "heard": "add true pine",
    "decoder": "spelled",
    "heard_as": [
     "atropine"
@@ -237,12 +237,10 @@
    "primary": "atropine",
    "asks": [],
    "voice": "bf_lily",
-   "heard": "that troy pin",
+   "heard": "at troy pin",
    "decoder": "spelled",
-   "heard_as": [
-    "atropine"
-   ],
-   "turn": "Weight?"
+   "heard_as": [],
+   "turn": "Not recognised."
   },
   {
    "drug": "calcium chloride",
@@ -419,10 +417,12 @@
    "primary": "cefazolin",
    "asks": [],
    "voice": "am_liam",
-   "heard": "an xiv",
+   "heard": "an safe",
    "decoder": "spelled",
-   "heard_as": [],
-   "turn": "Not recognised."
+   "heard_as": [
+    "cefazolin"
+   ],
+   "turn": "Weight?"
   },
   {
    "drug": "cefazolin",
@@ -602,9 +602,10 @@
    "heard": "eben efrain",
    "decoder": "spelled",
    "heard_as": [
-    "epinephrine"
+    "epinephrine",
+    "norepinephrine"
    ],
-   "turn": "Weight?"
+   "turn": "Epinephrine or norepinephrine?"
   },
   {
    "drug": "epinephrine",
@@ -615,9 +616,10 @@
    "heard": "eben efrain",
    "decoder": "spelled",
    "heard_as": [
-    "epinephrine"
+    "epinephrine",
+    "norepinephrine"
    ],
-   "turn": "Weight?"
+   "turn": "Epinephrine or norepinephrine?"
   },
   {
    "drug": "epinephrine",
@@ -628,9 +630,10 @@
    "heard": "epinephrine",
    "decoder": "base",
    "heard_as": [
-    "epinephrine"
+    "epinephrine",
+    "norepinephrine"
    ],
-   "turn": "Weight?"
+   "turn": "Epinephrine or norepinephrine?"
   },
   {
    "drug": "epinephrine",
@@ -641,9 +644,10 @@
    "heard": "adrenaline",
    "decoder": "base",
    "heard_as": [
-    "epinephrine"
+    "epinephrine",
+    "norepinephrine"
    ],
-   "turn": "Weight?"
+   "turn": "Epinephrine or norepinephrine?"
   },
   {
    "drug": "epinephrine",
@@ -654,9 +658,10 @@
    "heard": "adrenaline",
    "decoder": "base",
    "heard_as": [
-    "epinephrine"
+    "epinephrine",
+    "norepinephrine"
    ],
-   "turn": "Weight?"
+   "turn": "Epinephrine or norepinephrine?"
   },
   {
    "drug": "epinephrine",
@@ -667,9 +672,10 @@
    "heard": "adrenaline",
    "decoder": "base",
    "heard_as": [
-    "epinephrine"
+    "epinephrine",
+    "norepinephrine"
    ],
-   "turn": "Weight?"
+   "turn": "Epinephrine or norepinephrine?"
   },
   {
    "drug": "epinephrine",
@@ -680,9 +686,10 @@
    "heard": "dirty epee",
    "decoder": "spelled",
    "heard_as": [
-    "epinephrine"
+    "epinephrine",
+    "norepinephrine"
    ],
-   "turn": "Weight?"
+   "turn": "Epinephrine or norepinephrine?"
   },
   {
    "drug": "epinephrine",
@@ -693,9 +700,10 @@
    "heard": "dirty abby",
    "decoder": "spelled",
    "heard_as": [
-    "epinephrine"
+    "epinephrine",
+    "norepinephrine"
    ],
-   "turn": "Weight?"
+   "turn": "Epinephrine or norepinephrine?"
   },
   {
    "drug": "epinephrine",
@@ -706,9 +714,10 @@
    "heard": "dirty epee",
    "decoder": "spelled",
    "heard_as": [
-    "epinephrine"
+    "epinephrine",
+    "norepinephrine"
    ],
-   "turn": "Weight?"
+   "turn": "Epinephrine or norepinephrine?"
   },
   {
    "drug": "epinephrine",
@@ -719,9 +728,10 @@
    "heard": "epee",
    "decoder": "spelled",
    "heard_as": [
-    "epinephrine"
+    "epinephrine",
+    "norepinephrine"
    ],
-   "turn": "Weight?"
+   "turn": "Epinephrine or norepinephrine?"
   },
   {
    "drug": "epinephrine",
@@ -729,12 +739,10 @@
    "primary": "epinephrine",
    "asks": [],
    "voice": "am_liam",
-   "heard": "abby",
-   "decoder": "spelled",
-   "heard_as": [
-    "epinephrine"
-   ],
-   "turn": "Weight?"
+   "heard": "io above",
+   "decoder": "base",
+   "heard_as": [],
+   "turn": "Which drug?"
   },
   {
    "drug": "epinephrine",
@@ -745,9 +753,10 @@
    "heard": "epee",
    "decoder": "spelled",
    "heard_as": [
-    "epinephrine"
+    "epinephrine",
+    "norepinephrine"
    ],
-   "turn": "Weight?"
+   "turn": "Epinephrine or norepinephrine?"
   },
   {
    "drug": "epinephrine",
@@ -758,9 +767,10 @@
    "heard": "abby drip",
    "decoder": "spelled",
    "heard_as": [
-    "epinephrine"
+    "epinephrine",
+    "norepinephrine"
    ],
-   "turn": "Weight?"
+   "turn": "Epinephrine or norepinephrine?"
   },
   {
    "drug": "epinephrine",
@@ -771,9 +781,10 @@
    "heard": "abby drip",
    "decoder": "spelled",
    "heard_as": [
-    "epinephrine"
+    "epinephrine",
+    "norepinephrine"
    ],
-   "turn": "Weight?"
+   "turn": "Epinephrine or norepinephrine?"
   },
   {
    "drug": "epinephrine",
@@ -784,9 +795,10 @@
    "heard": "abby drip",
    "decoder": "spelled",
    "heard_as": [
-    "epinephrine"
+    "epinephrine",
+    "norepinephrine"
    ],
-   "turn": "Weight?"
+   "turn": "Epinephrine or norepinephrine?"
   },
   {
    "drug": "epinephrine",
@@ -797,9 +809,10 @@
    "heard": "push ddos abby",
    "decoder": "spelled",
    "heard_as": [
-    "epinephrine"
+    "epinephrine",
+    "norepinephrine"
    ],
-   "turn": "Weight?"
+   "turn": "Epinephrine or norepinephrine?"
   },
   {
    "drug": "epinephrine",
@@ -810,9 +823,10 @@
    "heard": "push ddos abby",
    "decoder": "spelled",
    "heard_as": [
-    "epinephrine"
+    "epinephrine",
+    "norepinephrine"
    ],
-   "turn": "Weight?"
+   "turn": "Epinephrine or norepinephrine?"
   },
   {
    "drug": "epinephrine",
@@ -823,9 +837,10 @@
    "heard": "push ddos abby",
    "decoder": "spelled",
    "heard_as": [
-    "epinephrine"
+    "epinephrine",
+    "norepinephrine"
    ],
-   "turn": "Weight?"
+   "turn": "Epinephrine or norepinephrine?"
   },
   {
    "drug": "ertapenem",
@@ -833,7 +848,7 @@
    "primary": "ertapenem",
    "asks": [],
    "voice": "af_nicole",
-   "heard": "rape numb",
+   "heard": "hurry up numb",
    "decoder": "spelled",
    "heard_as": [
     "ertapenem"
@@ -948,7 +963,7 @@
    "primary": "ketamine",
    "asks": [],
    "voice": "af_nicole",
-   "heard": "cat mean",
+   "heard": "ketamine",
    "decoder": "spelled",
    "heard_as": [
     "ketamine"
@@ -1007,10 +1022,13 @@
     "ketorolac"
    ],
    "voice": "am_liam",
-   "heard": "caddell",
+   "heard": "can't",
    "decoder": "spelled",
-   "heard_as": [],
-   "turn": "Not recognised."
+   "heard_as": [
+    "ketamine",
+    "ketorolac"
+   ],
+   "turn": "Ketamine or ketorolac?"
   },
   {
    "drug": "ketamine",
@@ -1021,13 +1039,10 @@
     "ketorolac"
    ],
    "voice": "bf_lily",
-   "heard": "keto",
+   "heard": "kg",
    "decoder": "spelled",
-   "heard_as": [
-    "ketamine",
-    "ketorolac"
-   ],
-   "turn": "Ketamine or ketorolac?"
+   "heard_as": [],
+   "turn": "Kilos or pounds?"
   },
   {
    "drug": "ketamine",
@@ -1126,7 +1141,7 @@
    "primary": "levetiracetam",
    "asks": [],
    "voice": "am_liam",
-   "heard": "cabral",
+   "heard": "capra",
    "decoder": "spelled",
    "heard_as": [
     "levetiracetam"
@@ -1451,7 +1466,7 @@
    "primary": "moxifloxacin",
    "asks": [],
    "voice": "bf_lily",
-   "heard": "marx if locks sin",
+   "heard": "marx if locks up sin",
    "decoder": "spelled",
    "heard_as": [],
    "turn": "Not recognised."
@@ -1543,9 +1558,10 @@
    "heard": "nor pine frain",
    "decoder": "spelled",
    "heard_as": [
+    "epinephrine",
     "norepinephrine"
    ],
-   "turn": "Weight?"
+   "turn": "Epinephrine or norepinephrine?"
   },
   {
    "drug": "norepinephrine",
@@ -1556,9 +1572,10 @@
    "heard": "nor pine freeing",
    "decoder": "spelled",
    "heard_as": [
+    "epinephrine",
     "norepinephrine"
    ],
-   "turn": "Weight?"
+   "turn": "Epinephrine or norepinephrine?"
   },
   {
    "drug": "norepinephrine",
@@ -1569,9 +1586,10 @@
    "heard": "nor pine freeze",
    "decoder": "spelled",
    "heard_as": [
+    "epinephrine",
     "norepinephrine"
    ],
-   "turn": "Weight?"
+   "turn": "Epinephrine or norepinephrine?"
   },
   {
    "drug": "norepinephrine",
@@ -1582,7 +1600,7 @@
     "norepinephrine"
    ],
    "voice": "af_nicole",
-   "heard": "leave our",
+   "heard": "lever",
    "decoder": "spelled",
    "heard_as": [
     "levofloxacin",
@@ -1599,7 +1617,7 @@
     "norepinephrine"
    ],
    "voice": "am_liam",
-   "heard": "leave all",
+   "heard": "lever",
    "decoder": "spelled",
    "heard_as": [
     "levofloxacin",
@@ -1616,13 +1634,10 @@
     "norepinephrine"
    ],
    "voice": "bf_lily",
-   "heard": "leave though",
+   "heard": "though",
    "decoder": "spelled",
-   "heard_as": [
-    "levofloxacin",
-    "norepinephrine"
-   ],
-   "turn": "Levofloxacin or norepinephrine?"
+   "heard_as": [],
+   "turn": "Not recognised."
   },
   {
    "drug": "norepinephrine",
@@ -1633,9 +1648,10 @@
    "heard": "lever oft",
    "decoder": "spelled",
    "heard_as": [
+    "epinephrine",
     "norepinephrine"
    ],
-   "turn": "Weight?"
+   "turn": "Epinephrine or norepinephrine?"
   },
   {
    "drug": "norepinephrine",
@@ -1646,9 +1662,10 @@
    "heard": "live oft",
    "decoder": "spelled",
    "heard_as": [
+    "epinephrine",
     "norepinephrine"
    ],
-   "turn": "Weight?"
+   "turn": "Epinephrine or norepinephrine?"
   },
   {
    "drug": "norepinephrine",
@@ -1659,9 +1676,10 @@
    "heard": "lever oft",
    "decoder": "spelled",
    "heard_as": [
+    "epinephrine",
     "norepinephrine"
    ],
-   "turn": "Weight?"
+   "turn": "Epinephrine or norepinephrine?"
   },
   {
    "drug": "norepinephrine",
@@ -1672,9 +1690,10 @@
    "heard": "nor adrenalin",
    "decoder": "spelled",
    "heard_as": [
+    "epinephrine",
     "norepinephrine"
    ],
-   "turn": "Weight?"
+   "turn": "Epinephrine or norepinephrine?"
   },
   {
    "drug": "norepinephrine",
@@ -1685,9 +1704,10 @@
    "heard": "nor adrenalin",
    "decoder": "spelled",
    "heard_as": [
+    "epinephrine",
     "norepinephrine"
    ],
-   "turn": "Weight?"
+   "turn": "Epinephrine or norepinephrine?"
   },
   {
    "drug": "norepinephrine",
@@ -1698,9 +1718,10 @@
    "heard": "nor adrenalin",
    "decoder": "spelled",
    "heard_as": [
+    "epinephrine",
     "norepinephrine"
    ],
-   "turn": "Weight?"
+   "turn": "Epinephrine or norepinephrine?"
   },
   {
    "drug": "norepinephrine",
@@ -1711,9 +1732,10 @@
    "heard": "nor be",
    "decoder": "spelled",
    "heard_as": [
+    "epinephrine",
     "norepinephrine"
    ],
-   "turn": "Weight?"
+   "turn": "Epinephrine or norepinephrine?"
   },
   {
    "drug": "norepinephrine",
@@ -1724,9 +1746,10 @@
    "heard": "nor be",
    "decoder": "spelled",
    "heard_as": [
+    "epinephrine",
     "norepinephrine"
    ],
-   "turn": "Weight?"
+   "turn": "Epinephrine or norepinephrine?"
   },
   {
    "drug": "norepinephrine",
@@ -1734,12 +1757,13 @@
    "primary": "norepinephrine",
    "asks": [],
    "voice": "bf_lily",
-   "heard": "nor ip",
+   "heard": "nor be",
    "decoder": "spelled",
    "heard_as": [
+    "epinephrine",
     "norepinephrine"
    ],
-   "turn": "Weight?"
+   "turn": "Epinephrine or norepinephrine?"
   },
   {
    "drug": "norepinephrine",
@@ -1750,9 +1774,10 @@
    "heard": "norby drip",
    "decoder": "spelled",
    "heard_as": [
+    "epinephrine",
     "norepinephrine"
    ],
-   "turn": "Weight?"
+   "turn": "Epinephrine or norepinephrine?"
   },
   {
    "drug": "norepinephrine",
@@ -1763,9 +1788,10 @@
    "heard": "norby drip",
    "decoder": "spelled",
    "heard_as": [
+    "epinephrine",
     "norepinephrine"
    ],
-   "turn": "Weight?"
+   "turn": "Epinephrine or norepinephrine?"
   },
   {
    "drug": "norepinephrine",
@@ -1776,9 +1802,10 @@
    "heard": "nor be drips",
    "decoder": "spelled",
    "heard_as": [
+    "epinephrine",
     "norepinephrine"
    ],
-   "turn": "Weight?"
+   "turn": "Epinephrine or norepinephrine?"
   },
   {
    "drug": "phytomenadione",
@@ -1915,7 +1942,7 @@
    "asks": [],
    "voice": "am_liam",
    "heard": "propofol",
-   "decoder": "base",
+   "decoder": "spelled",
    "heard_as": [
     "propofol"
    ],
@@ -2238,7 +2265,7 @@
    "primary": "succinylcholine",
    "asks": [],
    "voice": "am_liam",
-   "heard": "zack's",
+   "heard": "suggs",
    "decoder": "spelled",
    "heard_as": [
     "succinylcholine"
@@ -2407,10 +2434,12 @@
    "primary": "tranexamic acid",
    "asks": [],
    "voice": "bf_lily",
-   "heard": "toine acts a",
+   "heard": "t x say",
    "decoder": "spelled",
-   "heard_as": [],
-   "turn": "Not recognised."
+   "heard_as": [
+    "tranexamic acid"
+   ],
+   "turn": "Weight?"
   }
  ]
 }

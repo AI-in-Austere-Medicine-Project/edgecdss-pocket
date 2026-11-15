@@ -7,11 +7,17 @@ A name close to two drugs never resolves (README, C1). Two ways to be close:
 A drug's own full name resolves, unless it is an unsigned stem of signed names: "calcium".
 """
 import dataclasses
+import json
+import pathlib
 import re
 
 CONTROLS = ("new patient", "confirm", "cancel", "repeat", "why", "log", "battery")
 ROUTES = {"iv": "IV", "i v": "IV", "io": "IO", "i o": "IO", "im": "IM", "i m": "IM",
-          "in": "IN", "i n": "IN", "po": "PO", "p o": "PO", "line": "IV", "neb": "NEB"}
+          "in": "IN", "i n": "IN", "po": "PO", "p o": "PO", "line": "IV", "neb": "NEB",
+          # owner, 2026-11-15 (hearing fixes): the words medics say for each route
+          "intravenous": "IV", "in the vein": "IV", "intramuscular": "IM",
+          "intraosseous": "IO", "by mouth": "PO", "oral": "PO", "intranasal": "IN"}
+ROUTE_WORDS = 3   # the longest route phrase, in words ("in the vein")
 PATIENT = ("child", "adult", "estimated")
 WEIGHT_UNITS = {"kilos": "kilos", "kilo": "kilos", "kilograms": "kilos", "kg": "kilos",
                 "pounds": "pounds", "pound": "pounds", "lbs": "pounds"}
@@ -69,6 +75,13 @@ CONDITIONS = {**{c: c for c in CONDITION_PATTERNS if c not in _NOT_SAID_AS_ITSEL
               **_CONDITION_VARIANTS}
 
 
+# Pairs the clips or the sound-alike checks confuse: hearing either one always asks
+# "X or Y?" before the read-back (owner, 2026-11-15). grammar/confusable.json says where
+# each was seen.
+CONFUSABLE = json.loads((pathlib.Path(__file__).resolve().parent / "confusable.json").read_text())
+CONFUSABLE_ROUTE_TERMS = {t: tuple(r["pair"]) for r in CONFUSABLE["routes"] for t in r["terms"]}
+
+
 def names_condition(text: str, conditions) -> bool:
     return any(re.search(CONDITION_PATTERNS[c], text, re.I) for c in conditions)
 
@@ -99,14 +112,23 @@ class Vocabulary:
     label_words: set
     unspeakable: set
     signed: set
+    confusable: dict = dataclasses.field(default_factory=dict)  # generic -> the pair it asks between
 
-    def words(self) -> set:
+    def words(self, signed_only: bool = False) -> set:
+        """Every word the parser reads. signed_only: the drug words come from signed drugs
+        only (the Vosk grammar, owner 2026-11-15): a term that names any unsigned drug is
+        left out, so an unsigned name cannot be heard and comes back "Not recognised."."""
         out = set(NUMBERS) | set(PATIENT) | set(WEIGHT_UNITS) | set(AGE_UNITS)
         out |= set(DOSE_UNITS) | set(VOLUME_UNITS) | set(FILLERS) | self.label_words
-        for group in (CONTROLS, ROUTES, CONDITIONS, self.drug_terms, self.class_terms):
+        drugs = self.signed_terms() if signed_only else self.drug_terms
+        for group in (CONTROLS, ROUTES, CONDITIONS, drugs, self.class_terms):
             for term in group:
                 out.update(term.split())
         return out
+
+    def signed_terms(self) -> dict:
+        """The drug terms every one of whose drugs is signed."""
+        return {t: g for t, g in self.drug_terms.items() if set(g) <= self.signed}
 
     def named(self, generic: str) -> list:
         return [t for t, g in self.drug_terms.items() if g == (generic,)]
@@ -205,5 +227,11 @@ def build(bank) -> Vocabulary:
     for e in bank.entries:
         labels |= label_tokens(e["indication"])
     labels -= set(class_terms) | reserved | set(terms)
+    confusable = {}
+    for row in CONFUSABLE["drugs"]:
+        pair = tuple(sorted(row["pair"]))
+        if set(pair) <= signed:                 # asked only while both are signed
+            for g in pair:
+                confusable[g] = pair
     return Vocabulary(drug_terms=terms, class_terms=class_terms, label_words=labels,
-                      unspeakable=unspeakable, signed=signed)
+                      unspeakable=unspeakable, signed=signed, confusable=confusable)

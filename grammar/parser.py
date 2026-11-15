@@ -8,8 +8,8 @@ import dataclasses
 import re
 from typing import Optional
 
-from grammar.vocabulary import (AGE_UNITS, CONDITIONS, CONTROLS, DOSE_UNITS, FILLERS, NUMBERS, PATIENT, ROUTES,
-                                VOLUME_UNITS, WEIGHT_UNITS, Vocabulary)
+from grammar.vocabulary import (AGE_UNITS, CONDITIONS, CONTROLS, DOSE_UNITS, FILLERS, NUMBERS, PATIENT, ROUTE_WORDS,
+                                ROUTES, VOLUME_UNITS, WEIGHT_UNITS, Vocabulary)
 
 _ONES = {w: i for i, w in enumerate("zero one two three four five six seven eight nine".split())}
 _TEENS = {w: i + 10 for i, w in enumerate(
@@ -55,6 +55,9 @@ class Parsed:
     classes: list = dataclasses.field(default_factory=list)
     labels: list = dataclasses.field(default_factory=list)
     routes: list = dataclasses.field(default_factory=list)
+    # The words each route was said by ("i m", "intramuscular"): what was heard, not what
+    # was asked for, so two phrases asking the same thing still compare equal.
+    route_terms: list = dataclasses.field(default_factory=list, compare=False)
     weight: Optional[Weight] = None
     age: Optional[Age] = None
     child: bool = False
@@ -188,9 +191,10 @@ def parse(text: str, vocab: Vocabulary) -> Parsed:
             p.drugs.append(DrugMatch(term, vocab.drug_terms[term]))
             i += n
             continue
-        term, n = _match(toks, i, ROUTES, 2)
+        term, n = _match(toks, i, ROUTES, ROUTE_WORDS)
         if term:
             p.routes.append(ROUTES[term])
+            p.route_terms.append(term)
             i += n
             continue
         term, n = _match(toks, i, vocab.class_terms, 4)
