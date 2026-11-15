@@ -104,8 +104,7 @@ def test_age_is_kept_after_a_cancel_too():
 
 # ── anything else at the confirm step ───────────────────────────────────────
 
-@pytest.mark.parametrize("phrase", ["ok", "go", "give it", "yes eighty kilos", "confirm cancel",
-                                    "new patient", "agitation", "child", "six years", "log",
+@pytest.mark.parametrize("phrase", ["ok", "go", "give it", "confirm cancel", "log",
                                     "[unk]", "zzz"])
 def test_anything_else_asks_say_confirm_or_cancel_and_never_doses(phrase):
     s, _ = _at_readback()
@@ -334,3 +333,24 @@ def test_narcan_is_still_heard_as_naloxone(hearing, clip):
     heard, text, _ = u.finish()
     drugs = {g for d in parse(text, VOCAB).drugs for g in d.generics}
     assert drugs == {"naloxone"}, (clip.name, heard)
+
+
+# ── anything said about the patient at the read-back is never set aside ─────
+# Found while applying the ruling: "burns" or "child" said at a read-back, if treated as a miss,
+# would let the next "yes" give the dose the read-back computed without it.
+
+def test_a_condition_said_at_the_read_back_re_evaluates_and_can_hold():
+    s, _ = _session()
+    assert s.handle("succinylcholine for rsi iv eighty kilos").kind == "readback"
+    held = s.handle("burns")
+    assert held.kind == "hold", held.text
+    assert s.handle("yes").text == "Nothing to confirm."
+
+
+@pytest.mark.parametrize("said", ["child six years twenty kilos", "ninety kilos", "yes ninety kilos",
+                                  "no ninety kilos", "intramuscular"])
+def test_new_patient_or_request_information_never_confirms_the_old_read_back(said):
+    s, _ = _at_readback()
+    turn = s.handle(said)
+    assert turn.kind != "dose" and turn.text != "Say confirm or cancel.", (said, turn.text)
+    assert turn.say != "Ketamine, agitation, IV, eighty kilos. Confirm?", (said, turn.text)

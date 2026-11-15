@@ -6,7 +6,8 @@ import time
 
 import pytest
 
-from engine.session import boot
+from engine.session import SAY_CONFIRM_OR_CANCEL, boot
+from grammar.vocabulary import CONFIRM_WORDS
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 CORPUS = json.loads((ROOT / "tests" / "replay_corpus.json").read_text())
@@ -26,10 +27,12 @@ def test_replay(case):
         assert (turn.kind, turn.say) == (kind, say), phrase
         if after:   # what follows the dose, where the case states it
             assert turn.after == after[0], phrase
-        # Rule 2 on every path: a dose only straight after a read-back and "confirm".
+        # Rule 2 on every path: a dose only straight after a read-back and a confirm word
+        # (confirm, yes, correct, affirmative; owner, 2026-11-16).
         if turn.kind == "dose":
-            assert phrase == "confirm" and read_back
-        read_back = turn.kind == "readback" or (read_back and turn.kind in ("why", "repeat", "unrecognised"))
+            assert phrase in CONFIRM_WORDS and read_back
+        read_back = turn.kind == "readback" or (read_back and (
+            turn.kind in ("why", "repeat", "unrecognised") or turn.say == SAY_CONFIRM_OR_CANCEL))
 
 
 def test_a_dose_with_no_condition_stated_is_followed_by_nothing():
