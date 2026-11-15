@@ -1,6 +1,5 @@
 # EdgeCDSS Pocket
-
-![EdgeCDSS Pocket:  Zero 3W with Shokz bone-conduction headset(docs/pocket-board.jpg)
+![EdgeCDSS Pocket: Radxa Zero 3W with Shokz bone-conduction headset](docs/pocket-board.jpg)
 A wearable that gives a signed drug dose in millilitres by voice. No language model, no network, no screen.
 
 Say "ketamine for moderate pain, IV, eighty kilos." It says "Ketamine, moderate to severe pain analgesia, IV, eighty kilos. Confirm?" Say "confirm." It says "Ketamine twenty milligrams. Dilute one mil of fifty in nine mils of normal saline. Four mils of the dilution, five per mil." It logs the time.
