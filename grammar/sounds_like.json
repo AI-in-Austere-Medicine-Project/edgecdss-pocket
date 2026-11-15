@@ -1,0 +1,1586 @@
+{
+ "model": "vosk-model-small-en-us-0.15",
+ "model_am_sha256": "75370a0137f9daf8f469dedd7daa4513ae7a621f03240c6e512e2b50b656a7b6",
+ "no_spelling": [
+  "antivenom"
+ ],
+ "shared_spellings_dropped": {
+  "adrenaline": [
+   "adrenalin"
+  ],
+  "noradrenaline": [
+   "adrenalin"
+  ]
+ },
+ "spellings": {
+  "acetaminophen": [
+   "as determine often",
+   "as determined often",
+   "as time often"
+  ],
+  "acetylcysteine": [
+   "acetate stein",
+   "acetone stein",
+   "acetone sustain",
+   "acidosis time",
+   "as details as stein",
+   "asset elsa stein"
+  ],
+  "albendazole": [
+   "albin dazzle",
+   "album dazzle",
+   "album dazzled",
+   "alvin dazzle"
+  ],
+  "alteplase": [
+   "also plays",
+   "alter plays"
+  ],
+  "amikacin": [
+   "ah mckesson",
+   "ah mikkelsen",
+   "ama carson",
+   "ama cason",
+   "ama cassin",
+   "ama casson",
+   "ama ghassan",
+   "amie carson",
+   "emma carson",
+   "emma cassin"
+  ],
+  "amio": [
+   "ah me out",
+   "am yoked",
+   "amie out",
+   "amiel",
+   "ammo",
+   "emil",
+   "me out",
+   "sammy oh",
+   "samuels"
+  ],
+  "amiodarone": [
+   "am ja du rhone",
+   "am yada wrong",
+   "am yadda wrong",
+   "am yard around",
+   "am yard or own",
+   "am yard own",
+   "am yoda roads",
+   "amie order own",
+   "amie order owns",
+   "amie out around",
+   "amy order own",
+   "emil jones",
+   "i'm yard or own",
+   "yard or own",
+   "yeah me your own"
+  ],
+  "amphotericin": [
+   "am food risen",
+   "am photo prison",
+   "i'm folk racing",
+   "i'm food risen",
+   "i'm photo prison"
+  ],
+  "ancef": [
+   "an saf",
+   "an safe",
+   "i'm save",
+   "i'm serve",
+   "i'm xiv",
+   "we i'm xiv"
+  ],
+  "antivenin": [
+   "anti van is",
+   "anti van venom",
+   "anti venom"
+  ],
+  "artemether": [
+   "already mather",
+   "already mathers",
+   "already mother",
+   "already mother's",
+   "already mothers",
+   "artie mother",
+   "rd matter",
+   "rd meadow",
+   "rd method",
+   "rd mother",
+   "rd mothers",
+   "rt mother"
+  ],
+  "artesunate": [
+   "lord is sunny"
+  ],
+  "ativan": [
+   "add even",
+   "add event",
+   "add events",
+   "anti van",
+   "our event",
+   "out event",
+   "out then",
+   "that event",
+   "that is an"
+  ],
+  "atovaquone": [
+   "add event quote",
+   "add event quote own",
+   "add vac own",
+   "add vac quote",
+   "add vac quote own",
+   "added that quote",
+   "out event quote own"
+  ],
+  "atropen": [
+   "actual been",
+   "andrew been",
+   "astral been",
+   "astro been",
+   "at robin",
+   "natural been",
+   "that been",
+   "that robin",
+   "that troy pin"
+  ],
+  "atropine": [
+   "add true pine",
+   "add true pines",
+   "add your pine",
+   "agile pine",
+   "andrew pine",
+   "at your pine",
+   "natural pine",
+   "that your pine",
+   "that's pine",
+   "that's true pines",
+   "your pine"
+  ],
+  "azithromycin": [
+   "as if remixing",
+   "as if through my son",
+   "as if throw my sin",
+   "as it through my sin",
+   "as it through my son",
+   "as it throw my sin",
+   "as they throw my sin",
+   "as they throw my son"
+  ],
+  "bactrim": [
+   "back backstrom",
+   "back dream",
+   "back trim"
+  ],
+  "bicarb": [
+   "they call me",
+   "they car be",
+   "they carb"
+  ],
+  "bupivacaine": [
+   "butte or vague can",
+   "butte or vague cane",
+   "butte or vague keynes",
+   "butte they cane",
+   "pupil they came",
+   "pupil they can",
+   "pupil they cane",
+   "pupil they keynes",
+   "pupils they came"
+  ],
+  "butorphanol": [
+   "beautiful fan old",
+   "buda finals",
+   "budoff animals",
+   "budoff annulled",
+   "butte are fennel",
+   "butte or fan all",
+   "butte or fan old",
+   "butte or fennel",
+   "butte or finals",
+   "butte our fennel",
+   "butte our final",
+   "viewed or fan all",
+   "viewed or fan old",
+   "viewed or fantasy",
+   "viewed or fennel",
+   "viewed or out"
+  ],
+  "cal gluc": [
+   "cal glock",
+   "cal gluck",
+   "cal glug",
+   "cowgirl lucky",
+   "tell glock",
+   "tell gluck",
+   "tell glug"
+  ],
+  "calcium gluconate": [
+   "calcium glue can aid"
+  ],
+  "carboprost": [
+   "car browsed",
+   "car that promised",
+   "carb oppressed",
+   "carbon browsed",
+   "carbon oppressed",
+   "carbon prost",
+   "cargo brost",
+   "cargo prost",
+   "carver prost",
+   "chi depressed",
+   "corbett browsed",
+   "corbyn browsed",
+   "kai depressed",
+   "koba prost"
+  ],
+  "cefazolin": [
+   "suffers alan",
+   "surfers alan",
+   "surfers allen",
+   "surfers arlene",
+   "surfers ireland",
+   "zephyr zilin",
+   "zephyrs alan",
+   "zephyrs allen"
+  ],
+  "cefepime": [
+   "safer pine",
+   "set up time",
+   "several pine",
+   "zephyr by",
+   "zephyr pine",
+   "zephyr time"
+  ],
+  "cefotaxime": [
+   "cf attacks i'm",
+   "several attacks i'm",
+   "so if attacks i'm",
+   "staff attacks i'm",
+   "surf attacks i'm",
+   "zephyr attacks i'm",
+   "zephyr tax i'm"
+  ],
+  "cefotetan": [
+   "safe vote tin",
+   "several din",
+   "several done",
+   "several tin",
+   "sir foton",
+   "so foton",
+   "they're voting"
+  ],
+  "cefoxitin": [
+   "saf exit him",
+   "surf axa din",
+   "they're fixating",
+   "zephyr exit him"
+  ],
+  "ceftazidime": [
+   "saf does it i'm",
+   "sept does it i'm",
+   "they have does it i'm"
+  ],
+  "ceftriaxone": [
+   "safety act soon",
+   "saved reacts own",
+   "sept reacts own",
+   "so if reacts own",
+   "soft react sony",
+   "soft reacts own",
+   "they have reacts own",
+   "this he acts own",
+   "zev drugs own"
+  ],
+  "cephalexin": [
+   "savvy oxen",
+   "zephyr oxen"
+  ],
+  "cetirizine": [
+   "said er is een",
+   "sater asean",
+   "sater resign",
+   "saudi regime"
+  ],
+  "cisatracurium": [
+   "says are drug curie him",
+   "says that trick curie him",
+   "says that trickier am",
+   "see set trickier am",
+   "these are drug curie him",
+   "this that trickier am"
+  ],
+  "cleocin": [
+   "clear sin",
+   "cleo arson",
+   "cleo sin",
+   "cleo soon",
+   "clio arson"
+  ],
+  "clindamycin": [
+   "clinton my sin",
+   "clinton my son",
+   "glinda my sin",
+   "glinda my son",
+   "kinda my sin",
+   "kinda my son",
+   "linda my sin",
+   "linda my son"
+  ],
+  "cortef": [
+   "cause if",
+   "code us",
+   "cool lives",
+   "core f",
+   "core lives",
+   "court f",
+   "court f's",
+   "court if",
+   "ct f",
+   "good as",
+   "good us",
+   "who lives"
+  ],
+  "cyanokit": [
+   "saya kit",
+   "saya knock it",
+   "saya know kit",
+   "scion knock it",
+   "scion orchid",
+   "sigh an arcade",
+   "sire knock it",
+   "so you knock it",
+   "so you know it",
+   "so you know kids",
+   "so you know kit",
+   "so you're no good",
+   "so you're not good"
+  ],
+  "daptomycin": [
+   "chapter my sin",
+   "chapter my son",
+   "dr my sin"
+  ],
+  "decadron": [
+   "dick capron",
+   "they capron",
+   "they car dream"
+  ],
+  "deferoxamine": [
+   "differ ox mean",
+   "differ oxen mean",
+   "different some mean"
+  ],
+  "desmopressin": [
+   "does more pressing",
+   "does not pressing",
+   "doesn't oppressing",
+   "there's more pressing",
+   "there's no pressing"
+  ],
+  "dexmedetomidine": [
+   "decks mid dad i'm redeemed",
+   "decks mid dad mid een",
+   "decks mid or mid een",
+   "decks mid or redeem",
+   "decks mid our mid een",
+   "decks my dad him adding",
+   "decks my dad i'm redeemed",
+   "decks my dad mid een",
+   "decks my dad mit",
+   "decks my dad redeem"
+  ],
+  "dextrose": [
+   "dextrose him",
+   "dextrose or"
+  ],
+  "digoxin": [
+   "dig up sin",
+   "digg axe him",
+   "digg axe sin",
+   "digg sin"
+  ],
+  "dilantin": [
+   "dillon tin",
+   "dylan tin"
+  ],
+  "dilt": [
+   "built",
+   "dealt",
+   "do it",
+   "don't",
+   "doubt",
+   "guild"
+  ],
+  "dimercaprol": [
+   "daimler cabral",
+   "daimler capital",
+   "daimler kaprow",
+   "dimer cabral",
+   "dimer kaprow",
+   "geimer camp rose",
+   "geimer cap brawl",
+   "geimer cap roles",
+   "geimer cap rose",
+   "geimer cap wrong",
+   "geimer cat brawl"
+  ],
+  "diphenhydramine": [
+   "defend hide remains",
+   "different hide remained",
+   "different hide remains",
+   "different hydra mean",
+   "different hydra means",
+   "different hydro mean",
+   "given hydra mean"
+  ],
+  "diprivan": [
+   "deborah van",
+   "deep prevent",
+   "dipper van",
+   "do you prevent"
+  ],
+  "dirty epi": [
+   "dirty abby",
+   "dirty appease",
+   "dirty epee",
+   "dirty happy",
+   "early abby"
+  ],
+  "dobutamine": [
+   "du butte buda mean",
+   "du butte or mean",
+   "du butte or means",
+   "du butte our means"
+  ],
+  "droperidol": [
+   "drew puddles",
+   "drop her doll",
+   "drop her dolls",
+   "drop or dial",
+   "drop prideaux",
+   "drop redial",
+   "drop riddle",
+   "drop riddled",
+   "drop riddles",
+   "drought poodle",
+   "drought prideaux"
+  ],
+  "enoxaparin": [
+   "inox up or een",
+   "inox up or him",
+   "inox up or means"
+  ],
+  "epi": [
+   "abby",
+   "are being",
+   "billy",
+   "epee",
+   "happy",
+   "robin",
+   "they're happy"
+  ],
+  "epi drip": [
+   "abby drip",
+   "fp draper",
+   "fp drip",
+   "happy drip"
+  ],
+  "epinephrine": [
+   "ap enough rain",
+   "eben efrain",
+   "eben every",
+   "enough efrain",
+   "happen every",
+   "happen or freeing",
+   "up enough rain"
+  ],
+  "ertapenem": [
+   "already have numb",
+   "arabian him",
+   "heard it numbs",
+   "hurry up numb",
+   "oh dayton him",
+   "rape named his",
+   "rape numb",
+   "rep nam",
+   "though rape numb"
+  ],
+  "esmolol": [
+   "as lol",
+   "as malone",
+   "as milan",
+   "as molo",
+   "esma lol",
+   "sm allow",
+   "this malone"
+  ],
+  "ethambutol": [
+   "as imbued all",
+   "sm beautiful",
+   "some beautiful",
+   "there's some beautiful"
+  ],
+  "etomidate": [
+   "adama date",
+   "at home or date",
+   "atomic date"
+  ],
+  "famotidine": [
+   "family redeem",
+   "family team",
+   "family tidying",
+   "famine tidying"
+  ],
+  "fent": [
+   "event",
+   "fant",
+   "fender",
+   "friend",
+   "sent",
+   "then",
+   "van",
+   "vent",
+   "wind"
+  ],
+  "fentanyl": [
+   "fenton aioli",
+   "fenton i'll",
+   "fenton nile",
+   "then denial"
+  ],
+  "flagyl": [
+   "flag gel",
+   "flag jewel",
+   "flag jill",
+   "flag joe",
+   "flag june",
+   "flair jill",
+   "flood jill",
+   "flood you",
+   "slideshow"
+  ],
+  "fluconazole": [
+   "flew can as all",
+   "flu can as all",
+   "flu can as old",
+   "fluke an asshole",
+   "fluke as all"
+  ],
+  "flumazenil": [
+   "flu mais nil",
+   "flu mais now",
+   "flu may's nil",
+   "flu maze nil",
+   "flu maze now",
+   "flume is now"
+  ],
+  "fomepizole": [
+   "foam puzzle",
+   "found peace l",
+   "found pozole",
+   "phone pozole",
+   "phone puzzle",
+   "thump is all"
+  ],
+  "fosphenytoin": [
+   "fast funny toine",
+   "foss been toying",
+   "foss funny toine",
+   "that's funny toine",
+   "vos funny toine"
+  ],
+  "furosemide": [
+   "fear oh smite",
+   "few arose my dad",
+   "few rows might",
+   "few rows mind",
+   "few rows mine",
+   "few rows my dad",
+   "few rows smite",
+   "fewer oh smite",
+   "fewer rose mine",
+   "fewer rows mine",
+   "furor smite",
+   "if you're oh smite"
+  ],
+  "gluc": [
+   "blog",
+   "glock",
+   "gluck",
+   "glug",
+   "luck"
+  ],
+  "gluconate": [
+   "glue can aid",
+   "glue can aides",
+   "glue can aids"
+  ],
+  "glycopyrrolate": [
+   "gleick appear late",
+   "gleick appear relate",
+   "gleick up here late",
+   "like appear late",
+   "like appear relate"
+  ],
+  "hydralazine": [
+   "hydra lousy een",
+   "hydro as een",
+   "hydro asean"
+  ],
+  "hydroxocobalamin": [
+   "heidrick saw cabello mean",
+   "heidrick soccer ballymoney",
+   "heidrick soccer bellamy",
+   "heidrick soccer bellman",
+   "heidrick soccer belman",
+   "heidrick soccer him"
+  ],
+  "hydroxyzine": [
+   "hi drug scene",
+   "hi drugs is een",
+   "hydroxy seen",
+   "hydroxyl roxanne",
+   "hydroxyl scene",
+   "hydroxyl seen"
+  ],
+  "hypertonic saline": [
+   "fiber tonic sailing",
+   "hypertonic ceiling",
+   "hypertonic sellin",
+   "hypertonic selling",
+   "viper tonic sailing"
+  ],
+  "imipenem": [
+   "it might gnomes",
+   "it might him",
+   "it might know him",
+   "it might nam",
+   "it might nim",
+   "it might numb",
+   "they might him",
+   "they might nim",
+   "they might numb"
+  ],
+  "ipratropium": [
+   "if retro pm",
+   "ip retro pm",
+   "it retro pm",
+   "yep retro pm"
+  ],
+  "keflex": [
+   "catholics",
+   "have legs",
+   "kev legs"
+  ],
+  "keppra": [
+   "cabral",
+   "can brew",
+   "can't brew",
+   "can't bro",
+   "can't capra",
+   "can't pray",
+   "can't print",
+   "capra",
+   "capron",
+   "gabriel",
+   "kaprow"
+  ],
+  "ket": [
+   "again",
+   "can't",
+   "cat",
+   "dead",
+   "get",
+   "good",
+   "kat",
+   "kit",
+   "kurt",
+   "kurt too"
+  ],
+  "ketalar": [
+   "cannot move",
+   "cat allah",
+   "cat or",
+   "cat other",
+   "get older"
+  ],
+  "ketamine": [
+   "canada mean",
+   "cat mean",
+   "cat or means"
+  ],
+  "ketorolac": [
+   "caddell rohrlich",
+   "carol rolex",
+   "cato relic",
+   "kato relic",
+   "kettle rolex",
+   "kid or alec"
+  ],
+  "labetalol": [
+   "la bataille old",
+   "lab at hello",
+   "lab hello",
+   "lab it hello",
+   "lab italico",
+   "lab italo",
+   "lab tallow",
+   "lab turlough",
+   "labeet hello",
+   "lobby tallow"
+  ],
+  "lasix": [
+   "lansing's",
+   "last eggs",
+   "last ex",
+   "last x",
+   "lousy eggs"
+  ],
+  "levetiracetam": [
+   "lavatory at him",
+   "lavatory sat him",
+   "lavatory set em",
+   "leavitt tourists at him",
+   "level tourists said i'm",
+   "levitt terrorism",
+   "levitt terrorists adam",
+   "levitt terrorists at him",
+   "levitt terrorists terrorism",
+   "levitt tourists adam",
+   "levitt tourists at him",
+   "levitt tourists him",
+   "levitt tourists i'm",
+   "levitt tourists said i'm",
+   "levy terrorists adam",
+   "levy terrorists at him",
+   "levy tourists at him"
+  ],
+  "levo": [
+   "leave all",
+   "leave lever",
+   "leave oh",
+   "leave our",
+   "leave out",
+   "leave though",
+   "leave us",
+   "lethal",
+   "lever"
+  ],
+  "levofloxacin": [
+   "level flocks isn't",
+   "lever flocks isn't",
+   "lever phlox isn't"
+  ],
+  "levophed": [
+   "lever oft",
+   "live aft",
+   "live oft",
+   "love aft",
+   "love oft"
+  ],
+  "linezolid": [
+   "lines allege",
+   "lines elite",
+   "lines lead",
+   "lines lid",
+   "lines oled",
+   "mine's iliad"
+  ],
+  "loratadine": [
+   "laura it",
+   "laura teddy",
+   "laura teddy een",
+   "laura tidings",
+   "loretta dean's",
+   "lower adding"
+  ],
+  "lorazepam": [
+   "laurie spam",
+   "laurie spammed",
+   "lorries bam"
+  ],
+  "mannitol": [
+   "man at all",
+   "man it all",
+   "man it'll",
+   "manny toll",
+   "many toll"
+  ],
+  "medrol": [
+   "made drove",
+   "made wrong",
+   "madrigal",
+   "major all",
+   "may drove",
+   "med wrong",
+   "medrano",
+   "meh drove",
+   "metro",
+   "mid wrong"
+  ],
+  "mefloquine": [
+   "matlock wind",
+   "meh flick wind",
+   "meh flick wine",
+   "meh flick wines",
+   "meh fluke wine",
+   "mess look wind",
+   "metal equine",
+   "meth like wine",
+   "miss like wine",
+   "miss look wine",
+   "miss quine wine"
+  ],
+  "meloxicam": [
+   "malik second",
+   "malik see gum",
+   "malik seek him",
+   "malik sic em",
+   "malik sick am",
+   "malik sick him",
+   "malik sikkim",
+   "malik succumb"
+  ],
+  "meperidine": [
+   "map or redeem",
+   "map or redeemed",
+   "map redeem",
+   "map redeemed",
+   "mapper redeemed",
+   "meh proteins",
+   "member redeem",
+   "metro redeemed"
+  ],
+  "mepivacaine": [
+   "map or they cane",
+   "map or vague can",
+   "map or vague cane",
+   "map or vague keynes",
+   "map they came"
+  ],
+  "meropenem": [
+   "american him",
+   "marrow been them",
+   "marrow plum",
+   "marrow them",
+   "merrill gnomes",
+   "merrill numb",
+   "merrill plum",
+   "meryl numb",
+   "miro them"
+  ],
+  "methylergonovine": [
+   "marseille are gonna vines",
+   "meh sailor gonna fine",
+   "meh sailor gonna vine",
+   "meh sailor gonna vines",
+   "mesler gonna find",
+   "mesler gonna fine",
+   "mesler gonna vine",
+   "mesler gonna vines",
+   "miss i'll are gonna find",
+   "miss i'll have gone divine",
+   "miss sailor gonna vine",
+   "miss seiler gone divine",
+   "miss silo gone divine",
+   "missile gonna find"
+  ],
+  "methylprednisolone": [
+   "methyl preakness alone"
+  ],
+  "metoprolol": [
+   "major problems",
+   "matter prolong",
+   "matter prowl",
+   "matter prowl old",
+   "met prolong",
+   "metre all",
+   "metre prolong",
+   "metre prowl",
+   "metre prowl old",
+   "mid april"
+  ],
+  "metronidazole": [
+   "metronet as all",
+   "metronet as dazzle",
+   "metronet as old",
+   "metronet as though",
+   "metronet dazzle",
+   "metronet does old",
+   "metronet us all"
+  ],
+  "midaz": [
+   "made as",
+   "made us",
+   "may does",
+   "me does",
+   "me those",
+   "meadows",
+   "meters",
+   "mid as",
+   "mid us",
+   "mit as",
+   "mitt as",
+   "us"
+  ],
+  "midazolam": [
+   "as all him"
+  ],
+  "mobic": [
+   "ma back",
+   "mailbag",
+   "mo big",
+   "moby dick",
+   "moby x",
+   "moe big",
+   "more back",
+   "moving",
+   "my dick",
+   "no back",
+   "no big",
+   "small dick"
+  ],
+  "morphia": [
+   "more fear",
+   "more fia",
+   "most yeah"
+  ],
+  "moxifloxacin": [
+   "mark's if locks isn't",
+   "marks if locks isn't",
+   "marx if lapses isn't",
+   "marx if locks isn't"
+  ],
+  "mucomyst": [
+   "mew chemist",
+   "mew commenced",
+   "mew ist",
+   "nukem ist"
+  ],
+  "nafcillin": [
+   "knifes elon",
+   "nav ceylon",
+   "nav cylinder",
+   "nav elon",
+   "nav selling",
+   "neff selling",
+   "now ceiling",
+   "now cylinder",
+   "now zealand",
+   "nuff ceiling",
+   "nuff sellin",
+   "nuff selling"
+  ],
+  "nalbuphine": [
+   "melba fien",
+   "melba theme",
+   "now buffets",
+   "now buffin",
+   "now buffing",
+   "now scene"
+  ],
+  "narcan": [
+   "larkin",
+   "no can",
+   "nor again",
+   "nor can",
+   "nor can't",
+   "nor kin",
+   "nora kin"
+  ],
+  "neostigmine": [
+   "neal stick mine",
+   "neal stig mine",
+   "neil stick mine",
+   "neil stig mine",
+   "neo stick mind",
+   "neo stick mine",
+   "neo stig mind",
+   "neo stig mine"
+  ],
+  "nicardipine": [
+   "nick are define",
+   "nick are defined",
+   "nick define",
+   "nick our define",
+   "nick our defines",
+   "nico define",
+   "nico defined",
+   "nico divine",
+   "nicole define",
+   "nicole defined",
+   "niko define"
+  ],
+  "noradrenaline": [
+   "nor adrenalin",
+   "nor noradrenalin",
+   "noradrenalin"
+  ],
+  "norepi": [
+   "naughty",
+   "no ip",
+   "nor be",
+   "nor bees",
+   "nor by",
+   "nor ip",
+   "not be"
+  ],
+  "norepi drip": [
+   "be drips",
+   "nor be drip",
+   "nor be drips",
+   "norby drip"
+  ],
+  "norepinephrine": [
+   "no pine friends",
+   "nor pine frain",
+   "nor pine frame",
+   "nor pine freeing",
+   "nor pine freeze",
+   "nor pine friends"
+  ],
+  "octreotide": [
+   "actually i'd i'd",
+   "ah yeah right",
+   "archery ah died",
+   "doctor ya died",
+   "dr ya died",
+   "oak tree ah died",
+   "oct riyadh i'd"
+  ],
+  "omeprazole": [
+   "don't press all",
+   "oh press l",
+   "oh presume",
+   "own press all",
+   "own press l",
+   "own press old",
+   "own press or",
+   "press all"
+  ],
+  "ondansetron": [
+   "own then set rhone",
+   "then set rhone"
+  ],
+  "onium": [
+   "only am",
+   "only ems",
+   "only him",
+   "own am",
+   "own yum",
+   "sony him",
+   "though niamh"
+  ],
+  "oxacillin": [
+   "access ceiling",
+   "access elon",
+   "arc sicilian",
+   "axa ceiling",
+   "axis elon",
+   "oc sicilian",
+   "occ sicilian",
+   "och sicilian"
+  ],
+  "pantoprazole": [
+   "can't appraisal",
+   "cant appraisal",
+   "pant appraisal",
+   "panty press all",
+   "panty press old"
+  ],
+  "paracetamol": [
+   "here said i'm all",
+   "perry said i'm old",
+   "pierce that i'm all"
+  ],
+  "phenobarbital": [
+   "fenerbahce beatles",
+   "phantom bob is all",
+   "phantom bob it'll",
+   "santa barbara",
+   "santa barbara old",
+   "then bob is all"
+  ],
+  "physostigmine": [
+   "fi cystic mine",
+   "fyi cystic mine",
+   "pfizer stick mine",
+   "pfizer stig mine",
+   "vice dig mine",
+   "vice is dig mine",
+   "vice is take mine",
+   "vice pfizer take mine",
+   "vice stig mine",
+   "vices dig mine",
+   "vices stig mine"
+  ],
+  "phytomenadione": [
+   "fido may die any",
+   "fido me die any",
+   "fido me die me",
+   "fido they die any",
+   "fight omni diane me",
+   "fight only diane me",
+   "fight only diary",
+   "fight only die any",
+   "fight only dining",
+   "fight only dying",
+   "fight or me die any"
+  ],
+  "phytonadione": [
+   "fight they die any",
+   "fighter may die any",
+   "fighting they die any",
+   "vita may die any"
+  ],
+  "piperacillin": [
+   "hi brazil brazilian",
+   "hi brazil him",
+   "hi brazilian",
+   "hyper cellan",
+   "piper cellan",
+   "piper sellin",
+   "piper selling"
+  ],
+  "pitocin": [
+   "butte sin",
+   "here sin",
+   "or sin",
+   "pant sin",
+   "perry sin",
+   "pin sin"
+  ],
+  "pralidoxime": [
+   "bradley dog same",
+   "bradley dogs i'm",
+   "probably dark same",
+   "probably doc same",
+   "probably dogs i'm",
+   "product same",
+   "products i'm",
+   "products same",
+   "rarely dogs i'm"
+  ],
+  "praziquantel": [
+   "crazy quant all",
+   "crazy quant or",
+   "crazy quintal",
+   "crazy quintile"
+  ],
+  "precedex": [
+   "present eggs",
+   "present ex",
+   "present exit",
+   "present x",
+   "preset decks",
+   "preset eggs",
+   "preset ex",
+   "preset x"
+  ],
+  "primaquine": [
+   "prime mc wind",
+   "prime mic wind",
+   "prime mic wine",
+   "prime mick wind",
+   "primer coins",
+   "primer quine",
+   "try mic winds"
+  ],
+  "procainamide": [
+   "procaine am i'd",
+   "procaine mit",
+   "prof kane mit"
+  ],
+  "prochlorperazine": [
+   "broccoli are bracing",
+   "broccoli or braising",
+   "broccoli or breezing",
+   "broccoli or breezy",
+   "broccoli or praising"
+  ],
+  "promethazine": [
+   "promo insane",
+   "rami facing",
+   "rami phasing"
+  ],
+  "proparacaine": [
+   "prepare again",
+   "preparing keynes"
+  ],
+  "propofol": [
+   "prepare fall",
+   "prepare file",
+   "prepare files",
+   "prepare filled",
+   "propofol is"
+  ],
+  "protamine": [
+   "frodo mean",
+   "prada mean",
+   "program mean",
+   "proto mean",
+   "rhoda mean"
+  ],
+  "push dose epi": [
+   "bush ddos abby",
+   "push ddos abby",
+   "push ddos epee",
+   "push dose abby",
+   "push dose ebay",
+   "push those abby"
+  ],
+  "pyrazinamide": [
+   "curie isn't am i'd",
+   "here isn't am i'd",
+   "racing mit"
+  ],
+  "racemic": [
+   "raw simic",
+   "real simic",
+   "receive mac",
+   "rossi mac",
+   "rush simic",
+   "russ make",
+   "russ simic",
+   "rust simic",
+   "where mac",
+   "where see mac"
+  ],
+  "reglan": [
+   "brig lan",
+   "glenn",
+   "land",
+   "ragland",
+   "re glenn",
+   "re lan",
+   "rick lan",
+   "rick land",
+   "rig lan",
+   "rig land",
+   "rig learn",
+   "we glands"
+  ],
+  "remifentanil": [
+   "my internal",
+   "re my centennial's",
+   "re my fun tunnels",
+   "re my internal",
+   "read my centennial's",
+   "read my internal",
+   "remain internal",
+   "remain my internal",
+   "remind internal",
+   "reminds internal",
+   "we my centennial's",
+   "when my fun tunnels"
+  ],
+  "roc": [
+   "iraq",
+   "relic",
+   "rock",
+   "rog"
+  ],
+  "rocephin": [
+   "rose fan",
+   "rose fender",
+   "rose fin",
+   "rose finn"
+  ],
+  "rocky onium": [
+   "rocky o'neill",
+   "rocky only am",
+   "rocky only ems",
+   "rocky only him",
+   "rocky own am",
+   "rocky own him",
+   "rocky own yum"
+  ],
+  "rocuronium": [
+   "rock iranians",
+   "rock uranium",
+   "rock you roni him",
+   "rock your own am",
+   "rock your own him",
+   "rock your roni ems",
+   "rock your roni him",
+   "roku roney him",
+   "roku roni him",
+   "roku rony him"
+  ],
+  "ropivacaine": [
+   "drop her vague cane",
+   "drop or they cane",
+   "drop or vague cane",
+   "robin cane",
+   "robin vague cane",
+   "robin vague keynes",
+   "roku they cane",
+   "roku they keynes",
+   "roku vague cane",
+   "roku vague keynes"
+  ],
+  "solu": [
+   "psalm",
+   "sabu",
+   "sally",
+   "salo",
+   "so early",
+   "solo",
+   "surly"
+  ],
+  "succinylcholine": [
+   "sexennio colleen",
+   "similar colleen",
+   "so similar colleen"
+  ],
+  "succs": [
+   "dogs",
+   "socks",
+   "sucks",
+   "suggs",
+   "suggs it",
+   "zack's",
+   "zack's it"
+  ],
+  "sufentanil": [
+   "if internal",
+   "safe internal",
+   "see if internal",
+   "seif internal",
+   "sif internal",
+   "so if internal",
+   "super nintendo",
+   "surf internal",
+   "susan tamil",
+   "susan tunnel"
+  ],
+  "sugammadex": [
+   "go may decks",
+   "so gamay decks",
+   "so go made ex",
+   "so go made x",
+   "so you go may decks",
+   "sucre made acts",
+   "sucre may decks",
+   "zuko gamay decks",
+   "zuko made acts",
+   "zuko made decks",
+   "zuko made eggs",
+   "zuko made ex",
+   "zuko made x",
+   "zuko may decks"
+  ],
+  "sulfamethoxazole": [
+   "cell phone ethics as though",
+   "self him ethics as all",
+   "self i'm ethics as all",
+   "self i'm ethics as old",
+   "so from ethics as old",
+   "so from ethics as though",
+   "so fun ethics as though",
+   "south i'm ethics as all",
+   "sulfur medics as all",
+   "sulphur medics as all"
+  ],
+  "suxamethonium": [
+   "sex some athenaeum",
+   "sock some is though niamh",
+   "suck semi phoneme",
+   "suck semi thorny him",
+   "suck semi thorny i'm",
+   "suck semi thorny niamh",
+   "suck semi though niamh",
+   "suck some is phoneme",
+   "suck some is sony him",
+   "suck some is though niamh",
+   "sucks amazonian",
+   "sucks amazonian him",
+   "sucks i'm athenaeum",
+   "sucks semi thorny him",
+   "sucks semi though niamh",
+   "sucks semitone yum",
+   "sucks smithsonian",
+   "sucks some athenaeum",
+   "xoxo me though niamh"
+  ],
+  "tenecteplase": [
+   "terminator plays",
+   "then act ablaze"
+  ],
+  "terbutaline": [
+   "ta butte lines",
+   "ta butte or lines",
+   "tara butte or lines"
+  ],
+  "tetracaine": [
+   "patrick can",
+   "tatar can",
+   "tetra again",
+   "tetra cain",
+   "tetra came",
+   "tetra can",
+   "tetra cane",
+   "tetra game",
+   "tetra kane",
+   "tetra kane cane",
+   "that regain",
+   "that's regain"
+  ],
+  "thiosulfate": [
+   "they also fade",
+   "they also fate",
+   "they also feed",
+   "they also feet"
+  ],
+  "tobramycin": [
+   "garber my son",
+   "my son",
+   "ta bring my sin",
+   "tara my sin",
+   "tara my son",
+   "tom bring my sin",
+   "tom from my sin",
+   "top or my son",
+   "topper my sin",
+   "topper my son"
+  ],
+  "toradol": [
+   "still riddle",
+   "still rideau",
+   "story riddle",
+   "tara don't",
+   "til riddle",
+   "tora don't",
+   "torah don't",
+   "tori doll",
+   "torrey doll",
+   "tory doll",
+   "tory dolls"
+  ],
+  "toxoid": [
+   "dark side",
+   "talk i'd",
+   "talk sawyer",
+   "talk so aid",
+   "talk soil",
+   "talk swayed",
+   "talk talks wait",
+   "talk wait",
+   "talks lloyd",
+   "talks oh wait",
+   "talks void",
+   "talks wade",
+   "talks wait",
+   "talks would"
+  ],
+  "tranexamic": [
+   "drank sammich",
+   "drink salmon",
+   "drink sammich",
+   "during sammich",
+   "train sammich",
+   "trying sammich"
+  ],
+  "tranexamic acid": [
+   "drink sammich acid",
+   "during sammich acid",
+   "trying sammich acid"
+  ],
+  "trimethoprim": [
+   "try amazon brims",
+   "try me so approve",
+   "try me stop",
+   "try me stop him",
+   "try me thought brim",
+   "try miss approve",
+   "try miss opera him",
+   "try miss out prove",
+   "try missile up prim",
+   "try mr brin",
+   "try myth opera him",
+   "try myth up him"
+  ],
+  "txa": [
+   "he acts early",
+   "t x say",
+   "teac say"
+  ],
+  "tylenol": [
+   "tylenol's",
+   "tyler know"
+  ],
+  "vaso": [
+   "thus oh",
+   "thus so",
+   "va so",
+   "var so"
+  ],
+  "vec": [
+   "reg",
+   "that",
+   "vac",
+   "vague",
+   "veg",
+   "vic",
+   "vick"
+  ],
+  "vecuronium": [
+   "that euro names",
+   "that uranium",
+   "that you're roni him",
+   "that your own am",
+   "that your own him",
+   "that your own names",
+   "that your own yum",
+   "that your roni ems",
+   "that your roni him",
+   "they're cute roni him",
+   "vac your roni him"
+  ],
+  "versed": [
+   "first",
+   "verse",
+   "worst"
+  ],
+  "voriconazole": [
+   "laura can as old",
+   "laurie can as all",
+   "laurie can as old",
+   "laurie can as though",
+   "void can as",
+   "void can as all",
+   "void can as old",
+   "void console"
+  ],
+  "xylocaine": [
+   "zarrella cane",
+   "zarrella kane",
+   "zeiler can",
+   "zeiler cane",
+   "zeiler kane",
+   "zilla can",
+   "zilla kane",
+   "zoya cane",
+   "zoya kane"
+  ],
+  "zosyn": [
+   "those sin",
+   "those then"
+  ]
+ },
+ "voices": [
+  "af_bella",
+  "af_heart",
+  "af_sarah",
+  "am_adam",
+  "am_eric",
+  "am_michael",
+  "bf_alice",
+  "bf_emma",
+  "bf_isabella",
+  "bm_daniel",
+  "bm_george",
+  "bm_lewis"
+ ]
+}
