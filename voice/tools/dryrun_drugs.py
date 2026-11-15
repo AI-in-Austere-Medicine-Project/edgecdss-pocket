@@ -57,7 +57,8 @@ def score(model_dir, wavdir):
     gpath = ROOT / "grammar" / "vosk_grammar.json"
     g = json.loads(gpath.read_text())
     from voice.hear import Hearing
-    hearing = Hearing(vosk.Model(str(model_dir)), g, build(load_bank(ROOT / "bank")))
+    vocab = build(load_bank(ROOT / "bank"))
+    hearing = Hearing(vosk.Model(str(model_dir)), g, vocab)
     out = []
     for i, r in enumerate(names()):
         for v in VOICES:
@@ -66,12 +67,17 @@ def score(model_dir, wavdir):
                 u.feed(w.readframes(w.getnframes()))
             heard, text, which = u.finish()
             s = boot(ROOT / "bank")
-            turn = s.handle(text)
+            turn = s.handle(text, spoken=True)
             heard_as = [s.req.drug] if s.req.drug else list(s.req.options)
             out.append({**r, "voice": v, "heard": heard, "decoder": which, "heard_as": heard_as,
                         "turn": turn.say})
-    ok = [r for r in out if r["heard_as"] == [r["drug"]] or (r["asks"] and r["heard_as"] == r["asks"])]
-    wrong = [r for r in out if set(r["heard_as"]) - {r["drug"]} - set(r["asks"])]
+    # A confusable pair (grammar/confusable.json) is asked, never dosed: "X or Y?" with
+    # the clip's own drug in it is the designed answer, like a stem that asks.
+    def pair(r):
+        return list(vocab.confusable.get(r["drug"], ()))
+    ok = [r for r in out if r["heard_as"] == [r["drug"]] or (r["asks"] and r["heard_as"] == r["asks"])
+          or (pair(r) and r["heard_as"] == pair(r))]
+    wrong = [r for r in out if set(r["heard_as"]) - {r["drug"]} - set(r["asks"]) - set(pair(r))]
     report = {"grammar_sha256": hashlib.sha256(gpath.read_bytes()).hexdigest(), "voices": list(VOICES),
               "names": len(out) // len(VOICES), "clips": len(out), "heard": len(ok),
               "heard_as_another_drug": len(wrong), "rows": out}

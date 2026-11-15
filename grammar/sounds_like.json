@@ -4,6 +4,19 @@
  "no_spelling": [
   "antivenom"
  ],
+ "route_words_dropped": {
+  "cefepime": [
+   "zephyr by"
+  ],
+  "iv": [
+   "eye the",
+   "eye the it"
+  ],
+  "norepi": [
+   "nor by"
+  ]
+ },
+ "route_words_dropped_note": "2026-11-15: spellings holding a word that now means something to the parser: \"by\" (by mouth), \"eye\" (eye injury)",
  "shared_spellings_dropped": {
   "adrenaline": [
    "adrenalin"
@@ -236,6 +249,7 @@
   ],
   "cefazolin": [
    "suffers alan",
+   "suffers own",
    "surfers alan",
    "surfers allen",
    "surfers arlene",
@@ -248,7 +262,6 @@
    "safer pine",
    "set up time",
    "several pine",
-   "zephyr by",
    "zephyr pine",
    "zephyr time"
   ],
@@ -662,11 +675,28 @@
    "they might nim",
    "they might numb"
   ],
+  "in the vein": [
+   "and the vein",
+   "and vein",
+   "enough vein"
+  ],
+  "intraosseous": [
+   "inter ossies",
+   "inter rcs",
+   "intra rcs",
+   "intro cs",
+   "intro lcs",
+   "intro rcs"
+  ],
   "ipratropium": [
    "if retro pm",
    "ip retro pm",
    "it retro pm",
    "yep retro pm"
+  ],
+  "iv": [
+   "i the",
+   "i the it"
   ],
   "keflex": [
    "catholics",
@@ -1022,7 +1052,6 @@
    "no ip",
    "nor be",
    "nor bees",
-   "nor by",
    "nor ip",
    "not be"
   ],
@@ -1150,6 +1179,9 @@
    "pant sin",
    "perry sin",
    "pin sin"
+  ],
+  "po": [
+   "p though"
   ],
   "pralidoxime": [
    "bradley dog same",

@@ -24,8 +24,8 @@ from typing import Callable, Optional
 from engine import contracts, vials, words
 from engine.bank import Bank, BankRefused, load_bank
 from grammar.parser import Age, Parsed, parse
-from grammar.vocabulary import (CONDITION_PATTERNS, VOLUME_UNITS, build, label_tokens,
-                                names_condition)
+from grammar.vocabulary import (CONDITION_PATTERNS, CONFUSABLE_ROUTE_TERMS, VOLUME_UNITS, build,
+                                label_tokens, names_condition)
 
 PEDIATRIC_WEIGHT_CEILING_KG = 40.0  # EdgeCDSS openai_client: not spoken, a gate
 ROUTE_ORDER = ("IV", "IM", "IN", "PO", "NEB")
@@ -121,6 +121,7 @@ class Request:
     options: tuple = ()
     cls: Optional[str] = None
     route: Optional[str] = None
+    route_options: tuple = ()     # a confusable route pair heard: "IM or IN?" first
     labels: list = dataclasses.field(default_factory=list)
     stated: list = dataclasses.field(default_factory=list)
     stated_vial: list = dataclasses.field(default_factory=list)
@@ -211,6 +212,7 @@ class Session:
         self._last_entry = None
         self._last_volume = False
         self._last_say = None
+        self._spoken = False
         self.announce = self._boot_turn()
 
     def _boot_turn(self) -> Turn:
@@ -232,7 +234,10 @@ class Session:
 
     # ── one phrase ──────────────────────────────────────────────────────────
 
-    def handle(self, text: str) -> Turn:
+    def handle(self, text: str, spoken: bool = False) -> Turn:
+        """spoken: the text is what Vosk heard. Only then does a pair the clips or the
+        sound-alike checks confuse ask "X or Y?" first: typed text cannot be misheard."""
+        self._spoken = spoken
         if self.refused:
             return self.announce
         p = self.parse(text)
@@ -298,7 +303,13 @@ class Session:
         if p.classes:
             req.cls = p.classes[0]
         if p.routes:
-            req.route = p.routes[-1]
+            route, term = p.routes[-1], p.route_terms[-1]
+            if req.route_options and route in req.route_options:
+                req.route, req.route_options = route, ()        # the answer
+            elif self._spoken and term in CONFUSABLE_ROUTE_TERMS:
+                req.route, req.route_options = None, CONFUSABLE_ROUTE_TERMS[term]
+            else:
+                req.route, req.route_options = route, ()
         req.labels += p.labels
         new_stated = p.stated + p.stated_vial
         req.stated += p.stated
@@ -327,9 +338,15 @@ class Session:
         if generic in req.options or generic == req.drug:
             req.options, req.drug, req.heard = (), generic, match.term
             return
-        self.req = Request(cls=req.cls if not (req.drug or req.options) else None,
-                           route=req.route if not (req.drug or req.options) else None,
-                           drug=generic, heard=match.term)
+        fresh = not (req.drug or req.options)
+        keep = dict(cls=req.cls if fresh else None, route=req.route if fresh else None,
+                    route_options=req.route_options if fresh else ())
+        pair = self.vocab.confusable.get(generic) if self._spoken else None
+        if pair:
+            # A pair the clips or the sound-alike checks confuse: always "X or Y?" first.
+            self.req = Request(options=pair, heard=match.term, **keep)
+            return
+        self.req = Request(drug=generic, heard=match.term, **keep)
 
     # ── the gate ───────────────────────────────────────────────────────────
 
@@ -346,6 +363,8 @@ class Session:
         drug = req.drug
         if drug not in self.bank.signed_drugs:
             return self._hold(f"No signed dose for {req.heard}.")
+        if req.route_options:
+            return Turn("ask", _choice(list(req.route_options)) + "?")
 
         name = words.say_name(drug)
         cands = [e for e in self.bank.entries if e["drug"] == drug]

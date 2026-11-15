@@ -9,7 +9,7 @@ import pytest
 
 from engine.bank import load_bank
 from engine.session import boot
-from grammar.vocabulary import CONTROLS, build
+from grammar.vocabulary import CONTROLS, FILLERS, build
 from voice import spoken
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
@@ -28,11 +28,13 @@ def test_every_signed_drug_has_a_name_the_model_can_hear():
 
 
 def test_a_spelling_uses_only_words_that_mean_nothing_else_to_the_parser():
-    # Its own name's words excepted: "push dose amie" spells "push dose epi".
-    meaningful = VOCAB.words() | {w for c in CONTROLS for w in c.split()}
+    # Its own name's words excepted: "push dose amie" spells "push dose epi". Fillers
+    # ("the", "and") are skipped by the parser, so they mean nothing: "i the" spells "iv".
+    meaningful = (VOCAB.words() - set(FILLERS)) | {w for c in CONTROLS for w in c.split()}
     for name, spellings in SOUNDS["spellings"].items():
+        own = set(name.split()) | set(spoken.SPELLED.get(name, "").split())  # "iv" is said "i v"
         for s in spellings:
-            assert not (set(s.split()) - set(name.split())) & meaningful, (name, s)
+            assert not (set(s.split()) - own) & meaningful, (name, s)
 
 
 def test_no_spelling_belongs_to_two_names():
@@ -42,10 +44,15 @@ def test_no_spelling_belongs_to_two_names():
             assert seen.setdefault(s, token) == token, s
 
 
-def test_every_spelling_is_in_the_grammar():
+def test_every_spelling_of_a_signed_word_is_in_the_grammar():
+    """Spellings of unsigned drugs are left out (owner, 2026-11-15: the grammar's drug words
+    are signed drugs only; tests/test_hearing_fixes.py), and the three NOT_IN_GRAMMAR."""
+    from voice.grammar import NOT_IN_GRAMMAR
     entries = set(GRAMMAR["words"])
-    for spellings in SOUNDS["spellings"].values():
-        assert set(spellings) <= entries
+    kept = VOCAB.words(signed_only=True) | set(spoken.SPELLED)
+    for token, spellings in SOUNDS["spellings"].items():
+        if set(token.split()) <= kept:
+            assert set(spellings) - set(NOT_IN_GRAMMAR) <= entries, token
 
 
 def test_a_spelling_heard_is_the_name_to_the_parser():
@@ -74,7 +81,7 @@ def test_the_dry_run_is_of_this_grammar():
 # The synthetic dry run missed 6 of 183 clips (3 drugs, 3 medic forms, see
 # voice/dryrun_drugs.json). The owner made the medic's own voice the gate instead (phase 2):
 # these stay as written, expected to fail on this record, and turn red if they pass.
-SYNTHETIC_GATE = pytest.mark.xfail(strict=True, reason="synthetic dry run 177/183; the owner's voice is the gate")
+SYNTHETIC_GATE = pytest.mark.xfail(strict=True, reason="synthetic dry run 176/183; the owner's voice is the gate")
 
 
 @SYNTHETIC_GATE
@@ -87,15 +94,18 @@ def test_the_dry_run_heard_all_25_signed_drugs_in_every_held_out_voice():
         assert all(r["heard_as"] == [drug] for r in rows), (drug, rows)
 
 
-@SYNTHETIC_GATE
 def test_the_dry_run_heard_every_medic_form():
+    # Every voice since the hearing fixes (2026-11-15); before them ancef and txa each
+    # missed one voice, and this was an expected failure.
     for said, drug in MEDIC_FORMS.items():
         rows = [r for r in DRYRUN["rows"] if r["name"] == said]
         assert rows and all(r["heard_as"] == [drug] for r in rows), (said, rows)
 
 
 def test_the_dry_run_never_heard_one_drug_as_another():
-    # Signed, or unsigned: an unsigned name heard would show as its hold.
+    # Signed, or unsigned: an unsigned name heard would show as its hold. A confusable
+    # pair (grammar/confusable.json) asks "X or Y?" and never doses: its other drug is asked.
     for r in DRYRUN["rows"]:
-        assert set(r["heard_as"]) <= {r["drug"]} | set(r["asks"]), r
+        pair = set(VOCAB.confusable.get(r["drug"], ()))
+        assert set(r["heard_as"]) <= {r["drug"]} | set(r["asks"]) | pair, r
         assert not r["turn"].startswith("No signed dose for"), r

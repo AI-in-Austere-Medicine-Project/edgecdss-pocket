@@ -39,7 +39,12 @@ Part of the [AI in Austere Medicine Project](https://github.com/AI-in-Austere-Me
 
 ## Vocabulary
 
-Drug names and aliases from the bank; indication names from the bank; routes (IV, IO, IM, IN, PO, "line"); numbers, "kilos," "pounds," "estimated"; "child," "years"; conditions the medic can state ("burns," "crush injury," "head injury," "asthma"), each one found in the signed contraindications or cautions; control words: confirm, cancel, repeat, why, new patient, log, battery. About forty words plus numbers.
+Drug names and aliases from the bank; indication names from the bank; routes (IV, IO, IM, IN, PO, NEB, "line", and "intravenous", "in the vein", "intramuscular", "intraosseous", "by mouth", "oral", "intranasal"); numbers, "kilos," "pounds," "estimated"; "child," "years"; conditions the medic can state ("burns," "crush injury," "head injury," "asthma"), each one found in the signed contraindications or cautions; control words: confirm, cancel, repeat, why, new patient, log, battery. About forty words plus numbers.
+
+What Vosk can hear (`grammar/vosk_grammar.json`) is narrower than what the typed parser reads (owner, 2026-11-15):
+- **Signed drugs only.** The grammar's drug words, and their phonetic spellings, come only from the bank's signed drugs. An unsigned drug cannot be heard as itself or pull a nearby sound to it: said, it is "Not recognised." Typed, it still holds by name ("No signed dose for magnesium.").
+- **Confused pairs ask first.** A pair that the owner's clips or the sound-alike checks confuse is listed in `grammar/confusable.json` with where it was seen. When it is heard, Pocket always asks "X or Y?" before the read-back, and the answer settles it. The pairs today are epinephrine and norepinephrine, and IM and IN said by letters. "intramuscular" and "intranasal" do not ask. Typed text cannot be misheard, so it does not ask.
+- **Words left out.** Three entries the parser reads are left out because they took the "v" of a spoken "i v" (`voice/grammar.py`, `NOT_IN_GRAMMAR`). "dvt" is now said as "blood clot" or "thrombosis"; "norepi" spelled "no ip" is left out, and norepinephrine is still heard by its other names.
 
 ## Flow
 
