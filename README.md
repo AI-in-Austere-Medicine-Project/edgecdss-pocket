@@ -6,7 +6,7 @@ Say "ketamine for moderate pain, IV, eighty kilos." It says "Ketamine, moderate 
 
 That is the signed 0.25 mg/kg. At the kit's 50 mg/mL vial it would be 0.4 mL, under the 0.5 mL that can be drawn reliably, so the volume comes from the signed dilution instead: 1 mL of the vial in 9 mL of normal saline, 5 mg/mL. The device says how to make it before it says how much to draw.
 
-Part of the [AI in Austere Medicine Project](https://github.com/AI-in-Austere-Medicine-Project). The dose bank is signed in [EdgeCDSS](https://github.com/AI-in-Austere-Medicine-Project/pi-cloud-cdss) and exported here; Pocket signs nothing.
+Part of the [AI in Austere Medicine Project](https://github.com/AI-in-Austere-Medicine-Project). 
 
 > Research prototype. Not validated for clinical use. Simulated scenarios only.
 
