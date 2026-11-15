@@ -1,5 +1,13 @@
 """The confirm step (owner, 2026-11-16).
 
+Owner, ruling on the read-back (2026-11-16): ""why" and "repeat" work at the read-back and do
+not count as a miss. A corrected weight or route gives a fresh, full read-back (as it does
+today), resets the miss count and restarts the 30-second timer. A new drug request replaces the
+pending one with its own full read-back. The invariant, pinned by a test: no dose is ever spoken
+unless a confirm word directly follows that dose's own read-back." Read here as: a dose is
+spoken only for a confirm word said while that dose's read-back is pending, with only "why" or
+"repeat" between them, within 30 seconds of it.
+
 Owner: "Confirm words: "confirm", "yes", "correct", "affirmative". Nothing else proceeds.
 Cancel words: "no", "cancel", "negative", "stop", "wrong". Reply "Cancelled." and clear the
 pending dose; keep the patient's weight and age. Anything else at the confirm step: "Say
@@ -30,6 +38,8 @@ BANK = ROOT / "bank"
 VOCAB = build(load_bank(BANK))
 GRAMMAR = json.loads((ROOT / "grammar" / "vosk_grammar.json").read_text())
 CLIPS = sorted((ROOT / "tests" / "fixtures" / "clips" / "confirm").glob("*.wav"))
+WORD_CLIPS = [c for c in CLIPS if c.stem.split("__")[1] in ("confirm", "yes", "correct", "affirmative",
+                                                           "no", "cancel", "negative", "stop", "wrong")]
 MODEL = pathlib.Path(os.getenv("POCKET_VOSK_MODEL", pathlib.Path.home() / "pocket-web" / "models"
                                 / "vosk-model-small-en-us-0.15"))
 READBACK = "ketamine for agitation iv eighty kilos"
@@ -94,9 +104,9 @@ def test_age_is_kept_after_a_cancel_too():
 
 # ── anything else at the confirm step ───────────────────────────────────────
 
-@pytest.mark.parametrize("phrase", ["ok", "go", "give it", "repeat", "why", "eighty kilos",
-                                    "yes eighty kilos", "confirm cancel", "new patient",
-                                    "fentanyl", "[unk]", "zzz"])
+@pytest.mark.parametrize("phrase", ["ok", "go", "give it", "yes eighty kilos", "confirm cancel",
+                                    "new patient", "agitation", "child", "six years", "log",
+                                    "[unk]", "zzz"])
 def test_anything_else_asks_say_confirm_or_cancel_and_never_doses(phrase):
     s, _ = _at_readback()
     turn = s.handle(phrase)
@@ -209,7 +219,7 @@ def test_no_said_twenty_times_is_never_heard_as_a_confirm_word(hearing):
 
 
 @needs_model
-@pytest.mark.parametrize("clip", CLIPS, ids=lambda p: p.stem)
+@pytest.mark.parametrize("clip", WORD_CLIPS, ids=lambda p: p.stem)
 def test_a_cancel_word_is_never_heard_as_a_confirm_word_nor_the_reverse(hearing, clip):
     heard, controls = _heard_controls(hearing, clip)
     said = _said(clip)
@@ -219,3 +229,108 @@ def test_a_cancel_word_is_never_heard_as_a_confirm_word_nor_the_reverse(hearing,
         assert turn.kind != "dose", (clip.name, heard)
     else:
         assert turn.text != "Cancelled.", (clip.name, heard)
+
+
+# ── the ruling: why, repeat, corrections and a new drug at the read-back ─────
+
+def test_why_at_the_read_back_explains_and_is_not_a_miss():
+    s, _ = _at_readback()
+    assert s.handle("why").kind == "why"
+    assert s.handle("ok").text == "Say confirm or cancel."      # the first miss, not the second
+    assert s.handle("yes").kind == "dose"
+
+
+def test_repeat_at_the_read_back_says_it_again_and_is_not_a_miss():
+    s, _ = _at_readback()
+    first = s.handle("ok")
+    again = s.handle("repeat")
+    assert again.say == "Ketamine, agitation, IV, eighty kilos. Confirm?"
+    assert s.handle("repeat").say == again.say
+    assert first.text == "Say confirm or cancel." and s.handle("yes").kind == "dose"
+
+
+def test_a_corrected_weight_gives_a_fresh_read_back_resets_misses_and_the_timer():
+    s, clock = _at_readback()
+    s.handle("ok")                                           # one miss
+    clock.t += 25
+    turn = s.handle("ninety kilos")
+    assert turn.kind == "readback" and "ninety kilos" in turn.say
+    assert s.handle("ok").text == "Say confirm or cancel."   # the count restarted
+    clock.t += 25                                            # 50 s after the first read-back
+    dose = s.handle("yes")
+    assert dose.kind == "dose" and dose.data["record"]["weight_kg"] == 90
+
+
+def test_a_corrected_route_gives_a_fresh_read_back():
+    s, _ = _at_readback()
+    turn = s.handle("intramuscular")
+    assert turn.kind == "readback" and ", IM," in turn.say
+    assert s.handle("yes").data["record"]["route"] == "IM"
+
+
+def test_a_new_drug_replaces_the_pending_read_back_with_its_own():
+    s, _ = _at_readback()
+    turn = s.handle("fentanyl for pain in eighty kilos")
+    assert turn.kind == "readback" and turn.say.startswith("Fentanyl")
+    assert s.handle("yes").data["record"]["drug"] == "fentanyl"
+
+
+# ── the invariant ───────────────────────────────────────────────────────────
+
+POOL = ["ketamine for agitation iv eighty kilos", "fentanyl for pain in eighty kilos",
+        "morphine for pain iv seventy kilos", "ninety kilos", "intramuscular", "i v",
+        "confirm", "yes", "correct", "affirmative", "no", "cancel", "stop", "wrong", "negative",
+        "why", "repeat", "ok", "go", "new patient", "agitation", "zzz", "magnesium",
+        "child six years twenty kilos", "[unk]", "TICK", "WAIT"]
+CONFIRMS = {"confirm", "yes", "correct", "affirmative"}
+
+
+@pytest.mark.parametrize("seed", range(400))
+def test_no_dose_is_spoken_unless_a_confirm_word_follows_its_own_read_back(seed):
+    import random
+    rnd = random.Random(seed)
+    s, clock = _session()
+    pending = None          # (entry, time) of the read-back a confirm word may follow
+    for _ in range(30):
+        phrase = rnd.choice(POOL)
+        if phrase in ("TICK", "WAIT"):
+            clock.t += 10 if phrase == "TICK" else 31
+            continue
+        turn = s.handle(phrase)
+        if turn.kind == "dose":
+            assert phrase in CONFIRMS, (seed, phrase)
+            assert pending is not None, (seed, "a dose with no read-back pending")
+            entry, at = pending
+            r = turn.data["record"]
+            assert (r["drug"], r["indication"]) == (entry["drug"], entry["indication"]), seed
+            assert clock.t - at <= 30, (seed, "an expired read-back was confirmed")
+            pending = None
+        elif turn.kind == "readback":
+            pending = (s._pending, clock.t)
+        elif turn.kind in ("why", "repeat"):
+            pass                                     # the read-back stands
+        else:
+            pending = None if s._pending is None else pending
+
+
+# ── narcan after "no can" was dropped ───────────────────────────────────────
+
+NARCAN = [c for c in CLIPS if c.stem.split("__")[1] == "narcan"]
+
+
+def test_narcan_keeps_spellings_without_a_confirm_or_cancel_word():
+    import json as _j
+    sp = _j.loads((ROOT / "grammar" / "sounds_like.json").read_text())["spellings"]["narcan"]
+    assert sp and not any(set(x.split()) & (set(CONFIRM_WORDS) | set(CANCEL_WORDS)) for x in sp)
+    assert len(NARCAN) == 6
+
+
+@needs_model
+@pytest.mark.parametrize("clip", NARCAN, ids=lambda p: p.stem)
+def test_narcan_is_still_heard_as_naloxone(hearing, clip):
+    u = hearing.start()
+    with wave.open(str(clip)) as w:
+        u.feed(w.readframes(w.getnframes()))
+    heard, text, _ = u.finish()
+    drugs = {g for d in parse(text, VOCAB).drugs for g in d.generics}
+    assert drugs == {"naloxone"}, (clip.name, heard)

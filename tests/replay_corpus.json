@@ -860,7 +860,7 @@
   ]
  },
  {
-  "id": "yes-is-not-confirm",
+  "id": "yes-confirms",
   "turns": [
    [
     "ketamine for agitation iv eighty kilos",
@@ -869,11 +869,6 @@
    ],
    [
     "yes",
-    "unrecognised",
-    "Not recognised."
-   ],
-   [
-    "confirm",
     "dose",
     "Ketamine one hundred and sixty milligrams. Three point two mils of fifty."
    ]
