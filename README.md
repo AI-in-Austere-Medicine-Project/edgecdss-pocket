@@ -16,15 +16,21 @@ Part of the [AI in Austere Medicine Project](https://github.com/AI-in-Austere-Me
 2. **Read-back before any dose.** The device repeats drug, indication, route and weight and acts only on "confirm."
 3. **Every confirmed dose is logged with a time.** The log leaves the device only by deliberate export.
 
-## Hardware (about $40)
+## Hardware (about $95)
 
-| Part | Choice |
-|---|---|
-| Board | Raspberry Pi Zero 2 W |
-| Audio | Any Bluetooth headset (mic + earpiece in one pairing); the headset button is push-to-talk |
-| Power | 3400 mAh LiPo with a charge/boost board; about a day | Solar compatible 
-| Storage | microSD, read-only root, separate log partition |
-| Case | Printed, forearm strap or clip |
+| Part | Choice | List price |
+|---|---|---|
+| Board | Radxa ZERO 3W, 1 GB, no eMMC. The pocket's measured peak on the ZERO 3W is 329 MB ([device/RADXA.md](device/RADXA.md)), so the 1 GB model is enough. | $20.00 (Radxa's store, Arace; out of stock on 2026-11-16) |
+| Sound out | Any Bluetooth headset; its button is push-to-talk | about $21 (a budget mono headset) |
+| Speech in | A USB mini microphone on a USB-C OTG adapter, until the headset mic is verified at 16 kHz. On the board's Debian the headset mic is 8 kHz, so the USB mic is used meanwhile ([device/RADXA.md](device/RADXA.md)). | $5.95 mic (Adafruit 3367) + $0.95 adapter (Adafruit 5030) |
+| Power | 3.7 V LiPo, 3,400 mAh or more, with a 5 V / 1 A charge-boost board; solar compatible. Runtime on the ZERO 3W is not yet measured. | $19.95 battery (Adafruit 354, 4,400 mAh) + $18.50 charge-boost board (SparkFun LiPo Charger/Booster 5V/1A) |
+| Storage | microSD, 16 GB or more; read-only root, separate log partition | about $8 (a 32 GB card) |
+| Case | Printed, forearm strap or clip | about $2 of filament |
+| **Total** | | **about $95** |
+
+Prices are list prices on 2026-11-16, before shipping and tax.
+
+**Boards tested.** The Radxa ZERO 3W is the board in use: an 8 GB module on the bench, with a peak of 329 MB measured on 2026-11-11. The Raspberry Pi Zero 2 W is below the memory floor. It has 512 MB, of which 415 MB reaches Linux. With Vosk, Piper and the engine loaded, the process held about 300 MB, and the lowest available was 66 MB, against a floor of 100 MB (2026-11-09). [docs/BOARDS.md](docs/BOARDS.md) has the details.
 
 ## Software
 

@@ -2,7 +2,7 @@
 
 | Board | RAM | Status |
 |---|---|---|
-| Radxa Zero (model to be confirmed from its markings) | ≥ 1 GB | **Primary** (owner decision, 2026-11-09). Setup: [device/RADXA.md](../device/RADXA.md) |
+| Radxa ZERO 3W (AIC8800 module; 8 GB on the bench) | ≥ 1 GB (peak measured 329 MB, so 1 GB is enough) | **Primary** (owner decision, 2026-11-09). Setup and measurements: [device/RADXA.md](../device/RADXA.md) |
 | Raspberry Pi Zero 2 W | 512 MB (415 MB to Linux) | **Below the memory floor.** Not a target. Record below. |
 
 ## Raspberry Pi Zero 2 W: below the memory floor
