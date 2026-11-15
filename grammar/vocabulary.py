@@ -11,7 +11,13 @@ import json
 import pathlib
 import re
 
-CONTROLS = ("new patient", "confirm", "cancel", "repeat", "why", "log", "battery")
+# The confirm step (owner, 2026-11-16): only a confirm word proceeds; a cancel word clears
+# the pending dose. Each pair was checked by ear-model (tests/test_confirm_step.py): no
+# cancel word is heard as a confirm word, nor the reverse.
+CONFIRM_WORDS = ("confirm", "yes", "correct", "affirmative")
+CANCEL_WORDS = ("cancel", "no", "negative", "stop", "wrong")
+CONTROL_OF = {**{w: "confirm" for w in CONFIRM_WORDS}, **{w: "cancel" for w in CANCEL_WORDS}}
+CONTROLS = ("new patient", *CONFIRM_WORDS, *CANCEL_WORDS, "repeat", "why", "log", "battery")
 ROUTES = {"iv": "IV", "i v": "IV", "io": "IO", "i o": "IO", "im": "IM", "i m": "IM",
           "in": "IN", "i n": "IN", "po": "PO", "p o": "PO", "line": "IV", "neb": "NEB",
           # owner, 2026-11-15 (hearing fixes): the words medics say for each route

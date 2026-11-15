@@ -83,13 +83,27 @@ What Vosk can hear (`grammar/vosk_grammar.json`) is narrower than what the typed
 4. **Hardware and a day on battery.** Case, auto-reconnect to the headset on boot ("connected"), clean shutdown.
 5. **Field matrix.** Vehicle, wind, gloves, whisper, accents; word error rate per condition; confidence threshold set from that data. Then the first personal build.
 
+## Confirm step
+
+After a read-back (owner, 2026-11-16):
+- **Confirm words** ("confirm", "yes", "correct", "affirmative") give the dose. Nothing else does.
+- **Cancel words** ("no", "cancel", "negative", "stop", "wrong") say "Cancelled." and clear the pending dose. The patient's weight and age stay.
+- **"why" and "repeat"** answer as usual and leave the read-back standing. "repeat" says the read-back again.
+- **New information** about the patient or the request (a weight, age, child or adult, a condition, the drug, route or indication) starts over: a fresh, full read-back, or a hold or a question. A new drug replaces the pending one. "new patient" clears the patient and drops the pending dose.
+- **Anything else** gets "Say confirm or cancel." The second such miss cancels.
+- **A read-back expires after 30 seconds** and is cancelled, so a later "yes" can never confirm an old dose.
+
+The invariant, pinned by a test over 400 random sequences: a dose is spoken only for a confirm word that follows its own read-back, within 30 seconds, with nothing but "why" or "repeat" in between.
+
+Heard as tested on Piper and three Kokoro voices (71 clips, including "no" 23 times): no cancel word was heard as a confirm word, and no confirm word as a cancel word. Three spellings were dropped because they now contain a cancel word: "no can" (narcan), "no pine friends" (norepinephrine) and "no ip" (norepi). Narcan is still heard as naloxone, through "nor kin" and "nora kin".
+
 ## Acceptance tests
 
 - A1 "new patient" clears weight; the next dose asks for it, never reuses.
 - B1 "ketamine five hundred milligrams" is read back as spoken; the engine's own dose is given; the spoken number is never computed on.
 - C1 "keto" asks ketamine or ketorolac; no auto-resolution.
 - C2 unsigned drug speaks the hold and nothing else.
-- D1 read-back on 100 % of dose flows; "confirm" is the only word that proceeds.
+- D1 read-back on 100 % of dose flows; only a confirm word proceeds ("confirm", "yes", "correct", "affirmative"), and only straight after that dose's own read-back (see Confirm step).
 - E1 unsigned or EXAMPLE bank: device announces it and refuses all dose flows.
 - G1 "why" speaks the source for every entry; boot announces bank version and hash.
 
