@@ -1,4 +1,11 @@
 # EdgeCDSS Pocket
+
+A wearable voice dose assistant. Signed doses only, no language model, no network.
+
+> **Research prototype.** Not validated for clinical use. Not for patient care. Simulated scenarios only. Enter no patient information (PHI).
+
+[Project site](https://ai-in-austere-medicine-project.github.io/pi-cloud-cdss/web/) · [Portal](https://cdss.arcanekg.com) · [Substack](https://aiamp.substack.com)
+
 <p align="center"><img src="docs/pocket-board.png" alt="EdgeCDSS Pocket: Radxa Zero 3W with Shokz bone-conduction headset" width="320"></p>
 A wearable that gives a signed drug dose in millilitres by voice. No language model, no network, no screen.
 
@@ -7,8 +14,6 @@ Say "ketamine for moderate pain, IV, eighty kilos." It says "Ketamine, moderate 
 That is the signed 0.25 mg/kg. At the kit's 50 mg/mL vial it would be 0.4 mL, under the 0.5 mL that can be drawn reliably, so the volume comes from the signed dilution instead: 1 mL of the vial in 9 mL of normal saline, 5 mg/mL. The device says how to make it before it says how much to draw.
 
 Part of the [AI in Austere Medicine Project](https://github.com/AI-in-Austere-Medicine-Project). 
-
-> Research prototype. Not validated for clinical use. Simulated scenarios only.
 
 ## The three rules
 
