@@ -6,7 +6,7 @@ A wearable voice dose assistant. Signed doses only, no language model, no networ
 
 [Project site](https://ai-in-austere-medicine-project.github.io/pi-cloud-cdss/web/) · [Portal](https://cdss.arcanekg.com) · [Substack](https://aiamp.substack.com)
 
-<p align="center"><img src="docs/pocket-board.png" alt="EdgeCDSS Pocket: Radxa Zero 3W with Shokz bone-conduction headset" width="320"></p>
+<p align="center"><img src="docs/pocket-board.jpg" alt="EdgeCDSS Pocket: Radxa Zero 3W with Shokz bone-conduction headset" width="320"></p>
 A wearable that gives a signed drug dose in millilitres by voice. No language model, no network, no screen.
 
 Say "ketamine for moderate pain, IV, eighty kilos." It says "Ketamine, moderate to severe pain analgesia, IV, eighty kilos. Confirm?" Say "confirm." It says "Ketamine twenty milligrams. Dilute one mil of fifty in nine mils of normal saline. Four mils of the dilution, five per mil." It logs the time.
