@@ -19,13 +19,14 @@ import datetime
 import json
 import os
 import re
+import time
 from typing import Callable, Optional
 
 from engine import contracts, vials, words
 from engine.bank import Bank, BankRefused, load_bank
 from grammar.parser import Age, Parsed, parse
-from grammar.vocabulary import (CONDITION_PATTERNS, CONFUSABLE_ROUTE_TERMS, VOLUME_UNITS, build,
-                                label_tokens, names_condition)
+from grammar.vocabulary import (CONDITION_PATTERNS, CONFUSABLE_ROUTE_TERMS, CONTROL_OF, VOLUME_UNITS,
+                                build, label_tokens, names_condition)
 
 PEDIATRIC_WEIGHT_CEILING_KG = 40.0  # EdgeCDSS openai_client: not spoken, a gate
 ROUTE_ORDER = ("IV", "IM", "IN", "PO", "NEB")
@@ -35,6 +36,11 @@ RAISED = "Raised to the signed minimum."
 ASK_ADULT = "Adult? Say adult, or give the age or the weight."  # ADULT_CONFIRM_ASK
 ASK_ESTIMATE = "I only have an estimate. Say the weight to confirm it."  # WEIGHT_CONFIRM_ASK
 NO_CONTRAINDICATIONS = "No contraindications listed."
+# The confirm step (owner, 2026-11-16).
+SAY_CONFIRM_OR_CANCEL = "Say confirm or cancel."
+CANCELLED = "Cancelled."
+PENDING_S = 30.0     # a read-back not confirmed within this is cancelled
+MISSES_TO_CANCEL = 2
 TEST_NOTICE = "Test set. Not for patient use."
 UNVERIFIED = "Unverified."
 # An entry that names its vial (kit_vial: a strength, or "none") gets no volume until
@@ -185,6 +191,13 @@ def why_text(e: dict) -> str:
     return " ".join(parts)
 
 
+def _said(turn: Turn) -> Turn:
+    """The turn as spoken: routes in words (owner, 2026-11-19). `data` (the log record)
+    is untouched."""
+    return dataclasses.replace(turn, say=words.say_routes(turn.say),
+                               after=[words.say_routes(a) for a in turn.after])
+
+
 def _choice(items: list, joiner: str = " or ") -> str:
     items = list(items)
     return items[0] if len(items) == 1 else ", ".join(items[:-1]) + joiner + items[-1]
@@ -200,7 +213,8 @@ def _on_route(entry: dict, route: str) -> bool:
 
 class Session:
     def __init__(self, bank: Optional[Bank], refused: Optional[str] = None,
-                 log: Optional[Callable] = None, now: Optional[Callable] = None):
+                 log: Optional[Callable] = None, now: Optional[Callable] = None,
+                 clock: Optional[Callable] = None):
         self.bank, self.refused = bank, refused
         self.records = []
         self._log = log if log is not None else self.records.append
@@ -209,11 +223,15 @@ class Session:
         self.vocab = build(bank) if bank else None
         self.patient, self.req = Patient(), Request()
         self._pending = None   # the entry a read-back is waiting on
+        self._clock = clock or time.monotonic
+        self._pending_at = 0.0
+        self._misses = 0
+        self._readback_turn = None
         self._last_entry = None
         self._last_volume = False
         self._last_say = None
         self._spoken = False
-        self.announce = self._boot_turn()
+        self.announce = _said(self._boot_turn())
 
     def _boot_turn(self) -> Turn:
         if self.refused:
@@ -236,10 +254,20 @@ class Session:
 
     def handle(self, text: str, spoken: bool = False) -> Turn:
         """spoken: the text is what Vosk heard. Only then does a pair the clips or the
-        sound-alike checks confuse ask "X or Y?" first: typed text cannot be misheard."""
+        sound-alike checks confuse ask "X or Y?" first: typed text cannot be misheard.
+        Every line comes back with routes as they are said (words.say_routes)."""
+        return _said(self._turn(text, spoken))
+
+    def _turn(self, text: str, spoken: bool) -> Turn:
         self._spoken = spoken
         if self.refused:
             return self.announce
+        self._expired()
+        if self._pending is not None:
+            turn = self._confirm_step(self.parse(text))
+            if turn.kind != "repeat":
+                self._last_say = turn
+            return turn
         p = self.parse(text)
         if p.unknown or not (p.controls or p.has_slots()):
             return Turn("unrecognised", "Not recognised.")
@@ -248,9 +276,62 @@ class Session:
             self._last_say = turn
         return turn
 
+    # ── the confirm step ───────────────────────────────────────────────────
+
+    def _expired(self) -> bool:
+        if self._pending is not None and self._clock() - self._pending_at > PENDING_S:
+            self._cancel()
+            return True
+        return False
+
+    def expire_pending(self) -> Optional[Turn]:
+        """For the device loop: "Cancelled." once, when a read-back has waited over
+        PENDING_S, so a later "yes" can never confirm an old dose."""
+        return _said(Turn("control", CANCELLED)) if self._expired() else None
+
+    def _cancel(self) -> None:
+        """Clears the request and the pending dose; the patient (weight, age) stays."""
+        self.req, self._pending, self._misses = Request(), None, 0
+
+    def _confirm_step(self, p: Parsed) -> Turn:
+        """A read-back is waiting (owner rulings, 2026-11-16):
+          - one confirm word doses; one cancel word cancels (weight and age kept);
+          - "why" and "repeat" (the read-back again) answer and are not misses;
+          - "new patient" clears the patient and drops the pending dose (A1);
+          - anything said about the patient or the request (weight, age, child or adult,
+            a condition, drug, route, indication) runs the normal flow: a fresh full
+            read-back (a fresh miss count and 30 s), a hold or a question, never the old dose;
+          - anything else: "Say confirm or cancel."; the second miss cancels."""
+        words_said = [CONTROL_OF.get(c, c) for c in p.controls]
+        if not p.unknown and not p.has_slots() and len(words_said) == 1:
+            if words_said[0] == "confirm":
+                return self._dose()
+            if words_said[0] == "cancel":
+                self._cancel()
+                return Turn("control", CANCELLED)
+            if words_said[0] == "why":
+                return self._control("why")
+            if words_said[0] == "repeat":                # the read-back itself, again
+                rb = self._readback_turn
+                return Turn("repeat", rb.say, list(rb.after), dict(rb.data))
+            if words_said[0] == "new patient":           # A1: drops the pending dose too
+                return self._handle(p)
+        if not p.unknown and p.has_slots():
+            # New information about the patient or the request (weight, age, child or adult,
+            # a condition, drug, route, indication): the read-back no longer stands, so the
+            # normal flow runs on it: a fresh read-back, a hold or a question, never the old
+            # dose. A confirm or cancel word said with it is set aside: the new information
+            # wins, and it is read back.
+            return self._handle(dataclasses.replace(p, controls=[]))
+        self._misses += 1
+        if self._misses >= MISSES_TO_CANCEL:
+            self._cancel()
+            return Turn("control", CANCELLED)
+        return Turn("ask", SAY_CONFIRM_OR_CANCEL)
+
     def _handle(self, p: Parsed) -> Turn:
         lead = ""
-        controls = list(p.controls)
+        controls = [CONTROL_OF.get(c, c) for c in p.controls]
         if "new patient" in controls:
             controls.remove("new patient")
             self.patient, self.req = Patient(), Request()
@@ -462,6 +543,7 @@ class Session:
 
     def _read_back(self, entry, name, cls, name_label, route_said) -> Turn:
         self._pending = entry
+        self._pending_at, self._misses = self._clock(), 0
         what = words.say_name(entry["indication"]) if name_label else _say_class(cls)
         parts = [words.sentence(name), what, route_said, *self.patient.said()]
         say = ", ".join(parts) + "."
@@ -470,7 +552,8 @@ class Session:
         stated = self.req.stated + self.req.stated_vial
         if stated:
             say += f" You said {_choice(stated, ', ')}."
-        return Turn("readback", say + " Confirm?")
+        self._readback_turn = Turn("readback", say + " Confirm?")
+        return self._readback_turn
 
     # ── the dose ───────────────────────────────────────────────────────────
 
@@ -599,10 +682,11 @@ def _recipe(d: dict) -> str:
             f"in {words.mils(d['diluent_ml'])} of {d['diluent']}.")
 
 
-def boot(bank_dir, log: Optional[Callable] = None, now: Optional[Callable] = None) -> Session:
+def boot(bank_dir, log: Optional[Callable] = None, now: Optional[Callable] = None,
+         clock: Optional[Callable] = None) -> Session:
     """A session, refused if the bank is. A refused session answers nothing else."""
     try:
-        return Session(load_bank(bank_dir), log=log, now=now)
+        return Session(load_bank(bank_dir), log=log, now=now, clock=clock)
     except BankRefused as e:
         return Session(None, refused=str(e))
 

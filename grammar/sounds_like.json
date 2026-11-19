@@ -1,4 +1,42 @@
 {
+ "control_words_dropped": {
+  "amiodarone": [
+   "am yada wrong",
+   "am yadda wrong"
+  ],
+  "cyanokit": [
+   "so you're no good"
+  ],
+  "desmopressin": [
+   "there's no pressing"
+  ],
+  "dimercaprol": [
+   "geimer cap wrong"
+  ],
+  "medrol": [
+   "made wrong",
+   "med wrong",
+   "mid wrong"
+  ],
+  "mobic": [
+   "no back",
+   "no big"
+  ],
+  "narcan": [
+   "no can"
+  ],
+  "norepi": [
+   "no ip"
+  ],
+  "norepinephrine": [
+   "no pine friends"
+  ],
+  "trimethoprim": [
+   "try me stop",
+   "try me stop him"
+  ]
+ },
+ "control_words_dropped_note": "2026-11-16: spellings holding a confirm or cancel word (the confirm step's words mean something to the parser now)",
  "model": "vosk-model-small-en-us-0.15",
  "model_am_sha256": "75370a0137f9daf8f469dedd7daa4513ae7a621f03240c6e512e2b50b656a7b6",
  "no_spelling": [
@@ -74,8 +112,6 @@
   ],
   "amiodarone": [
    "am ja du rhone",
-   "am yada wrong",
-   "am yadda wrong",
    "am yard around",
    "am yard or own",
    "am yard own",
@@ -366,7 +402,6 @@
    "so you know it",
    "so you know kids",
    "so you know kit",
-   "so you're no good",
    "so you're not good"
   ],
   "daptomycin": [
@@ -388,8 +423,7 @@
    "does more pressing",
    "does not pressing",
    "doesn't oppressing",
-   "there's more pressing",
-   "there's no pressing"
+   "there's more pressing"
   ],
   "dexmedetomidine": [
    "decks mid dad i'm redeemed",
@@ -435,7 +469,6 @@
    "geimer cap brawl",
    "geimer cap roles",
    "geimer cap rose",
-   "geimer cap wrong",
    "geimer cat brawl"
   ],
   "diphenhydramine": [
@@ -839,15 +872,12 @@
   ],
   "medrol": [
    "made drove",
-   "made wrong",
    "madrigal",
    "major all",
    "may drove",
-   "med wrong",
    "medrano",
    "meh drove",
-   "metro",
-   "mid wrong"
+   "metro"
   ],
   "mefloquine": [
    "matlock wind",
@@ -967,8 +997,6 @@
    "more back",
    "moving",
    "my dick",
-   "no back",
-   "no big",
    "small dick"
   ],
   "morphia": [
@@ -1012,7 +1040,6 @@
   ],
   "narcan": [
    "larkin",
-   "no can",
    "nor again",
    "nor can",
    "nor can't",
@@ -1049,7 +1076,6 @@
   ],
   "norepi": [
    "naughty",
-   "no ip",
    "nor be",
    "nor bees",
    "nor ip",
@@ -1062,7 +1088,6 @@
    "norby drip"
   ],
   "norepinephrine": [
-   "no pine friends",
    "nor pine frain",
    "nor pine frame",
    "nor pine freeing",
@@ -1522,8 +1547,6 @@
   "trimethoprim": [
    "try amazon brims",
    "try me so approve",
-   "try me stop",
-   "try me stop him",
    "try me thought brim",
    "try miss approve",
    "try miss opera him",

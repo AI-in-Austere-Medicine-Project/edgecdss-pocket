@@ -17,6 +17,7 @@ import re
 
 import pytest
 
+from engine import words
 from engine.bank import load_bank
 from engine.session import boot
 from grammar.vocabulary import CONDITIONS, CONDITION_PATTERNS, build, label_tokens
@@ -51,7 +52,7 @@ def test_with_no_condition_stated_nothing_follows_the_dose(s):
 
 def test_a_stated_condition_a_caution_names_is_spoken_after_the_dose(s):
     readback = s.handle(f"{SUX_RSI} crush injury")
-    assert readback.say == "Succinylcholine, RSI, IV, eighty kilos, crush injury. Confirm?"
+    assert readback.say == "Succinylcholine, RSI, eye vee, eighty kilos, crush injury. Confirm?"
     dose = s.handle("confirm")
     assert dose.say == "Succinylcholine one hundred and twenty milligrams. Two point four mils of fifty."
     assert dose.after == [
@@ -234,7 +235,7 @@ def test_no_spoken_caution_states_a_volume_unless_one_was_computed(e):
 
 @pytest.mark.parametrize("cls,route,line", [
     ("cardiac arrest", "iv", "Caution: Not the 1 mg/mL (1:1,000) ampoule undiluted: SMOG p.112."),
-    ("anaphylaxis", "im", "Caution: Use the 1 mg/mL concentration for the IM route."),
+    ("anaphylaxis", "im", "Caution: Use the 1 mg/mL concentration for the eye em route."),
 ])
 def test_epinephrine_concentration_warnings_are_spoken(s, cls, route, line):
     s.handle(f"epinephrine for {cls} {route} eighty kilos")
@@ -246,7 +247,7 @@ def test_quotes_under_why_are_word_for_word():
     for e in BANK.entries:
         if e["quote"] and re.search(r"(?i)ml", e["quote"]):
             before, *_ = _dose_and_why_no_gate(e)
-            assert e["quote"] in before.say, key(e)
+            assert words.say_routes(e["quote"]) in before.say, key(e)   # routes as said
 
 
 def test_with_a_volume_the_signed_caution_is_spoken_whole(s):
@@ -255,7 +256,7 @@ def test_with_a_volume_the_signed_caution_is_spoken_whole(s):
     dose = s.handle("confirm")
     assert dose.data["record"]["volume_ml"] == 4.0
     e = entry("ketamine", "IV", "adult", "pain")
-    assert s.handle("why").after[0] == "Caution: " + e["serve_cautions"][0]
+    assert s.handle("why").after[0] == "Caution: " + words.say_routes(e["serve_cautions"][0])
     assert "mL" in e["serve_cautions"][0]
 
 

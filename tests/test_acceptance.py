@@ -37,7 +37,7 @@ def test_a1_new_patient_never_reuses_a_child_either(s):
     # No weight and no "child" left: an adult's entry can only come from a new weight.
     assert s.handle("morphine for pain iv").say == "Weight?"
     readback = s.handle("eighty kilos")
-    assert readback.say == "Morphine, pain, IV, eighty kilos. Confirm?"
+    assert readback.say == "Morphine, pain, eye vee, eighty kilos. Confirm?"
 
 
 def test_a1_new_patient_in_the_read_back_drops_the_pending_dose(s):
@@ -64,7 +64,7 @@ def _b1(session, spoken):
 def test_b1_the_spoken_amount_is_read_back_as_spoken(s):
     first, readback, _ = _b1(s, "five hundred milligrams")
     assert first.say == "Heard ketamine five hundred milligrams. Weight?"
-    assert readback.say == ("Ketamine, agitation, IV, eighty kilos. "
+    assert readback.say == ("Ketamine, agitation, eye vee, eighty kilos. "
                             "You said five hundred milligrams. Confirm?")
 
 
@@ -140,7 +140,7 @@ def test_c1_there_is_no_auto_resolution_on_repeat(s):
 
 def test_c1_the_answer_keeps_what_was_already_said(s):
     s.handle("keto for agitation eighty kilos iv")
-    assert s.handle("ketamine").say == "Ketamine, agitation, IV, eighty kilos. Confirm?"
+    assert s.handle("ketamine").say == "Ketamine, agitation, eye vee, eighty kilos. Confirm?"
 
 
 def test_c1_answering_ketorolac_holds(s):
@@ -265,10 +265,20 @@ def test_g1_every_entry_can_speak_its_source(i):
         assert "Page" in text
 
 
-# ── D1 is not in phase 1's list, but the corpus holds its invariant ─────────
+# ── D1: read-back on every dose flow; only a confirm word proceeds ──────────
+# Owner, 2026-11-16: confirm words confirm, yes, correct, affirmative; anything else at the
+# read-back asks "Say confirm or cancel." (why and repeat excepted), two misses cancel
+# (tests/test_confirm_step.py holds the rest, and the invariant).
 
-def test_only_confirm_proceeds(s):
+def test_only_a_confirm_word_proceeds(s):
     s.handle("ketamine for agitation iv eighty kilos")
-    for phrase in ("yes", "ok", "go", "give it", "repeat", "why", "eighty kilos"):
+    for phrase in ("why", "repeat", "ok"):
         assert s.handle(phrase).kind != "dose", phrase
-    assert s.handle("confirm").kind == "dose"
+    assert s.handle("yes").kind == "dose"
+
+
+def test_d1_two_misses_cancel_and_no_dose_follows(s):
+    s.handle("ketamine for agitation iv eighty kilos")
+    assert s.handle("go").say == "Say confirm or cancel."
+    assert s.handle("give it").say == "Cancelled."
+    assert s.handle("confirm").say == "Nothing to confirm."

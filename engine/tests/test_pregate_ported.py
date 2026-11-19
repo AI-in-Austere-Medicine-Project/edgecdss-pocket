@@ -37,7 +37,7 @@ def test_a_reply_that_names_no_class_is_asked_again(s):
 def test_a_stated_route_counts_only_the_entries_on_it(s):
     """"epinephrine IM": anaphylaxis only, so no question."""
     assert s.handle("epinephrine im eighty kilos").say == \
-        "Epinephrine, anaphylaxis, IM, eighty kilos. Confirm?"
+        "Epinephrine, anaphylaxis, eye em, eighty kilos. Confirm?"
 
 
 # ── A34 / A35: the route ───────────────────────────────────────────────────
@@ -45,7 +45,7 @@ def test_a_stated_route_counts_only_the_entries_on_it(s):
 def test_a34_a_route_with_no_entry_for_it_holds_and_offers_nothing(s):
     turn = s.handle("morphine for pain in eighty kilos")
     assert turn.kind == "hold"
-    assert turn.text == "No signed IN dose of morphine for pain."
+    assert turn.text == "No signed intranasal dose of morphine for pain."
 
 
 def test_a34_iv_and_io_are_one_route(s):
@@ -67,7 +67,7 @@ def test_f1_an_estimate_never_doses(s):
 
 def test_f1_an_estimate_under_the_ceiling_is_still_a_child(s):
     s.handle("morphine for pain iv estimated twenty kilos")
-    assert s.handle("twenty kilos").say == "Morphine, pain, IV, child, twenty kilos. Confirm?"
+    assert s.handle("twenty kilos").say == "Morphine, pain, eye vee, child, twenty kilos. Confirm?"
 
 
 def test_a_child_with_no_weight_is_asked_even_for_a_fixed_dose(s):
@@ -79,7 +79,7 @@ def test_a_known_age_decides_child_in_both_directions(s):
     s.handle("ten years")
     s.handle("forty five years")
     assert s.handle("morphine for pain iv eighty kilos").say == \
-        "Morphine, pain, IV, forty-five years, eighty kilos. Confirm?"
+        "Morphine, pain, eye vee, forty-five years, eighty kilos. Confirm?"
 
 
 def test_40_kg_is_not_a_child_39_is(s):
@@ -114,7 +114,7 @@ def test_a39_after_a_pending_question_the_hold_is_the_same(s):
 def test_live_log_a_new_drug_clears_the_pending_question(s):
     """"Now I need to give mag": the ketamine question must not swallow it."""
     s.handle("ketamine eighty kilos")
-    assert s.handle("morphine for pain iv").say == "Morphine, pain, IV, eighty kilos. Confirm?"
+    assert s.handle("morphine for pain iv").say == "Morphine, pain, eye vee, eighty kilos. Confirm?"
 
 
 # ── the signed bank's own shape ────────────────────────────────────────────
