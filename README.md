@@ -101,6 +101,8 @@ Heard as tested on Piper and three Kokoro voices (71 clips, including "no" 23 ti
 
 Routes are said as words, never as bare letters (owner's choices by ear, 2026-11-19): IV "eye vee", IM "eye em", IO "eye oh", IN "intranasal", PO "pee oh", NEB "nebuliser". This covers every spoken line, including signed text read out under "why" and the cautions; a slash between routes is said "or" ("IV/IO" is "eye vee or eye oh"). The bank, the log and the signed text keep the letters. A test walks every signed entry and fails on any bare route abbreviation spoken.
 
+Every answer comes in two forms (owner, 2026-11-19): the spoken form for the voice (`Turn.say`, `Turn.after`, `Turn.text`) and a written form for a screen (`Turn.written`, `Turn.written_after`, `Turn.written_text`), which keeps IV, IM, IO, IN, PO and NEB. Only the routes differ. A screen shows the written form and plays the spoken one.
+
 ## Acceptance tests
 
 - A1 "new patient" clears weight; the next dose asks for it, never reuses.

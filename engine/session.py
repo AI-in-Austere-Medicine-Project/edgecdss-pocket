@@ -61,10 +61,20 @@ class Turn:
     say: str
     after: list = dataclasses.field(default_factory=list)
     data: dict = dataclasses.field(default_factory=dict)
+    # The written form, for a screen (owner, 2026-11-19): the same lines with the route
+    # letters (IV, IM, IO, IN, PO, NEB). `say`/`after` are the spoken form, for the voice.
+    written: str = ""
+    written_after: list = dataclasses.field(default_factory=list)
 
     @property
     def text(self) -> str:
+        """What is spoken."""
         return " ".join([self.say, *self.after])
+
+    @property
+    def written_text(self) -> str:
+        """What is shown."""
+        return " ".join([self.written, *self.written_after])
 
 
 @dataclasses.dataclass
@@ -192,10 +202,12 @@ def why_text(e: dict) -> str:
 
 
 def _said(turn: Turn) -> Turn:
-    """The turn as spoken: routes in words (owner, 2026-11-19). `data` (the log record)
-    is untouched."""
+    """Both forms of a turn (owner, 2026-11-19): spoken, with routes in words, in `say`
+    and `after`; written, with the letters, in `written` and `written_after`. Every turn
+    is built in the written form. `data` (the log record) is untouched."""
     return dataclasses.replace(turn, say=words.say_routes(turn.say),
-                               after=[words.say_routes(a) for a in turn.after])
+                               after=[words.say_routes(a) for a in turn.after],
+                               written=turn.say, written_after=list(turn.after))
 
 
 def _choice(items: list, joiner: str = " or ") -> str:
