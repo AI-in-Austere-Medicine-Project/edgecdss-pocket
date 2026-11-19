@@ -37,7 +37,7 @@ def test_a1_new_patient_never_reuses_a_child_either(s):
     # No weight and no "child" left: an adult's entry can only come from a new weight.
     assert s.handle("morphine for pain iv").say == "Weight?"
     readback = s.handle("eighty kilos")
-    assert readback.say == "Morphine, pain, IV, eighty kilos. Confirm?"
+    assert readback.say == "Morphine, pain, eye vee, eighty kilos. Confirm?"
 
 
 def test_a1_new_patient_in_the_read_back_drops_the_pending_dose(s):
@@ -64,7 +64,7 @@ def _b1(session, spoken):
 def test_b1_the_spoken_amount_is_read_back_as_spoken(s):
     first, readback, _ = _b1(s, "five hundred milligrams")
     assert first.say == "Heard ketamine five hundred milligrams. Weight?"
-    assert readback.say == ("Ketamine, agitation, IV, eighty kilos. "
+    assert readback.say == ("Ketamine, agitation, eye vee, eighty kilos. "
                             "You said five hundred milligrams. Confirm?")
 
 
@@ -140,7 +140,7 @@ def test_c1_there_is_no_auto_resolution_on_repeat(s):
 
 def test_c1_the_answer_keeps_what_was_already_said(s):
     s.handle("keto for agitation eighty kilos iv")
-    assert s.handle("ketamine").say == "Ketamine, agitation, IV, eighty kilos. Confirm?"
+    assert s.handle("ketamine").say == "Ketamine, agitation, eye vee, eighty kilos. Confirm?"
 
 
 def test_c1_answering_ketorolac_holds(s):

@@ -243,7 +243,7 @@ def test_repeat_at_the_read_back_says_it_again_and_is_not_a_miss():
     s, _ = _at_readback()
     first = s.handle("ok")
     again = s.handle("repeat")
-    assert again.say == "Ketamine, agitation, IV, eighty kilos. Confirm?"
+    assert again.say == "Ketamine, agitation, eye vee, eighty kilos. Confirm?"
     assert s.handle("repeat").say == again.say
     assert first.text == "Say confirm or cancel." and s.handle("yes").kind == "dose"
 
@@ -263,7 +263,7 @@ def test_a_corrected_weight_gives_a_fresh_read_back_resets_misses_and_the_timer(
 def test_a_corrected_route_gives_a_fresh_read_back():
     s, _ = _at_readback()
     turn = s.handle("intramuscular")
-    assert turn.kind == "readback" and ", IM," in turn.say
+    assert turn.kind == "readback" and ", eye em," in turn.say
     assert s.handle("yes").data["record"]["route"] == "IM"
 
 
@@ -353,4 +353,4 @@ def test_new_patient_or_request_information_never_confirms_the_old_read_back(sai
     s, _ = _at_readback()
     turn = s.handle(said)
     assert turn.kind != "dose" and turn.text != "Say confirm or cancel.", (said, turn.text)
-    assert turn.say != "Ketamine, agitation, IV, eighty kilos. Confirm?", (said, turn.text)
+    assert turn.say != "Ketamine, agitation, eye vee, eighty kilos. Confirm?", (said, turn.text)

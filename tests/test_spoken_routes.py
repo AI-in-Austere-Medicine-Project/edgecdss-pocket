@@ -28,8 +28,9 @@ def test_the_owners_spellings():
 
 
 @pytest.mark.parametrize("text, said", [
-    ("IV", "eye vee"), ("IM", "eye em"), ("IO", "eye oh"), ("IN", "intranasal"),
-    ("PO", "pee oh"), ("NEB", "nebuliser"),
+    ("IV", "Eye vee"), ("IM", "Eye em"), ("IO", "Eye oh"), ("IN", "Intranasal"),
+    ("PO", "Pee oh"), ("NEB", "Nebuliser"), ("IM or IN?", "Eye em or intranasal?"),
+    ("by IV", "by eye vee"),
     ("Load 1 mg/kg IV/IO over 60 seconds", "Load 1 mg/kg eye vee or eye oh over 60 seconds"),
     ("0.4–2mg IV/IM/SC/IN; repeat", "0.4–2mg eye vee or eye em or SC or intranasal; repeat"),
     ("breakthrough pain — IM/IN", "breakthrough pain — eye em or intranasal"),

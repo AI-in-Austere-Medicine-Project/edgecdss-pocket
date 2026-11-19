@@ -191,6 +191,13 @@ def why_text(e: dict) -> str:
     return " ".join(parts)
 
 
+def _said(turn: Turn) -> Turn:
+    """The turn as spoken: routes in words (owner, 2026-11-19). `data` (the log record)
+    is untouched."""
+    return dataclasses.replace(turn, say=words.say_routes(turn.say),
+                               after=[words.say_routes(a) for a in turn.after])
+
+
 def _choice(items: list, joiner: str = " or ") -> str:
     items = list(items)
     return items[0] if len(items) == 1 else ", ".join(items[:-1]) + joiner + items[-1]
@@ -224,7 +231,7 @@ class Session:
         self._last_volume = False
         self._last_say = None
         self._spoken = False
-        self.announce = self._boot_turn()
+        self.announce = _said(self._boot_turn())
 
     def _boot_turn(self) -> Turn:
         if self.refused:
@@ -247,7 +254,11 @@ class Session:
 
     def handle(self, text: str, spoken: bool = False) -> Turn:
         """spoken: the text is what Vosk heard. Only then does a pair the clips or the
-        sound-alike checks confuse ask "X or Y?" first: typed text cannot be misheard."""
+        sound-alike checks confuse ask "X or Y?" first: typed text cannot be misheard.
+        Every line comes back with routes as they are said (words.say_routes)."""
+        return _said(self._turn(text, spoken))
+
+    def _turn(self, text: str, spoken: bool) -> Turn:
         self._spoken = spoken
         if self.refused:
             return self.announce
@@ -276,7 +287,7 @@ class Session:
     def expire_pending(self) -> Optional[Turn]:
         """For the device loop: "Cancelled." once, when a read-back has waited over
         PENDING_S, so a later "yes" can never confirm an old dose."""
-        return Turn("control", CANCELLED) if self._expired() else None
+        return _said(Turn("control", CANCELLED)) if self._expired() else None
 
     def _cancel(self) -> None:
         """Clears the request and the pending dose; the patient (weight, age) stays."""

@@ -105,7 +105,7 @@ def test_the_w1_clips_parse_as_iv(hearing, clip):
     """Including the clips heard as "i dvt kilos" on the old grammar."""
     heard, text, _ = _heard(hearing, clip)
     assert _routes(text) == ["IV"], heard
-    assert Session(BANK).handle(text, spoken=True).text == "Ketamine, agitation, IV, eighty kilos. Confirm?"
+    assert Session(BANK).handle(text, spoken=True).text == "Ketamine, agitation, eye vee, eighty kilos. Confirm?"
 
 
 def test_there_are_w1_iv_fixtures_including_the_i_dvt_ones():
@@ -190,28 +190,28 @@ def test_the_pair_is_asked_before_the_read_back():
              ("epinephrine for anaphylaxis intramuscular eighty kilos", "epinephrine")]
     assert turns[0].say == "Epinephrine or norepinephrine?"
     assert turns[1].kind == "readback"
-    assert turns[1].say.startswith("Epinephrine, anaphylaxis, IM")
+    assert turns[1].say.startswith("Epinephrine, anaphylaxis, eye em")
 
 
 def test_a_letter_spelled_im_or_in_asks_im_or_in_first():
     for said in ("i m", "im", "i n", "in"):
         s = boot(ROOT / "bank")
         turn = s.handle(f"fentanyl for pain {said} eighty kilos", spoken=True)
-        assert turn.say == "IM or IN?", (said, turn.text)
+        assert turn.say == "Eye em or intranasal?", (said, turn.text)
         answer = s.handle("intranasal", spoken=True)
-        assert answer.kind == "readback" and ", IN," in answer.say
+        assert answer.kind == "readback" and ", intranasal," in answer.say
 
 
 def test_the_route_answer_may_be_the_letters_again():
     s = boot(ROOT / "bank")
     s.handle("fentanyl for pain i n eighty kilos", spoken=True)
-    assert s.handle("i n", spoken=True).say == "Fentanyl, pain, IN, eighty kilos. Confirm?"
+    assert s.handle("i n", spoken=True).say == "Fentanyl, pain, intranasal, eighty kilos. Confirm?"
 
 
 def test_the_whole_route_words_do_not_ask():
-    for said, route in (("intramuscular", "IM"), ("intranasal", "IN")):
+    for said, route in (("intramuscular", "eye em"), ("intranasal", "intranasal")):
         s = boot(ROOT / "bank")
-        turn = s.handle(f"ketamine for agitation {said} eighty kilos" if route == "IM"
+        turn = s.handle(f"ketamine for agitation {said} eighty kilos" if route == "eye em"
                         else f"fentanyl for pain {said} eighty kilos", spoken=True)
         assert turn.kind == "readback" and f", {route}," in turn.say, turn.text
 

@@ -9,7 +9,7 @@ A wearable voice dose assistant. Signed doses only, no language model, no networ
 <p align="center"><img src="docs/pocket-board.jpg" alt="EdgeCDSS Pocket: Radxa Zero 3W with Shokz bone-conduction headset" width="320"></p>
 A wearable that gives a signed drug dose in millilitres by voice. No language model, no network, no screen.
 
-Say "ketamine for moderate pain, IV, eighty kilos." It says "Ketamine, moderate to severe pain analgesia, IV, eighty kilos. Confirm?" Say "confirm." It says "Ketamine twenty milligrams. Dilute one mil of fifty in nine mils of normal saline. Four mils of the dilution, five per mil." It logs the time.
+Say "ketamine for moderate pain, IV, eighty kilos." It says "Ketamine, moderate to severe pain analgesia, eye vee, eighty kilos. Confirm?" Say "confirm." It says "Ketamine twenty milligrams. Dilute one mil of fifty in nine mils of normal saline. Four mils of the dilution, five per mil." It logs the time.
 
 That is the signed 0.25 mg/kg. At the kit's 50 mg/mL vial it would be 0.4 mL, under the 0.5 mL that can be drawn reliably, so the volume comes from the signed dilution instead: 1 mL of the vial in 9 mL of normal saline, 5 mg/mL. The device says how to make it before it says how much to draw.
 
@@ -96,6 +96,10 @@ After a read-back (owner, 2026-11-16):
 The invariant, pinned by a test over 400 random sequences: a dose is spoken only for a confirm word that follows its own read-back, within 30 seconds, with nothing but "why" or "repeat" in between.
 
 Heard as tested on Piper and three Kokoro voices (71 clips, including "no" 23 times): no cancel word was heard as a confirm word, and no confirm word as a cancel word. Three spellings were dropped because they now contain a cancel word: "no can" (narcan), "no pine friends" (norepinephrine) and "no ip" (norepi). Narcan is still heard as naloxone, through "nor kin" and "nora kin".
+
+## Spoken routes
+
+Routes are said as words, never as bare letters (owner's choices by ear, 2026-11-19): IV "eye vee", IM "eye em", IO "eye oh", IN "intranasal", PO "pee oh", NEB "nebuliser". This covers every spoken line, including signed text read out under "why" and the cautions; a slash between routes is said "or" ("IV/IO" is "eye vee or eye oh"). The bank, the log and the signed text keep the letters. A test walks every signed entry and fails on any bare route abbreviation spoken.
 
 ## Acceptance tests
 

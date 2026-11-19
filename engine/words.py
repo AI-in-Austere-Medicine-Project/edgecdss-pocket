@@ -77,6 +77,31 @@ def say_name(name: str) -> str:
     return re.sub(r"\s+", " ", t).strip()
 
 
+# Routes as they sound (owner's choices by ear, 2026-11-19). Bare letters are misread
+# ("IV" as "Roman four", "IM" as "imm"). Applied to every spoken line, signed text
+# included; the bank, the log and anything shown as text keep the letters.
+ROUTE_WORDS = {"IV": "eye vee", "IM": "eye em", "IO": "eye oh", "IN": "intranasal",
+               "PO": "pee oh", "NEB": "nebuliser"}
+_ROUTE = "|".join(ROUTE_WORDS)
+# "IV/IO", "IV/IM/SC/IN": a slash between routes is "or".
+_ROUTE_CHAIN = re.compile(r"(?<![A-Za-z/])[A-Z]{2,3}(?:/[A-Z]{2,3})+(?![A-Za-z/])")
+_ROUTE_ONE = re.compile(rf"(?<![A-Za-z])({_ROUTE})(?![A-Za-z])")
+
+
+def say_routes(text: str) -> str:
+    """Route letters written the way they are said. Only whole upper-case tokens
+    change: "in", "IVP", "INR" and "nebulised" do not."""
+    def chain(m):
+        parts = m.group(0).split("/")
+        if not any(p in ROUTE_WORDS for p in parts):
+            return m.group(0)
+        return " or ".join(ROUTE_WORDS.get(p, p) for p in parts)
+    starts = bool(text[:1].isupper())
+    text = _ROUTE_CHAIN.sub(chain, text)
+    text = _ROUTE_ONE.sub(lambda m: ROUTE_WORDS[m.group(1)], text)
+    return sentence(text) if starts else text
+
+
 def say_chars(text: str) -> str:
     """Read character by character: a version or a hash."""
     names = {".": "point", "+": "plus", "-": "dash"}
