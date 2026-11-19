@@ -6,6 +6,8 @@ A wearable voice dose assistant. Signed doses only, no language model, no networ
 
 [Project site](https://ai-in-austere-medicine-project.github.io/pi-cloud-cdss/web/) · [Portal](https://cdss.arcanekg.com) · [Substack](https://aiamp.substack.com)
 
+Roadmap: see [ROADMAP.md](ROADMAP.md) for the build order and where help is welcome.
+
 <p align="center"><img src="docs/pocket-board.jpg" alt="EdgeCDSS Pocket: Radxa Zero 3W with Shokz bone-conduction headset" width="320"></p>
 A wearable that gives a signed drug dose in millilitres by voice. No language model, no network, no screen.
 
