@@ -255,3 +255,40 @@ def test_the_ertapenem_clip_is_not_rifampin_and_the_cefazolin_clip_is_cefazolin(
     rows = {name: (heard, got) for name, heard, got, _ in _owner_rows(hearing)}
     assert "rifampin" not in rows["ertapenem"][1] and "rifampin" not in rows["ertapenem"][0]
     assert rows["cefazolin"][1] == {"cefazolin"}, rows["cefazolin"]
+
+
+# ── 5. the owner's gate misses (2026-11-20) ─────────────────────────────────
+# Four signed drugs the owner's 2026-11-11 gate clips were not heard as: each is spelled
+# as the decoders heard those clips. rocephin ("role seven": a number word) and roc (heard
+# as two names, "One drug at a time.") are left unspelled; ceftriaxone and rocuronium are
+# heard by their generic names.
+
+OWNER_SPELLINGS = {"ertapenem": ["attempt then", "or attempt then"],
+                   "levetiracetam": ["levitt react him", "levitt trick them", "levitt tracked him",
+                                     "love attract them", "lev attract them"],
+                   "moxifloxacin": ["marx if locks him", "marks a flak some", "marx a flak some",
+                                    "marks a flag some"],
+                   "phytomenadione": ["fido ten made own", "fido tim might own", "fido tim my own"]}
+
+
+@pytest.mark.parametrize("drug,said", [(d, s) for d, ss in OWNER_SPELLINGS.items() for s in ss])
+def test_the_owners_gate_misses_are_spelled_and_parse_as_that_drug_alone(drug, said):
+    assert said in SOUNDS["spellings"][drug]
+    assert said in GRAMMAR["words"]
+    p = parse(spoken.normalise(said), VOCAB)
+    assert [g for d in p.drugs for g in d.generics] == [drug]
+    assert not (p.unknown or p.controls or p.routes or p.weight or p.age or p.bare_number)
+
+
+def test_the_synthetic_dry_run_still_hears_no_drug_as_another():
+    d = json.loads((ROOT / "voice" / "dryrun_drugs.json").read_text())
+    assert d["heard_as_another_drug"] == 0
+    assert d["heard"] >= 177, d["heard"]
+
+
+@needs_model
+@needs_owner
+def test_the_owners_four_gate_misses_are_now_heard_as_their_drug(hearing):
+    rows = {name: got for name, _, got, _ in _owner_rows(hearing)}
+    for drug in OWNER_SPELLINGS:
+        assert rows[drug] == {drug}, (drug, rows[drug])
