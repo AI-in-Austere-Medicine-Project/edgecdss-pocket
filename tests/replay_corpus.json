@@ -1036,5 +1036,105 @@
     "Ketamine twenty milligrams. Dilute one mil of fifty in nine mils of normal saline. Four mils of the dilution, five per mil."
    ]
   ]
+ },
+ {
+  "id": "rsi-steps-adult",
+  "turns": [
+   [
+    "rsi",
+    "ask",
+    "Weight?"
+   ],
+   [
+    "eighty kilos",
+    "step",
+    "Rapid sequence intubation, adult, eighty kilos. Step one of eleven. Confirm equipment availability and function: Suction, oxygen source, self-inflating bag and mask, oral and nasal airways, ETT with stylet and/or bougie, supraglottic airway, surgical airway kit, drugs, monitors, ventilator, laryngoscope- direct and video, CO2 detector."
+   ],
+   [
+    "next",
+    "step",
+    "Step two of eleven. Pre-Oxygenate (Denitrogenate) the lungs. Prolongs tolerance of apneic period. Goal is about three minutes of tidal volume breathing at ninety percent FiO2. With standard reservoir facemask set flow rate of oxygen as high as possible. Recommend augmenting with nasal cannula at fifteen litres per minute oxygen in preparation for apneic oxygenation, leave in situ throughout procedure. Elevate head of bed if not contraindicated."
+   ],
+   [
+    "back",
+    "step",
+    "Step one of eleven. Confirm equipment availability and function: Suction, oxygen source, self-inflating bag and mask, oral and nasal airways, ETT with stylet and/or bougie, supraglottic airway, surgical airway kit, drugs, monitors, ventilator, laryngoscope- direct and video, CO2 detector."
+   ],
+   [
+    "repeat",
+    "repeat",
+    "Step one of eleven. Confirm equipment availability and function: Suction, oxygen source, self-inflating bag and mask, oral and nasal airways, ETT with stylet and/or bougie, supraglottic airway, surgical airway kit, drugs, monitors, ventilator, laryngoscope- direct and video, CO2 detector."
+   ],
+   [
+    "next",
+    "step",
+    "Step two of eleven. Pre-Oxygenate (Denitrogenate) the lungs. Prolongs tolerance of apneic period. Goal is about three minutes of tidal volume breathing at ninety percent FiO2. With standard reservoir facemask set flow rate of oxygen as high as possible. Recommend augmenting with nasal cannula at fifteen litres per minute oxygen in preparation for apneic oxygenation, leave in situ throughout procedure. Elevate head of bed if not contraindicated."
+   ],
+   [
+    "next",
+    "step",
+    "Step three of eleven. Maintain cervical spine stabilization."
+   ],
+   [
+    "next",
+    "step",
+    "Step four of eleven. Remove front of cervical collar."
+   ],
+   [
+    "next",
+    "step",
+    "Step five of eleven. Consider cricoid pressure simultaneous with medication administration."
+   ],
+   [
+    "next",
+    "step",
+    "Step six of eleven. Administer medications: Initiate RSI. ALWAYS SEDATE PRIOR TO PARALYZING. Sedative/hypnotic: Ketamine (First Line): two milligrams per kilogram eye vee or eye oh. Unstable patients require reduced dosage of induction agent."
+   ],
+   [
+    "ketamine",
+    "readback",
+    "Ketamine, RSI induction, eye vee, eighty kilos. Confirm?"
+   ],
+   [
+    "confirm",
+    "dose",
+    "Ketamine one hundred and sixty milligrams. Three point two mils of fifty."
+   ],
+   [
+    "next",
+    "step",
+    "Step seven of eleven. Neuromuscular Blockade: Rocuronium: one point two milligrams per kilogram eye vee or eye oh or Succinylcholine: one point five milligrams per kilogram eye vee or eye oh."
+   ]
+  ]
+ },
+ {
+  "id": "failed-airway-child",
+  "turns": [
+   [
+    "failed airway child six years",
+    "step",
+    "Failed airway, child, six years. Step one of four. Unable to Intubate: Can You Mask Ventilate? Improve position, video laryngoscope, gum elastic bougie change blade/operator."
+   ],
+   [
+    "next",
+    "step",
+    "Step two of four. More than about three attempts at intubation may abolish your ability to mask ventilate due to edema caused by laryngoscopy."
+   ],
+   [
+    "next",
+    "step",
+    "Step three of four. Avoid surgical airway in under twelve years old - use needle cricothyroidotomy (twelve to fourteen gauge), tracheostomy preferred over surgical cricothyroidotomy."
+   ],
+   [
+    "next",
+    "step",
+    "Step four of four. NO, then Emergency pathway. Seconds matter. Supraglottic airway or Surgical cricothyroidotomy."
+   ],
+   [
+    "next",
+    "step",
+    "End of failed airway steps."
+   ]
+  ]
  }
 ]

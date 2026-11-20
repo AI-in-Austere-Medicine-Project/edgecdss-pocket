@@ -1,5 +1,5 @@
 {
- "grammar_sha256": "32dcddaea03a7843e4f449c5c5661f7a079334c26315cad5c121b36fa00cc586",
+ "grammar_sha256": "01200d11f5b48fe3ca3f7bd0f9931663dc5277b1240e2fe380ebb4ba8a3fea15",
  "voices": [
   "af_nicole",
   "am_liam",
@@ -1143,7 +1143,7 @@
    "primary": "levetiracetam",
    "asks": [],
    "voice": "am_liam",
-   "heard": "capra",
+   "heard": "cabral",
    "decoder": "spelled",
    "heard_as": [
     "levetiracetam"

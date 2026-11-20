@@ -4,6 +4,11 @@
    "am yada wrong",
    "am yadda wrong"
   ],
+  "bactrim": [
+   "back backstrom",
+   "back dream",
+   "back trim"
+  ],
   "cyanokit": [
    "so you're no good"
   ],
@@ -19,6 +24,8 @@
    "mid wrong"
   ],
   "mobic": [
+   "ma back",
+   "more back",
    "no back",
    "no big"
   ],
@@ -36,7 +43,7 @@
    "try me stop him"
   ]
  },
- "control_words_dropped_note": "2026-11-16: spellings holding a confirm or cancel word (the confirm step's words mean something to the parser now)",
+ "control_words_dropped_note": "2026-11-16: spellings holding a confirm or cancel word (the confirm step's words mean something to the parser now); 2026-11-20: spellings holding \"next\" or \"back\" (the step reader's words)",
  "model": "vosk-model-small-en-us-0.15",
  "model_am_sha256": "75370a0137f9daf8f469dedd7daa4513ae7a621f03240c6e512e2b50b656a7b6",
  "no_spelling": [
@@ -231,11 +238,6 @@
    "as it throw my sin",
    "as they throw my sin",
    "as they throw my son"
-  ],
-  "bactrim": [
-   "back backstrom",
-   "back dream",
-   "back trim"
   ],
   "bicarb": [
    "they call me",
@@ -1010,13 +1012,11 @@
    "as all him"
   ],
   "mobic": [
-   "ma back",
    "mailbag",
    "mo big",
    "moby dick",
    "moby x",
    "moe big",
-   "more back",
    "moving",
    "my dick",
    "small dick"

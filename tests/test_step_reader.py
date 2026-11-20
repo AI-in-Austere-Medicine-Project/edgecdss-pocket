@@ -209,7 +209,7 @@ def test_the_spoken_form_says_the_symbols_and_routes_and_the_written_keeps_them(
     s = boot(BANK)
     s.handle("rsi eighty kilos")
     two = s.handle("next")
-    assert "≈ 3 minutes" in two.written and "about 3 minutes" in two.text and "≈" not in two.text
+    assert "≈ 3 minutes" in two.written and "about three minutes" in two.text and "≈" not in two.text
     six = _to_step(boot(BANK), "6", ADULT)
     assert "2 mg/kg IV/IO" in six.written
     assert "eye vee or eye oh" in six.text and "IV/IO" not in six.text
@@ -222,7 +222,7 @@ def test_step_6_names_ketamine_and_computes_only_the_signed_id39_dose():
     six = _to_step(s, "6", ADULT)
     assert six.after == ["For the dose, say ketamine."]
     rb = s.handle("ketamine")
-    assert rb.kind == "readback" and rb.text.startswith("Ketamine, RSI, eye vee, eighty kilos.")
+    assert rb.kind == "readback" and rb.text.startswith("Ketamine, RSI induction, eye vee, eighty kilos.")
     dose = s.handle("confirm")
     assert dose.kind == "dose" and dose.text.startswith("Ketamine one hundred and sixty milligrams.")
     assert dose.data["record"]["indication"] == "RSI induction"
@@ -342,3 +342,12 @@ def test_the_step_words_are_in_the_grammar():
     words = set(json.loads((ROOT / "grammar" / "vosk_grammar.json").read_text())["words"])
     for w in ("next", "back", "repeat", "failed", "airway", "r", "s", "i"):
         assert w in words, w
+
+
+def test_say_step_writes_out_symbols_units_and_lone_numbers_only():
+    from engine.words import say_step
+    assert say_step("CO2 detector, 90% FiO2") == "CO2 detector, ninety percent FiO2."
+    assert say_step("(12-14 gauge)") == "(twelve to fourteen gauge)."
+    assert say_step("0.02mg/kg, <1 years, a 2nd dose") == ("zero point zero two milligrams per kilogram, "
+                                                          "under one years, a second dose.")
+    assert say_step("YES → Surgical airway.") == "YES, then Surgical airway."
