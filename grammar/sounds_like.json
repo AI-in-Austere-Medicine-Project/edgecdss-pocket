@@ -42,6 +42,22 @@
  "no_spelling": [
   "antivenom"
  ],
+ "owner_clips_added": {
+  "ertapenem": [
+   "attempt then",
+   "or attempt then"
+  ],
+  "levetiracetam": [
+   "levitt react him",
+   "levitt trick them",
+   "levitt tracked him",
+   "love attract them"
+  ],
+  "moxifloxacin": [
+   "marx if locks him"
+  ]
+ },
+ "owner_clips_added_note": "2026-11-20: spellings from the owner's gate clips (2026-11-11, USB mic), as the spelled and free decoders heard them; rocephin ('role seven', holds a number word) and roc (heard as two names) are not spelled",
  "route_words_dropped": {
   "cefepime": [
    "zephyr by"
@@ -544,9 +560,11 @@
   "ertapenem": [
    "already have numb",
    "arabian him",
+   "attempt then",
    "heard it numbs",
    "hurry up numb",
    "oh dayton him",
+   "or attempt then",
    "rape named his",
    "rape numb",
    "rep nam",
@@ -806,6 +824,7 @@
    "lavatory set em",
    "leavitt tourists at him",
    "level tourists said i'm",
+   "levitt react him",
    "levitt terrorism",
    "levitt terrorists adam",
    "levitt terrorists at him",
@@ -815,9 +834,12 @@
    "levitt tourists him",
    "levitt tourists i'm",
    "levitt tourists said i'm",
+   "levitt tracked him",
+   "levitt trick them",
    "levy terrorists adam",
    "levy terrorists at him",
-   "levy tourists at him"
+   "levy tourists at him",
+   "love attract them"
   ],
   "levo": [
    "leave all",
@@ -1008,6 +1030,7 @@
    "mark's if locks isn't",
    "marks if locks isn't",
    "marx if lapses isn't",
+   "marx if locks him",
    "marx if locks isn't"
   ],
   "mucomyst": [

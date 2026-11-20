@@ -1,5 +1,5 @@
 {
- "grammar_sha256": "869531003078cd1d08fb74577d5b6a80bb850bf6f82d46202f688737f24b0828",
+ "grammar_sha256": "32dcddaea03a7843e4f449c5c5661f7a079334c26315cad5c121b36fa00cc586",
  "voices": [
   "af_nicole",
   "am_liam",
@@ -7,7 +7,7 @@
  ],
  "names": 61,
  "clips": 183,
- "heard": 176,
+ "heard": 177,
  "heard_as_another_drug": 0,
  "rows": [
   {
@@ -237,10 +237,12 @@
    "primary": "atropine",
    "asks": [],
    "voice": "bf_lily",
-   "heard": "at troy pin",
+   "heard": "that troy pin",
    "decoder": "spelled",
-   "heard_as": [],
-   "turn": "Not recognised."
+   "heard_as": [
+    "atropine"
+   ],
+   "turn": "Weight?"
   },
   {
    "drug": "calcium chloride",
@@ -1634,7 +1636,7 @@
     "norepinephrine"
    ],
    "voice": "bf_lily",
-   "heard": "though",
+   "heard": "level",
    "decoder": "spelled",
    "heard_as": [],
    "turn": "Not recognised."

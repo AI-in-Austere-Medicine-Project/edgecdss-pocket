@@ -147,6 +147,17 @@ spellings made from the dry-run do not cover them. The recordings are saved
 (`NNN.wav`), so a spellings change can be scored again with `voice.bench --names --wavs`
 without saying the names again.
 
+**The same clips, scored again (2026-11-20, `voice.bench --names --wavs`, no new recording).**
+- Main after #5 (signed-only grammar, cefazolin spelled) hears 23 of 31.
+- With the new spellings in `grammar/sounds_like.json` ("owner_clips_added") it hears 26 of 31: ertapenem, levetiracetam and moxifloxacin are now heard as their drug.
+- Epinephrine and norepinephrine each ask "Epinephrine or norepinephrine?". The bench counts that as "another drug", but it is the confused-pair question from #5, and no dose follows it.
+- Three are left unspelled, because each decode holds a word that already means something:
+  - phytomenadione: "fido ten made own" holds the number "ten";
+  - rocephin: "role seven" holds a number;
+  - roc: heard as two names, so it answers "One drug at a time.".
+- Ceftriaxone and rocuronium are heard by their generic names.
+- The synthetic dry run hears 177 of 183, with 0 heard as another drug.
+
 **Other findings.**
 - Debian 12's image has no `rsync`, `unzip`, `rfkill` (in `/usr/sbin`), `sox` or venv
   support (`python3-venv`); SSH was not enabled on first boot.
