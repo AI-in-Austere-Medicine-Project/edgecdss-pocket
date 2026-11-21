@@ -78,6 +78,10 @@ For someone who has never used Pocket (owner, 2026-11-21). None of it ever speak
 - **"what can I say"** lists only what works now: at the start, "drugs, procedures, help, new patient, or a drug or procedure name"; at a read-back, "yes, no, repeat, or why"; in a procedure, "next, back, repeat, start over, failed airway, or home"; at a yes-or-no question, "yes or no"; waiting for a weight, how to say one; at "X or Y?", the two names.
 - "help", "what can I say", "drugs" and "procedures" change nothing: a read-back still waits (and is not a miss), a step or question still stands.
 
+## Spellings from the teach page
+
+`python -m voice.tools.teach_spellings MODEL [--apply]` turns what the teach page saved into sound-alike spellings (owner, 2026-11-21), and can be run again after every session. A spelling is kept only when it was heard twice, or is how one of the owner's missed clips was heard. It must sound like the name, must not be everyday words only, and must hold no word that means something else to Pocket (another drug's name, signed or not, a number, a route, a unit, a command). It is kept only if no clip of the owner's, and no clip of the synthetic dry run, is then heard as another drug. The report goes to `bench-out/`; the clips stay out of the repo.
+
 ## Flow
 
 - "New patient" clears weight and age and says so.

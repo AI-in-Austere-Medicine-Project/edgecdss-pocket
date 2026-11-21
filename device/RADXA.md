@@ -194,6 +194,16 @@ With the USB mic plugged in (speech then goes to the JBL over A2DP):
 - **Output:** `bench-out/device-<time>/` holds `doses.jsonl` (the start-up line, then each dose), `heard.jsonl` (each utterance: what was heard, the answer in both forms, timings) and one WAV per utterance.
 - **Stop:** Ctrl-C.
 
+## How Pocket says each word (2026-11-21)
+
+Every drug name, route, procedure name and command word, numbered and one at a time, so the owner can note the ones that sound wrong:
+
+    sudo systemctl stop pocket
+    cd ~/edgecdss-pocket && ~/pocket-venv/bin/python -m voice.tools.say_all
+    sudo systemctl start pocket
+
+`--only 7,12` says just those again, `--from 40` starts part way, and `--list` prints the list without speaking. A word that sounds wrong gets a spoken spelling in `engine/words.SAY_AS`: it changes only what is said, never what is shown or logged.
+
 ## What changes from the Pi
 
 - **Memory.** The memory floor is met on a 1 GB or larger board. The memory controller is

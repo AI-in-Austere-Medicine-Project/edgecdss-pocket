@@ -237,8 +237,8 @@ def _said(turn: Turn) -> Turn:
     step = words.say_step if "step" in turn.data else (lambda t: t)
     if turn.kind == "menu":
         step = _say_menu
-    return dataclasses.replace(turn, say=words.say_routes(step(turn.say)),
-                               after=[words.say_routes(a) for a in turn.after],
+    return dataclasses.replace(turn, say=words.say_as(words.say_routes(step(turn.say))),
+                               after=[words.say_as(words.say_routes(a)) for a in turn.after],
                                written=turn.say, written_after=list(turn.after))
 
 

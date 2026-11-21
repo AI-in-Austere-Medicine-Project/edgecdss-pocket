@@ -102,6 +102,19 @@ def say_routes(text: str) -> str:
     return sentence(text) if starts else text
 
 
+# Names said another way so the voice gets them right (owner, by ear, from the numbered
+# list of voice/tools/say_all.py): the spoken form only; the screen and the log keep the
+# name. Name (lower case) -> how to say it.
+SAY_AS: dict = {}
+
+
+def say_as(text: str) -> str:
+    """Each SAY_AS name, as a whole word in any case, said its way."""
+    for name, said in sorted(SAY_AS.items(), key=lambda kv: -len(kv[0])):
+        text = re.sub(rf"(?i)(?<![a-z]){re.escape(name)}(?![a-z])", said, text)
+    return text
+
+
 def say_chars(text: str) -> str:
     """Read character by character: a version or a hash."""
     names = {".": "point", "+": "plus", "-": "dash"}

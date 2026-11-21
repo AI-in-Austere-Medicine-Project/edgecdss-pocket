@@ -166,6 +166,18 @@ class Vocabulary:
         return [t for t, c in self.class_terms.items() if c == cls]
 
 
+def menu_only_words(vocab) -> set:
+    """Words that only the home menu's longer commands use ("what", "can", "say",
+    "list"): alone they mean nothing to the parser. "i" is not one: it is half of "i v"."""
+    elsewhere = set(NUMBERS) | set(PATIENT) | set(WEIGHT_UNITS) | set(AGE_UNITS) | set(DOSE_UNITS)
+    elsewhere |= set(VOLUME_UNITS) | set(FILLERS) | vocab.label_words
+    for group in ([c for c in CONTROLS if c not in MENU_CONTROLS or len(c.split()) == 1], ROUTES,
+                  CONDITIONS, vocab.drug_terms, vocab.class_terms, PROCEDURE_TERMS):
+        for term in group:
+            elsewhere.update(term.split())
+    return {w for c in MENU_CONTROLS if len(c.split()) > 1 for w in c.split()} - elsewhere
+
+
 def _reserved() -> set:
     out = set(CONTROLS) | set(ROUTES) | set(PATIENT) | set(WEIGHT_UNITS) | set(AGE_UNITS)
     return out | set(DOSE_UNITS) | set(VOLUME_UNITS) | set(FILLERS) | set(NUMBERS)
