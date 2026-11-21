@@ -471,3 +471,18 @@ def test_the_voice_says_when_it_has_loaded():
     done = []
     later = au.Later(lambda: "voice", done=lambda: done.append(True))
     assert later.get() == "voice" and done == [True]
+
+
+def test_after_a_minute_it_asks_the_speaker_less_often(tmp_path):
+    """Every 5 s for the first minute, then every 30 s: each try keeps the board's radio
+    (Wi-Fi and Bluetooth on one chip) paging for about 5 s. A trusted speaker switched on
+    connects to the board by itself in between."""
+    clock = Clock()
+    board = Board(clock, on_after=20)
+    p, board, speaker, clock, sleeps, _ = make(tmp_path, board)
+    board.button_obj = Button(clock, then=lose_speaker(board))
+    p.run(forever=False)
+    fast = int(au.SPEAKER_FAST_FOR_S / au.SPEAKER_RETRY_S)
+    assert sleeps[:fast] == [au.SPEAKER_RETRY_S] * fast
+    assert set(sleeps[fast:20]) == {au.SPEAKER_RETRY_SLOW_S}
+    assert speaker.said[0] == START_UP_LINE
