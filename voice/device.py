@@ -1,6 +1,7 @@
 """The device: push-to-talk, the session, speech out. Drugs and procedure steps by voice.
 
   python3 -m voice.device [--mode toggle|hold] [--enter] [--out DIR]
+  python3 -m voice.device --typed     type what you would say; the answer is spoken
 
 Press, hear the beep, speak; release ("hold") or press again ("toggle"; the JBL Clip 3).
 What was heard goes to the same Session the typed path uses, as heard (spoken=True: a
@@ -135,6 +136,24 @@ def _wav(path, pcm: bytes) -> None:
         w.writeframes(pcm)
 
 
+def _lines():
+    while True:
+        yield input("> ")
+
+
+def typed(session, speaker, lines, print=print) -> None:
+    """Typed in, spoken out: each typed line goes to the session as typed (as the typed
+    path does), and its answer is spoken. No mic, so no headset call link is opened and
+    the speaker stays on A2DP."""
+    speaker.say(session.announce.text)
+    for line in lines:
+        if not line.strip():
+            continue
+        turn = session.handle(line)
+        print(turn.written_text, flush=True)
+        speaker.say(turn.text)
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--model", default=str(MODEL))
@@ -144,10 +163,22 @@ def main(argv=None):
     ap.add_argument("--mode", choices=("hold", "toggle"), default="toggle")
     ap.add_argument("--button", help="input device name to use as push-to-talk")
     ap.add_argument("--enter", action="store_true", help="Enter key as push-to-talk (toggle)")
+    ap.add_argument("--typed", action="store_true",
+                    help="type what you would say; the answer is spoken (no mic)")
     a = ap.parse_args(argv)
 
     out = pathlib.Path(a.out or ROOT / "bench-out" / datetime.datetime.now().strftime("device-%Y%m%d-%H%M%S"))
     out.mkdir(parents=True, exist_ok=True)
+    if a.typed:
+        from voice.speak import Speaker
+        session = boot(a.bank, log=jsonl_log(out / "doses.jsonl"))
+        speaker = Speaker(a.piper)
+        print(f"out: {out}\nspeaker: {speaker.device}\n{session.announce.written_text}", flush=True)
+        try:
+            typed(session, speaker, _lines())
+        except (KeyboardInterrupt, EOFError):
+            pass
+        return
     import vosk
     from voice import listen
     from voice.hear import Hearing

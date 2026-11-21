@@ -270,7 +270,7 @@ def test_the_a2dp_speaker_stays_44_1_khz_stereo():
 
 def test_typed_mode_speaks_the_start_up_line_then_each_answer_in_the_spoken_form(tmp_path):
     speaker = Speaker()
-    dev.typed(boot(BANK), speaker, ["ketamine for agitation iv 80kg", "", "confirm"], print=lambda *a: None)
+    dev.typed(boot(BANK), speaker, ["ketamine for agitation iv 80kg", "", "confirm"], print=lambda *a, **k: None)
     assert speaker.said[0] == "PFC set, version one point four point zero."
     assert speaker.said[1] == "Ketamine, agitation, eye vee, eighty kilos. Confirm?"
     assert speaker.said[2].startswith("Ketamine one hundred and sixty milligrams.")
@@ -279,7 +279,7 @@ def test_typed_mode_speaks_the_start_up_line_then_each_answer_in_the_spoken_form
 
 def test_typed_mode_runs_rsi(tmp_path):
     speaker = Speaker()
-    dev.typed(boot(BANK), speaker, ["rsi 80kg", "next", "repeat", "start over"], print=lambda *a: None)
+    dev.typed(boot(BANK), speaker, ["rsi 80kg", "next", "repeat", "start over"], print=lambda *a, **k: None)
     assert speaker.said[1].startswith("Rapid sequence intubation, adult, eighty kilos. Step one of eleven.")
     assert speaker.said[3] == speaker.said[2] and speaker.said[4] == speaker.said[1]
 
@@ -295,7 +295,11 @@ def test_typed_mode_plays_over_the_music_link_and_opens_no_mic(tmp_path, monkeyp
     import voice.speak
     monkeypatch.setattr(voice.speak, "Speaker", FakeSpeaker)
     monkeypatch.setattr(dev, "_lines", lambda: iter(["next"]))
-    monkeypatch.setattr(dev.listen_module(), "Mic", lambda *a: (_ for _ in ()).throw(AssertionError("mic")))
+    import voice.listen
+
+    def no_mic(*a):
+        raise AssertionError("typed mode opened a mic")
+    monkeypatch.setattr(voice.listen, "Mic", no_mic)
     dev.main(["--typed", "--out", str(tmp_path)])
     assert made == {"headset": None, "device": None}
-    assert (tmp_path / "doses.jsonl").read_text().startswith('{"event": "boot"')
+    assert json.loads((tmp_path / "doses.jsonl").read_text().splitlines()[0])["event"] == "boot"
