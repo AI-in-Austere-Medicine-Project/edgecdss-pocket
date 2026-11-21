@@ -11,7 +11,8 @@ import pytest
 from engine.session import boot, jsonl_log
 from voice import device as dev
 from voice import spoken
-from voice.speak import play_device, tone
+from voice import speak
+from voice.speak import out_format, play_device, tone
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 BANK = ROOT / "bank"
@@ -236,3 +237,30 @@ def test_the_play_device_is_pocket_play_when_set(monkeypatch):
 def test_the_beep_is_a_short_faded_tone():
     pcm = tone(16000, 880.0, 0.12)
     assert len(pcm) == 2 * 1920 and pcm[:2] == b"\0\0"
+
+
+JBL = "2C:FD:B4:DD:BD:A5"
+
+
+def test_with_the_headset_mic_open_speech_goes_to_the_headset_call_link(monkeypatch):
+    # The JBL stalls its A2DP link while its mic (SCO) is open (board, 2026-11-21).
+    monkeypatch.delenv("POCKET_PLAY", raising=False)
+    assert play_device(JBL) == f"bluealsa:DEV={JBL},PROFILE=sco"
+
+
+def test_pocket_play_still_wins_over_the_headset(monkeypatch):
+    monkeypatch.setenv("POCKET_PLAY", "null")
+    assert play_device(JBL) == "null"
+
+
+def test_the_call_link_is_8_khz_mono_on_cvsd_and_16_khz_on_msbc(monkeypatch):
+    codec = {"c": "CVSD"}
+    monkeypatch.setattr(speak, "_sco_codec", lambda mac: codec["c"])
+    assert out_format(f"bluealsa:DEV={JBL},PROFILE=sco") == (8000, 1)
+    codec["c"] = "mSBC"
+    assert out_format(f"bluealsa:DEV={JBL},PROFILE=sco") == (16000, 1)
+
+
+def test_the_a2dp_speaker_stays_44_1_khz_stereo():
+    assert out_format(f"bluealsa:DEV={JBL},PROFILE=a2dp") == (44100, 2)
+    assert out_format("default") == (44100, 2)
