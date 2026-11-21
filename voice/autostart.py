@@ -42,6 +42,9 @@ MIC_RETRY_S = 3.0
 CHECK_S = 2.0           # while listening or idle: is the speaker still there, the mic?
 SETTLE_S = 1.5          # a speaker just connected drops the first second it is sent
 BUTTON_WAIT_S = 10.0    # the speaker's button appears as an input device just after it
+# A USB mic's recording level when it is plugged in (many start at 0 %). 80 % suited the
+# owner's voice on the first USB mic (2026-11-11, device/RADXA.md). POCKET_MIC_LEVEL overrides.
+MIC_LEVEL = int(os.getenv("POCKET_MIC_LEVEL", "80"))
 
 
 class SpeakerLost(Exception):
@@ -66,6 +69,7 @@ class Board:
 
     def __init__(self, run=_run):
         self.run = run
+        self._levelled = None      # the card whose level is set; None after it is pulled out
 
     def connected_speaker(self):
         """The MAC of the A2DP speaker bluez-alsa is connected to, or None."""
@@ -89,10 +93,25 @@ class Board:
         self.run(["bluetoothctl", "connect", mac], timeout=15)
 
     def mic(self, cards="/proc/asound"):
-        """A capture command for the first USB sound card that records, or None."""
+        """A capture command for the first USB sound card that records, or None. Any USB
+        mic, whatever its make: its recording level is set when it is found."""
         if os.getenv("POCKET_CAPTURE"):
             return os.environ["POCKET_CAPTURE"].split()
-        return usb_capture(pathlib.Path(cards))
+        cmd = usb_capture(pathlib.Path(cards))
+        card = cmd[3].split("CARD=")[1].split(",")[0] if cmd else None
+        if card and card != self._levelled:
+            self.set_level(card)
+        self._levelled = card
+        return cmd
+
+    def set_level(self, card: str) -> None:
+        """Every capture control of the card to MIC_LEVEL, capture switched on."""
+        for line in self.run(["amixer", "-c", card, "scontrols"]).splitlines():
+            if "'" not in line:
+                continue
+            name = line.split("'")[1]
+            if "cvolume" in self.run(["amixer", "-c", card, "sget", name]):
+                self.run(["amixer", "-q", "-c", card, "sset", name, f"{MIC_LEVEL}%", "cap"])
 
     def button(self):
         from voice import listen
