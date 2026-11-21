@@ -954,10 +954,22 @@ def boot(bank_dir, log: Optional[Callable] = None, now: Optional[Callable] = Non
 
 
 def jsonl_log(path) -> Callable:
-    """Append-only JSON lines, flushed to disk per dose (rule 3)."""
+    """Append-only JSON lines, flushed to disk per dose (rule 3). The first line also
+    fsyncs the directory, so a new log file's name survives a power cut too (owner,
+    2026-11-21: power can be cut at any time)."""
+    path = os.fspath(path)
+    synced = []
+
     def write(record: dict) -> None:
         with open(path, "a", encoding="utf-8") as f:
             f.write(json.dumps(record, sort_keys=True) + "\n")
             f.flush()
             os.fsync(f.fileno())
+        if not synced:
+            fd = os.open(os.path.dirname(os.path.abspath(path)), os.O_RDONLY)
+            try:
+                os.fsync(fd)
+            finally:
+                os.close(fd)
+            synced.append(True)
     return write

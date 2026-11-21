@@ -1,0 +1,21 @@
+# Pocket on power-up (owner, 2026-11-21). Installed by device/install.sh, which fills in
+# @USER@ and @HOME@. No network: nothing here waits for it, and Pocket uses none.
+[Unit]
+Description=EdgeCDSS Pocket: the voice session, from power-up
+After=bluetooth.service bluealsa.service sound.target
+Wants=bluetooth.service bluealsa.service
+# Restart however often it fails: the rate limit belongs in [Unit], not [Service].
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+User=@USER@
+WorkingDirectory=@HOME@/edgecdss-pocket
+Environment=PYTHONUNBUFFERED=1
+ExecStart=@HOME@/pocket-venv/bin/python -m voice.autostart
+Restart=always
+RestartSec=3
+Nice=-5
+
+[Install]
+WantedBy=multi-user.target
