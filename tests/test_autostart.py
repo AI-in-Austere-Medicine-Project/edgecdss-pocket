@@ -430,3 +430,38 @@ def test_the_install_script_edits_fstab_only_as_intended(tmp_path):
     assert lines[1] == "UUID=d3e1 / ext4 defaults,noatime 0 1"
     assert lines[2].startswith("# pocket: no swap on the card # /swapfile")
     assert lines[0] == "UUID=21BD-9125 /config vfat defaults,x-systemd.automount 0 2"
+
+
+
+def test_the_voice_loads_while_the_speaker_connects_and_is_waited_for_before_speaking(tmp_path):
+    import threading
+    gate, made = threading.Event(), []
+
+    def make_speaker():
+        gate.wait(5)
+        made.append(Speaker())
+        return made[-1]
+    p, board, _, clock, _, _ = make(tmp_path)
+    p.speaker = au.Later(make_speaker)
+    board.button_obj = Button(clock, then=lose_speaker(board))
+    connects_before = []
+    real_connect = board.connect
+
+    def connect(mac):
+        connects_before.append(bool(made))
+        real_connect(mac)
+        gate.set()                                   # the voice finishes after the connect
+    board.connect = connect
+    p.run(forever=False)
+    assert connects_before == [False]                # it asked the speaker while loading
+    assert made and made[0].said[0] == START_UP_LINE
+
+
+def test_a_voice_that_fails_to_load_fails_the_service_so_it_restarts(tmp_path):
+    p, board, _, clock, _, _ = make(tmp_path)
+
+    def broken():
+        raise RuntimeError("no voice")
+    p.speaker = au.Later(broken)
+    with pytest.raises(RuntimeError, match="no voice"):
+        p.run(forever=False)
