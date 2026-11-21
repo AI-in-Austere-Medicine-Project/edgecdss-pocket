@@ -264,3 +264,38 @@ def test_the_call_link_is_8_khz_mono_on_cvsd_and_16_khz_on_msbc(monkeypatch):
 def test_the_a2dp_speaker_stays_44_1_khz_stereo():
     assert out_format(f"bluealsa:DEV={JBL},PROFILE=a2dp") == (44100, 2)
     assert out_format("default") == (44100, 2)
+
+
+# ── typed in, spoken out (owner, 2026-11-21: until the USB speaker-mic arrives) ──
+
+def test_typed_mode_speaks_the_start_up_line_then_each_answer_in_the_spoken_form(tmp_path):
+    speaker = Speaker()
+    dev.typed(boot(BANK), speaker, ["ketamine for agitation iv 80kg", "", "confirm"], print=lambda *a: None)
+    assert speaker.said[0] == "PFC set, version one point four point zero."
+    assert speaker.said[1] == "Ketamine, agitation, eye vee, eighty kilos. Confirm?"
+    assert speaker.said[2].startswith("Ketamine one hundred and sixty milligrams.")
+    assert len(speaker.said) == 3 and speaker.beeps == 0      # a blank line says nothing
+
+
+def test_typed_mode_runs_rsi(tmp_path):
+    speaker = Speaker()
+    dev.typed(boot(BANK), speaker, ["rsi 80kg", "next", "repeat", "start over"], print=lambda *a: None)
+    assert speaker.said[1].startswith("Rapid sequence intubation, adult, eighty kilos. Step one of eleven.")
+    assert speaker.said[3] == speaker.said[2] and speaker.said[4] == speaker.said[1]
+
+
+def test_typed_mode_plays_over_the_music_link_and_opens_no_mic(tmp_path, monkeypatch):
+    made = {}
+
+    class FakeSpeaker(Speaker):
+        def __init__(self, onnx, device=None, headset=None):
+            super().__init__()
+            made.update(headset=headset, device=device)
+            self.device = "a2dp"
+    import voice.speak
+    monkeypatch.setattr(voice.speak, "Speaker", FakeSpeaker)
+    monkeypatch.setattr(dev, "_lines", lambda: iter(["next"]))
+    monkeypatch.setattr(dev.listen_module(), "Mic", lambda *a: (_ for _ in ()).throw(AssertionError("mic")))
+    dev.main(["--typed", "--out", str(tmp_path)])
+    assert made == {"headset": None, "device": None}
+    assert (tmp_path / "doses.jsonl").read_text().startswith('{"event": "boot"')
