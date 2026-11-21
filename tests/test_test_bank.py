@@ -185,7 +185,7 @@ def test_every_log_line_carries_test_true(tmp_path, testing):
     for _ in range(3):
         _dose(s, *KETAMINE)
     lines = [json.loads(l) for l in log.read_text().splitlines()]
-    assert len(lines) == 3
+    assert len(lines) == 4 and lines[0]["event"] == "boot"     # the start-up line, three doses
     assert all(l["test"] is True for l in lines)
 
 

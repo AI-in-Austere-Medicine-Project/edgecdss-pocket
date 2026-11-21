@@ -17,7 +17,8 @@ import re
 CONFIRM_WORDS = ("confirm", "yes", "correct", "affirmative")
 CANCEL_WORDS = ("cancel", "no", "negative", "stop", "wrong")
 CONTROL_OF = {**{w: "confirm" for w in CONFIRM_WORDS}, **{w: "cancel" for w in CANCEL_WORDS}}
-CONTROLS = ("new patient", *CONFIRM_WORDS, *CANCEL_WORDS, "repeat", "next", "back", "why", "log", "battery")
+CONTROLS = ("new patient", *CONFIRM_WORDS, *CANCEL_WORDS, "repeat", "next", "back", "start over",
+            "why", "log", "battery")
 # Signed procedures, said by name (owner, 2026-11-20). "rsi" and "r s i" are the RSI class
 # term already: said alone, they start the RSI steps (engine/session.py).
 PROCEDURE_TERMS = {"failed airway": "failed airway", "rapid sequence intubation": "rsi"}

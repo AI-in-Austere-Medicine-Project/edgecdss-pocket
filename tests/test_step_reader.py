@@ -85,7 +85,8 @@ def test_the_signed_rsi_text_is_word_for_word_what_the_owner_signed():
 
 def test_the_failed_airway_lines_are_the_signed_fa_text_and_p5():
     proc, steps = _steps("failed airway")
-    assert " ".join(steps[i]["text"] for i in proc["order"]["adult"]) == FA
+    b = proc["branch"]                          # owner, 2026-11-21: asked, then one branch
+    assert " ".join(steps[i]["text"] for i in proc["order"]["adult"] + [b["yes"], b["no"]]) == FA
     assert steps["P5"]["text"] == SIGNED["P5"]
     assert proc["child_under"] == {"years": 12, "replace": "FA3", "with": "P5"}
     assert steps["FA3"]["text"].startswith("YES → Surgical airway")
@@ -246,7 +247,7 @@ def test_a_dose_is_never_spoken_without_its_read_back_and_confirm():
     assert s.handle("ketamine").kind == "readback"
     assert s.handle("next").kind == "ask"          # a miss, not the next step
     assert s.handle("next").text == "Cancelled."
-    assert s.records == []
+    assert [r for r in s.records if "drug" in r] == []
 
 
 def test_after_a_dose_next_goes_on_to_the_next_step():
@@ -316,11 +317,12 @@ def test_a_dose_asked_for_by_drug_and_indication_is_unchanged():
 def test_failed_airway_is_its_own_procedure_and_asks_no_weight():
     s = boot(BANK)
     turn = s.handle("failed airway")
-    assert turn.kind == "step" and turn.written.startswith("Failed airway. Step one of four.")
-    lines = [turn] + [s.handle("next") for _ in range(3)]
+    assert turn.kind == "step" and turn.written.startswith("Failed airway. Step one of three.")
+    lines = [turn, s.handle("next")]
     proc, steps = _steps("failed airway")
     for t, step_id in zip(lines, proc["order"]["adult"]):
         assert t.written.endswith(steps[step_id]["text"]), step_id
+    assert s.handle("next").written == "Can you mask ventilate? Say yes or no."
 
 
 @pytest.mark.parametrize("start,p5", [("failed airway child six years", True),
@@ -328,9 +330,10 @@ def test_failed_airway_is_its_own_procedure_and_asks_no_weight():
                                       ("failed airway child fourteen years", False),
                                       ("failed airway eighty kilos", False)])
 def test_p5_replaces_only_the_surgical_airway_line_for_a_child_under_12(start, p5):
-    s = boot(BANK)
-    lines = [s.handle(start)] + [s.handle("next") for _ in range(3)]
-    text = " ".join(t.written for t in lines)
+    def read(answer):
+        s = boot(BANK)
+        return [s.handle(start), s.handle("next"), s.handle("next"), s.handle(answer)]
+    text = " ".join(t.written for t in read("yes") + read("no"))
     assert (SIGNED["P5"] in text) is p5
     assert ("YES → Surgical airway (Cricothyroidotomy or tracheostomy)." in text) is not p5
     assert "NO → Emergency pathway. Seconds matter." in text

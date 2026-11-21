@@ -137,8 +137,9 @@ def test_a_dose_is_logged_with_a_time():
     s = boot(BANK, log=records.append, now=lambda: "2026-11-04T12:00:00Z")
     s.handle("ketamine for agitation iv eighty kilos")
     s.handle("confirm")
-    assert len(records) == 1
-    r = records[0]
+    assert [r["event"] for r in records[:1]] == ["boot"]   # the start-up line, then the dose
+    assert len(records) == 2
+    r = records[1]
     assert r["time"] == "2026-11-04T12:00:00Z"
     assert (r["drug"], r["route"], r["weight_kg"], r["dose"]) == ("ketamine", "IV", 80.0, "160 mg")
     assert r["bank_hash"] == s.announce.data["hash"]
@@ -149,4 +150,4 @@ def test_a_cancelled_dose_is_not_logged():
     s = boot(BANK, log=records.append)
     s.handle("ketamine for agitation iv eighty kilos")
     s.handle("cancel")
-    assert records == []
+    assert [r.get("event") for r in records] == ["boot"]

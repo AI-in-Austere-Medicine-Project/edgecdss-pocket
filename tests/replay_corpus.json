@@ -780,12 +780,12 @@
   ]
  },
  {
-  "id": "not-in-grammar-digits",
+  "id": "typed-digits",
   "turns": [
    [
     "ketamine for pain 80 kilos",
-    "unrecognised",
-    "Not recognised."
+    "ask",
+    "Which route: eye vee, eye em or intranasal?"
    ]
   ]
  },
@@ -1113,22 +1113,22 @@
    [
     "failed airway child six years",
     "step",
-    "Failed airway, child, six years. Step one of four. Unable to Intubate: Can You Mask Ventilate? Improve position, video laryngoscope, gum elastic bougie change blade/operator."
+    "Failed airway, child, six years. Step one of three. Unable to Intubate: Can You Mask Ventilate? Improve position, video laryngoscope, gum elastic bougie change blade/operator."
    ],
    [
     "next",
     "step",
-    "Step two of four. More than about three attempts at intubation may abolish your ability to mask ventilate due to edema caused by laryngoscopy."
+    "Step two of three. More than about three attempts at intubation may abolish your ability to mask ventilate due to edema caused by laryngoscopy."
    ],
    [
     "next",
-    "step",
-    "Step three of four. Avoid surgical airway in under twelve years old - use needle cricothyroidotomy (twelve to fourteen gauge), tracheostomy preferred over surgical cricothyroidotomy."
+    "ask",
+    "Can you mask ventilate? Say yes or no."
    ],
    [
-    "next",
+    "yes",
     "step",
-    "Step four of four. NO, then Emergency pathway. Seconds matter. Supraglottic airway or Surgical cricothyroidotomy."
+    "Step three of three. Avoid surgical airway in under twelve years old - use needle cricothyroidotomy (twelve to fourteen gauge), tracheostomy preferred over surgical cricothyroidotomy."
    ],
    [
     "next",

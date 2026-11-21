@@ -225,13 +225,17 @@ def test_e1_a_missing_bank_is_refused(tmp_path):
 ENTRIES = json.loads((BANK / "bank.json").read_text())["entries"]
 
 
-def test_g1_boot_announces_bank_version_and_hash(s):
+def test_g1_boot_announces_the_set_and_version_and_logs_the_full_version_and_hash():
+    """Owner, 2026-11-21: the spoken line is short; the full version and hash are logged."""
     man = json.loads((BANK / "manifest.json").read_text())
+    records = []
+    s = boot(BANK, log=records.append)
     assert s.announce.kind == "boot"
     assert s.announce.data["bank_version"] == man["bank_version"]
     assert s.announce.data["hash"] == man["sha256"]["bank.json"][:8]
-    assert s.announce.say.startswith("Bank version ")
-    assert " hash " in s.announce.say.lower()
+    assert s.announce.say == "PFC set, version one point four point zero."
+    assert (records[0]["bank_version"], records[0]["bank_hash"]) == (man["bank_version"],
+                                                                    man["sha256"]["bank.json"])
 
 
 def test_g1_why_speaks_the_source_of_the_dose_just_given(s):

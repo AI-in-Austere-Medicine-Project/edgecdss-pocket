@@ -43,6 +43,11 @@ CANCELLED = "Cancelled."
 PENDING_S = 30.0     # a read-back not confirmed within this is cancelled
 MISSES_TO_CANCEL = 2
 TEST_NOTICE = "Test set. Not for patient use."
+# The start-up line (owner, 2026-11-21): the set's name and version; the full version and
+# hash go to the log. The bank names no set, so the kit does.
+SET_NAMES = {"austere-deployment-default": "PFC set", "ems-formulary": "EMS set"}
+# Failed airway's question (owner, 2026-11-21): only "yes" or "no" answers it.
+SAY_YES_OR_NO = "Say yes or no."
 UNVERIFIED = "Unverified."
 # An entry that names its vial (kit_vial: a strength, or "none") gets no volume until
 # Pocket reads kit_vial: the drug's one signed vial is not necessarily the one the
@@ -222,7 +227,12 @@ class Run:
     known, Q2), and the step being read."""
     proc: Procedure
     steps: Optional[list] = None
-    i: int = 0
+    i: int = 0                   # len(steps): at the question; len(steps) + 1: its answer
+    answer: Optional[str] = None
+
+    @property
+    def asking(self) -> bool:
+        return bool(self.proc.branch) and self.steps is not None and self.i == len(self.steps)
 
 
 def _choice(items: list, joiner: str = " or ") -> str:
@@ -263,18 +273,19 @@ class Session:
         self.announce = _said(self._boot_turn())
 
     def _boot_turn(self) -> Turn:
+        """The set's name and its version ("1.4.0" of "1.4.0+2026-11-04.0b0af9b"), spoken;
+        the full version and the full hash, logged."""
         if self.refused:
             return Turn("refused", f"Bank refused: {self.refused}. No doses.")
-        short = self.bank.hash[:8]
-        kind = "test entries, unsigned" if self.bank.test else "signed entries"
-        say = (f"Bank version {words.say_chars(self.bank.version)}. "
-               f"Hash {words.say_chars(short)}. "
-               f"{words.sentence(words.num(len(self.bank.entries)))} {kind}, "
-               f"{words.num(sum(len(v) for v in self.bank.kit.values()))} signed vials.")
-        if self.bank.test:
+        bank, short = self.bank, self.bank.hash[:8]
+        name = set_name(bank.kit_id)
+        say = f"{name}, version {words.say_chars(bank.version.split('+')[0])}."
+        if bank.test:
             say = f"{TEST_NOTICE} {say}"
-        return Turn("boot", say, data={"bank_version": self.bank.version, "hash": short,
-                                       "test": self.bank.test})
+        self._log({"event": "boot", "time": self._now(), "set": name, "bank_version": bank.version,
+                   "bank_hash": bank.hash, "kit_id": bank.kit_id, "test": bank.test})
+        return Turn("boot", say, data={"bank_version": bank.version, "hash": short,
+                                       "test": bank.test})
 
     def parse(self, text: str) -> Parsed:
         return parse(text, self.vocab)
@@ -370,6 +381,8 @@ class Session:
             lead = "New patient. Weight and age cleared."
             if not controls and not p.has_slots():
                 return Turn("control", lead)
+        if self._run is not None and self._run.asking:
+            return self._at_question(p)
         if controls:
             if len(controls) > 1 or p.has_slots():
                 return Turn("control", "One command at a time.")
@@ -394,7 +407,13 @@ class Session:
             return Turn("control", "Cancelled.")
         if word in ("next", "back"):
             return self._move(1 if word == "next" else -1)
+        if word == "start over":
+            return self._start_over()
         if word == "repeat":
+            run = self._run
+            if run is not None and run.steps is not None and self.req.empty:
+                step = self._step_turn()            # the current step, not the last line
+                return Turn("repeat", step.say, list(step.after), dict(step.data))
             last = self._last_say
             if last is None:
                 return Turn("control", "Nothing to repeat.")
@@ -406,7 +425,7 @@ class Session:
             volume = self._last_volume and not self._pending
             return Turn("why", why_text(entry), caution_lines(entry, volume))
         if word == "log":
-            return Turn("control", f"{words.num(self._logged)} doses logged.")
+            return Turn("control", f"{words.sentence(words.num(self._logged))} doses logged.")
         return Turn("control", "Battery is not read on the bench.")
 
     def _slots(self, p: Parsed) -> Turn:
@@ -499,7 +518,7 @@ class Session:
             if patient.weight is None:
                 return Turn("ask", "Weight?")
         years = patient.age.years if patient.age else None
-        run.steps, run.i = run.proc.for_patient(patient.is_child, years), 0
+        run.steps, run.i, run.answer = run.proc.for_patient(patient.is_child, years), 0, None
         who = []
         if patient.known:
             who = ["child" if patient.is_child else "adult"] + [x for x in patient.said() if x != "child"]
@@ -507,9 +526,18 @@ class Session:
         return self._step_turn(lead)
 
     def _step_turn(self, lead: str = "") -> Turn:
-        run = self._run
-        step = run.steps[run.i]
-        say = (f"{lead}Step {words.num(run.i + 1)} of {words.num(len(run.steps))}. {step.text}")
+        """The step at run.i; at the question, the question; after it, the answer's step,
+        numbered last."""
+        run, n = self._run, len(self._run.steps)
+        total = n + (1 if run.proc.branch else 0)
+        if run.asking:
+            return Turn("ask", f"{words.sentence(run.proc.branch['ask'])} {SAY_YES_OR_NO}")
+        if run.i > n:
+            years = self.patient.age.years if self.patient.age else None
+            step = run.proc.answer(run.answer, self.patient.is_child, years)
+        else:
+            step = run.steps[run.i]
+        say = (f"{lead}Step {words.num(min(run.i, n) + 1)} of {words.num(total)}. {step.text}")
         after = []
         if step.doses:
             after.append(f"For the dose, say {_choice([words.say_name(d) for d in step.drugs])}.")
@@ -522,13 +550,38 @@ class Session:
         if run.steps is None:
             return Turn("ask", "Weight?")
         self.req = Request()
+        n, branch = len(run.steps), bool(run.proc.branch)
         if run.i + by < 0:
             return Turn("step", "First step.")
-        if run.i + by >= len(run.steps):
+        if run.asking and by > 0:
+            return Turn("ask", SAY_YES_OR_NO)
+        if run.i + by >= n + (2 if branch else 0):
             self._run = None
             return Turn("step", f"End of {run.proc.title} steps.")
         run.i += by
+        if run.asking:
+            run.answer = None
         return self._step_turn()
+
+    def _at_question(self, p: Parsed) -> Turn:
+        """Only "yes" or "no" answers (owner, 2026-11-21). "repeat", "back", "start over"
+        and "cancel" work as always; anything else asks again."""
+        said = p.controls[0] if len(p.controls) == 1 and not p.has_slots() else None
+        if said in ("yes", "no"):
+            run = self._run
+            run.answer, run.i = said, len(run.steps) + 1
+            return self._step_turn()
+        if said in ("repeat", "back", "start over", "cancel"):
+            return self._control(said)
+        return Turn("ask", SAY_YES_OR_NO)
+
+    def _start_over(self) -> Turn:
+        """The current procedure from step one; the patient stays, the request does not."""
+        run = self._run
+        if run is None:
+            return Turn("control", "No steps running.")
+        self.req, self._pending = Request(), None
+        return self._begin()
 
     def _at_step(self) -> None:
         """A drug the current step names: only that step's signed entries (Q5). Any
@@ -736,6 +789,13 @@ class Session:
             return True
         signed = {p for v in self.bank.kit.get(drug) or [] for p in _vial_phrasings(v)}
         return all(_vial_words(s) in signed for s in stated)
+
+
+def set_name(kit_id: str) -> str:
+    for prefix, name in SET_NAMES.items():
+        if kit_id.startswith(prefix):
+            return name
+    return "Drug set"
 
 
 def _key(e: dict) -> tuple:

@@ -60,10 +60,11 @@ The Pi Zero 2 W runs Pocket, but below the memory floor. The Radxa ZERO 3W is re
 
 ## Vocabulary
 
-Drug names and aliases from the bank; indication names from the bank; routes (IV, IO, IM, IN, PO, NEB, "line", and "intravenous", "in the vein", "intramuscular", "intraosseous", "by mouth", "oral", "intranasal"); numbers, "kilos," "pounds," "estimated"; "child," "years"; conditions the medic can state ("burns," "crush injury," "head injury," "asthma"), each one found in the signed contraindications or cautions; control words: confirm, cancel, repeat, next, back, why, new patient, log, battery; procedures: "RSI" ("r s i", "rapid sequence intubation") and "failed airway". About forty words plus numbers.
+Drug names and aliases from the bank; indication names from the bank; routes (IV, IO, IM, IN, PO, NEB, "line", and "intravenous", "in the vein", "intramuscular", "intraosseous", "by mouth", "oral", "intranasal"); numbers, "kilos," "pounds," "estimated"; "child," "years"; conditions the medic can state ("burns," "crush injury," "head injury," "asthma"), each one found in the signed contraindications or cautions; control words: confirm, cancel, repeat, next, back, start over, why, new patient, log, battery; procedures: "RSI" ("r s i", "rapid sequence intubation") and "failed airway". About forty words plus numbers.
 
 What Vosk can hear (`grammar/vosk_grammar.json`) is narrower than what the typed parser reads (owner, 2026-11-15):
 - **Signed drugs only.** The grammar's drug words, and their phonetic spellings, come only from the bank's signed drugs. An unsigned drug cannot be heard as itself or pull a nearby sound to it: said, it is "Not recognised." Typed, it still holds by name ("No signed dose for magnesium.").
+- **Typed numbers.** Typed digits are read as their words: "80kg", "80 kg" and "eighty kilos" are the same phrase (owner, 2026-11-21). A typed dose amount stays words, as a spoken one does, and is only read back. Vosk only ever gives words.
 - **Confused pairs ask first.** A pair that the owner's clips or the sound-alike checks confuse is listed in `grammar/confusable.json` with where it was seen. When it is heard, Pocket always asks "X or Y?" before the read-back, and the answer settles it. The pairs today are epinephrine and norepinephrine, and IM and IN said by letters. "intramuscular" and "intranasal" do not ask. Typed text cannot be misheard, so it does not ask.
 - **Words left out.** Three entries the parser reads are left out because they took the "v" of a spoken "i v" (`voice/grammar.py`, `NOT_IN_GRAMMAR`). "dvt" is now said as "blood clot" or "thrombosis"; "norepi" spelled "no ip" is left out, and norepinephrine is still heard by its other names.
 
@@ -83,8 +84,11 @@ Signed steps are read one at a time (owner, 2026-11-20). They come from `bank/pr
 - **"RSI"** reads the RSI steps.
   - The weight is asked once, at the start. Access is never asked.
   - An adult gets steps 1–10. A child gets P1 after step 1, P2 before the induction step, and P3 and P4 in place of 6 and 6b.
-- **"failed airway"** is its own procedure and needs no weight. For a child under 12, or a child of unknown age, P5 replaces only the surgical airway line.
-- **"next", "back" and "repeat"** move through the steps. "cancel" or "new patient" ends them.
+- **"failed airway"** is its own procedure and needs no weight. After its first two steps it asks "Can you mask ventilate? Say yes or no." (owner, 2026-11-21).
+  - Only "yes" or "no" answers. "yes" reads the surgical airway step, and "no" reads the emergency pathway step, each in its signed text.
+  - For a child under 12, or a child of unknown age, P5 replaces only the surgical airway line.
+- **"next", "back" and "repeat"** move through the steps. "repeat" reads the current step again, unless a dose question at that step is open, or a read-back is waiting.
+- **"start over"** goes back to step one of the same procedure and keeps the patient. "cancel" or "new patient" ends the steps.
 - **A step with a dose names its signed drugs:** "For the dose, say rocuronium or succinylcholine." The drug the medic says is read back for that step's signed entry, and doses only on "confirm". The usual holds and questions apply, such as a contraindication or the age band. The log line names the procedure and step.
 - **What is not spoken:**
   - unsigned drugs (etomidate, vecuronium);
@@ -129,7 +133,7 @@ Every answer comes in two forms (owner, 2026-11-19): the spoken form for the voi
 - C2 unsigned drug speaks the hold and nothing else.
 - D1 read-back on 100 % of dose flows; only a confirm word proceeds ("confirm", "yes", "correct", "affirmative"), and only straight after that dose's own read-back (see Confirm step).
 - E1 unsigned or EXAMPLE bank: device announces it and refuses all dose flows.
-- G1 "why" speaks the source for every entry; boot announces bank version and hash.
+- G1 "why" speaks the source for every entry. At start-up Pocket says the set's name and version ("PFC set, version one point four point zero."), and logs the full version and hash (owner, 2026-11-21).
 
 ## Test bank (bench only)
 
