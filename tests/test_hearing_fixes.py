@@ -225,6 +225,12 @@ def test_typed_text_cannot_be_misheard_so_it_does_not_ask():
 
 # ── the owner's clips ───────────────────────────────────────────────────────
 
+@pytest.fixture(scope="module")
+def owner_rows(hearing):
+    """The owner's clips decoded once per run (each pass takes about 12 s)."""
+    return _owner_rows(hearing)
+
+
 def _owner_rows(hearing):
     names = [json.loads(l)["typed"] for l in (OWNER / "results.jsonl").read_text().splitlines()]
     rows = []
@@ -242,16 +248,51 @@ def _owner_rows(hearing):
 
 @needs_model
 @needs_owner
-def test_no_owner_clip_is_heard_as_another_drug(hearing):
-    pairs = set(VOCAB.confusable.items())
-    for name, heard, got, want in _owner_rows(hearing):
+def test_no_owner_clip_is_heard_as_another_drug(owner_rows):
+    for name, heard, got, want in owner_rows:
         allowed = set(want) | {x for g in want for x in VOCAB.confusable.get(g, ())}
         assert got <= allowed, (name, heard, sorted(got))
 
 
 @needs_model
 @needs_owner
-def test_the_ertapenem_clip_is_not_rifampin_and_the_cefazolin_clip_is_cefazolin(hearing):
-    rows = {name: (heard, got) for name, heard, got, _ in _owner_rows(hearing)}
+def test_the_ertapenem_clip_is_not_rifampin_and_the_cefazolin_clip_is_cefazolin(owner_rows):
+    rows = {name: (heard, got) for name, heard, got, _ in owner_rows}
     assert "rifampin" not in rows["ertapenem"][1] and "rifampin" not in rows["ertapenem"][0]
     assert rows["cefazolin"][1] == {"cefazolin"}, rows["cefazolin"]
+
+
+# ── 5. the owner's gate misses (2026-11-20) ─────────────────────────────────
+# Signed drugs the owner's 2026-11-11 gate clips were not heard as, spelled as the decoders
+# heard those clips. Left unspelled, because each decode holds a word that means something
+# else: phytomenadione ("fido ten made own": a number; "tim": a word only an unsigned drug
+# uses), rocephin ("role seven": a number), "lev", "a" (parser words) and roc (heard as two
+# names, "One drug at a time."). Ceftriaxone and rocuronium are heard by their generic names.
+
+OWNER_SPELLINGS = {"ertapenem": ["attempt then", "or attempt then"],
+                   "levetiracetam": ["levitt react him", "levitt trick them", "levitt tracked him",
+                                     "love attract them"],
+                   "moxifloxacin": ["marx if locks him"]}
+
+
+@pytest.mark.parametrize("drug,said", [(d, s) for d, ss in OWNER_SPELLINGS.items() for s in ss])
+def test_the_owners_gate_misses_are_spelled_and_parse_as_that_drug_alone(drug, said):
+    assert said in SOUNDS["spellings"][drug]
+    assert said in GRAMMAR["words"]
+    p = parse(spoken.normalise(said), VOCAB)
+    assert [g for d in p.drugs for g in d.generics] == [drug]
+    assert not (p.unknown or p.controls or p.routes or p.weight or p.age or p.bare_number)
+
+
+def test_the_synthetic_dry_run_still_hears_no_drug_as_another():
+    d = json.loads((ROOT / "voice" / "dryrun_drugs.json").read_text())
+    assert d["heard_as_another_drug"] == 0
+    assert d["heard"] >= 177, d["heard"]
+
+
+@needs_model
+@needs_owner
+def test_the_owners_gate_misses_are_now_heard_as_their_drug(owner_rows):
+    rows = {name: got for name, _, got, _ in owner_rows}
+    for drug in OWNER_SPELLINGS:
+        assert rows[drug] == {drug}, (drug, rows[drug])
