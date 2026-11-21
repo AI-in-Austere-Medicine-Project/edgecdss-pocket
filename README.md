@@ -78,6 +78,10 @@ What Vosk can hear (`grammar/vosk_grammar.json`) is narrower than what the typed
 - A stated vial that is the kit's signed vial ("fifty milligrams per mil" for ketamine) gives the volume; any other stated vial gives milligrams only. The words are compared with the signed vial's; nothing is computed from them.
 - Unsigned drug: "No signed dose for magnesium." Nothing else.
 
+## On the device
+
+`python -m voice.device` is the voice session: press the headset button, hear the beep, speak; the answer is spoken. How to run it on the Radxa: [device/RADXA.md](device/RADXA.md#the-voice-session-2026-11-21).
+
 ## Procedure steps
 
 Signed steps are read one at a time (owner, 2026-11-20). They come from `bank/procedures.json`, signed by name from the RSI packet (JTS CPG ID39 p.28):
@@ -157,7 +161,7 @@ edgecdss-pocket/
 ├── bank/            bank.json, kit.json (exported; versioned; hash in manifest); procedures.json (signed steps)
 ├── engine/          dose engine + tests (ported from EdgeCDSS)
 ├── grammar/         generator: bank → Vosk grammar
-├── voice/           vosk + piper glue, push-to-talk, templates
+├── voice/           vosk + piper glue, push-to-talk, templates; device.py is the voice session
 ├── device/          OS image notes, service unit, Bluetooth pairing, power
 └── tests/           acceptance tests A–G, replay corpus of phrases
 ```
