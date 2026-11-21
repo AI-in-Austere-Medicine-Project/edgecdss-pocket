@@ -17,3 +17,4 @@ The order of the sections is in [ROADMAP.md](../ROADMAP.md). Device notes are in
 
 - 2026-11-20: work order started with the rules above.
 - 2026-11-20: RSI step reader on the steps the owner signed from the 2026-11-20 packet (`bank/procedures.json`). Next batch, not now: etomidate, vecuronium, and ketamine post-intubation re-sourced to SMOG p.12.
+- 2026-11-21: fixes from the owner's typed RSI run on the Radxa: typed numbers, "repeat" re-reads the step, "start over", failed airway asks "Can you mask ventilate?", short start-up line.

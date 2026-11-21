@@ -46,6 +46,7 @@ class Bank:
     hash: str
     commit: str
     test: bool = False
+    kit_id: str = ""
 
     @property
     def signed_drugs(self) -> set:
@@ -176,4 +177,5 @@ def load_bank(directory, test=None) -> Bank:
         vials.setdefault(v["drug"], []).append(v)
 
     return Bank(entries=entries, kit=vials, no_signed_dose=bank.get("no_signed_dose") or [],
-                version=version, hash=sums[names["bank"]], commit=commit, test=test)
+                version=version, hash=sums[names["bank"]], commit=commit, test=test,
+                kit_id=str(manifest.get("kit_id") or ""))

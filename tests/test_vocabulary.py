@@ -31,7 +31,7 @@ def test_every_signed_class_can_be_named():
         assert VOCAB.class_terms_for(e["indication_class"]), e["indication_class"]
 
 
-@pytest.mark.parametrize("phrase", ["zzz", "ketamine 80", "ketamine please", "ketamin"])
+@pytest.mark.parametrize("phrase", ["zzz", "ketamine 1000000", "ketamine please", "ketamin"])
 def test_a_word_outside_the_list_refuses_the_whole_phrase(phrase):
     p = parse(phrase, VOCAB)
     assert p.unknown

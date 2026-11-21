@@ -8,6 +8,7 @@ import dataclasses
 import re
 from typing import Optional
 
+from engine.words import number_words
 from grammar.vocabulary import (AGE_UNITS, CONDITIONS, CONTROLS, DOSE_UNITS, FILLERS, NUMBERS, PATIENT, PROCEDURE_TERMS,
                                 ROUTE_WORDS, ROUTES, VOLUME_UNITS, WEIGHT_UNITS, Vocabulary)
 
@@ -155,8 +156,23 @@ def _match(toks: list, i: int, table, longest: int = 5):
     return None, 0
 
 
+_DIGITS = re.compile(r"\d+(?:\.\d+)?")
+_GLUED_UNIT = re.compile(r"(\d)([a-z])")
+
+
+def _digits_as_words(m) -> str:
+    try:
+        return f" {number_words(m.group(0))} "
+    except ValueError:          # a million or more: left as digits, so not recognised
+        return f" {m.group(0)} "
+
+
 def tokens(text: str) -> list:
-    return re.sub(r"[,.;:?!]", " ", text.lower()).replace("-", " ").split()
+    """Typed digits are read as their words ("80kg" is "eighty kg"; owner, 2026-11-21), so
+    a typed phrase goes the way the same phrase said would. Vosk only ever gives words."""
+    text = _GLUED_UNIT.sub(r"\1 \2", text.lower())
+    text = _DIGITS.sub(_digits_as_words, text)
+    return re.sub(r"[,.;:?!]", " ", text).replace("-", " ").split()
 
 
 def parse(text: str, vocab: Vocabulary) -> Parsed:

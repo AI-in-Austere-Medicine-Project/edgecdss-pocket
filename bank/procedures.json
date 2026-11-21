@@ -17,6 +17,9 @@
   {"id": "PT", "why": "struck by the owner, 2026-11-20 (pretreat, SMOG p.12 only)"}
  ],
  "not_spoken": ["etomidate", "vecuronium"],
+ "amended": [
+  {"date": "2026-11-21", "by": "owner", "what": "failed airway asks \"Can you mask ventilate?\" after FA2 and reads only the answer's step: yes FA3 (P5 for a child under 12 or of unknown age), no FA4. No step text changed."}
+ ],
  "procedures": [
   {
    "name": "rsi",
@@ -75,10 +78,11 @@
    "signer": "Andrew Azelton",
    "date": "2026-11-20",
    "order": {
-    "adult": ["FA1", "FA2", "FA3", "FA4"],
-    "child": ["FA1", "FA2", "FA3", "FA4"]
+    "adult": ["FA1", "FA2"],
+    "child": ["FA1", "FA2"]
    },
    "child_under": {"years": 12, "replace": "FA3", "with": "P5"},
+   "branch": {"ask": "Can you mask ventilate?", "yes": "FA3", "no": "FA4"},
    "steps": [
     {"id": "FA1", "signed": "as written (FA, first lines)",
      "text": "Unable to Intubate: Can You Mask Ventilate? Improve position, video laryngoscope, gum elastic bougie change blade/operator."},
