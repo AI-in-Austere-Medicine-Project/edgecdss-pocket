@@ -168,7 +168,15 @@ without saying the names again.
 
 `voice/device.py` is the device itself: press, beep, speak, and the answer is spoken. Drugs and the procedure steps work the same way as typed. Run it from the repo on the board, with the JBL connected.
 
-With the JBL's own mic (no USB mic; phone-call quality, 8 kHz CVSD):
+Typed in, spoken out (no mic; the answer plays on the JBL over A2DP):
+
+    cd ~/edgecdss-pocket && ~/pocket-venv/bin/python -m voice.device --typed
+
+Type what you would say at the `>` prompt; the written answer is printed and the spoken one played. Ctrl-D or Ctrl-C stops it.
+
+**Bluetooth mic input is parked** (owner, 2026-11-21) until the USB speaker-mic arrives: the owner's run on the JBL's own mic gave no beep and nothing heard, in both toggle and `--enter` modes. The code path below is kept but unproven.
+
+With the JBL's own mic (no USB mic; phone-call quality, 8 kHz CVSD; parked):
 
     cd ~/edgecdss-pocket && ~/pocket-venv/bin/python -m voice.device --mode toggle
 
