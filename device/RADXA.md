@@ -166,14 +166,22 @@ without saying the names again.
 
 ## The voice session (2026-11-21)
 
-`voice/device.py` is the device itself: press, beep, speak, and the answer is spoken. Drugs and the procedure steps work the same way as typed. Run it from the repo on the board, with the JBL connected (A2DP) and the USB mic plugged in:
+`voice/device.py` is the device itself: press, beep, speak, and the answer is spoken. Drugs and the procedure steps work the same way as typed. Run it from the repo on the board, with the JBL connected.
+
+With the JBL's own mic (no USB mic; phone-call quality, 8 kHz CVSD):
+
+    cd ~/edgecdss-pocket && ~/pocket-venv/bin/python -m voice.device --mode toggle
+
+With the USB mic plugged in (speech then goes to the JBL over A2DP):
 
     cd ~/edgecdss-pocket
     POCKET_CAPTURE="arecord -q -D pocketmic -t raw -f S16_LE -r 16000 -c 1" \
       ~/pocket-venv/bin/python -m voice.device --mode toggle
 
+**The JBL's A2DP link stalls while its mic is open** (2026-11-21): with the SCO mic recording, a 2 s tone sent to A2DP took 5.7 s to play out, finishing only when the recording stopped; the same tone sent to the SCO sink took 2.4 s. So with the headset's mic, speech goes back over the call link (`PROFILE=sco`, 8 kHz mono on CVSD, 16 kHz on mSBC), and the A2DP speaker is used only with a separate mic.
+
 - **Button:** the JBL's play/pause. Press once, wait for the beep, speak, then press again. A press while it is speaking stops it and listens.
-- **Speaker:** the connected A2DP device that `bluealsa-cli list-pcms` shows, or `POCKET_PLAY`. `POCKET_PLAY=null` plays nowhere.
+- **Speaker:** the headset's call link when its mic is the mic; otherwise the connected A2DP device that `bluealsa-cli list-pcms` shows. `POCKET_PLAY` overrides; `POCKET_PLAY=null` plays nowhere.
 - **Keyboard instead of the button:** `--enter`. Enter starts and Enter stops.
 - **Output:** `bench-out/device-<time>/` holds `doses.jsonl` (the start-up line, then each dose), `heard.jsonl` (each utterance: what was heard, the answer in both forms, timings) and one WAV per utterance.
 - **Stop:** Ctrl-C.

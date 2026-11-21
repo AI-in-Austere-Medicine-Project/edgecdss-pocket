@@ -1,11 +1,13 @@
 """Speech out, for the device: Piper, one sentence at a time, to the speaker.
 
 Each sentence is played while the next is made, so a long step starts at once. A press
-of the button stops it (`interrupted`). Audio goes through sox (to 44.1 kHz stereo: the
-JBL plays nothing on bluez-alsa's 16 kHz mono A2DP link, device/RADXA.md) into aplay.
+of the button stops it (`interrupted`). Audio goes through sox into aplay: to 44.1 kHz
+stereo on A2DP (the JBL plays nothing on bluez-alsa's 16 kHz mono A2DP link), or to the
+call link's rate when the headset's own mic is in use (device/RADXA.md).
 
-  POCKET_PLAY   the aplay device; default the connected A2DP speaker or headset, else
-                ALSA's default. "null" plays nowhere (a dry run).
+  POCKET_PLAY   the aplay device; default: the headset's call link (SCO) when its mic is
+                the mic, else the connected A2DP speaker, else ALSA's default. "null" plays
+                nowhere (a dry run).
 """
 import math
 import os
@@ -19,9 +21,13 @@ LEAD_S = 0.15          # silence first: a Bluetooth speaker that has gone idle d
 BEEP = (880.0, 0.12)   # "speak now"
 
 
-def play_device() -> str:
+def play_device(headset=None) -> str:
+    """headset: the MAC whose SCO mic is open. Its A2DP link stalls while SCO is up (the
+    JBL, 2026-11-21), so speech goes back over the same call link."""
     if os.getenv("POCKET_PLAY"):
         return os.environ["POCKET_PLAY"]
+    if headset:
+        return f"bluealsa:DEV={headset},PROFILE=sco"
     if shutil.which("bluealsa-cli"):
         out = subprocess.run(["bluealsa-cli", "list-pcms"], capture_output=True, text=True).stdout
         for line in out.split():
@@ -29,6 +35,23 @@ def play_device() -> str:
                 mac = line.split("/")[4][4:].replace("_", ":")
                 return f"bluealsa:DEV={mac},PROFILE=a2dp"
     return "default"
+
+
+def _sco_codec(mac: str) -> str:
+    path = "/org/bluealsa/hci0/dev_" + mac.replace(":", "_") + "/hfpag/sink"
+    out = subprocess.run(["bluealsa-cli", "info", path], capture_output=True, text=True).stdout
+    for line in out.splitlines():
+        if line.startswith("Selected codec:"):
+            return line.split(":", 1)[1].strip()
+    return "CVSD"
+
+
+def out_format(device: str) -> tuple:
+    """(rate, channels) to send to `device`."""
+    if "PROFILE=sco" in device:
+        mac = device.split("DEV=")[1].split(",")[0]
+        return (16000 if _sco_codec(mac) == "mSBC" else 8000), 1
+    return OUT_RATE, 2
 
 
 def tone(rate: int, freq: float, seconds: float) -> bytes:
@@ -40,18 +63,19 @@ def tone(rate: int, freq: float, seconds: float) -> bytes:
 
 
 class Speaker:
-    def __init__(self, onnx, device=None):
+    def __init__(self, onnx, device=None, headset=None):
         from piper import PiperVoice
         self.voice = PiperVoice.load(str(onnx))
         self.rate = self.voice.config.sample_rate
-        self.device = device or play_device()
+        self.device = device or play_device(headset)
+        self.out_rate, self.out_channels = out_format(self.device)
 
     def _open(self):
         sox = subprocess.Popen(["sox", "-q", "-t", "raw", "-r", str(self.rate), "-e", "signed", "-b", "16",
-                                "-c", "1", "-", "-t", "raw", "-r", str(OUT_RATE), "-c", "2", "-"],
+                                "-c", "1", "-", "-t", "raw", "-r", str(self.out_rate), "-c", str(self.out_channels), "-"],
                                stdin=subprocess.PIPE, stdout=subprocess.PIPE)
         play = subprocess.Popen(["aplay", "-q", "-D", self.device, "-t", "raw", "-f", "S16_LE",
-                                 "-r", str(OUT_RATE), "-c", "2"], stdin=sox.stdout,
+                                 "-r", str(self.out_rate), "-c", str(self.out_channels)], stdin=sox.stdout,
                                 stderr=subprocess.DEVNULL)
         sox.stdout.close()
         return sox, play
