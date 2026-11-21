@@ -215,7 +215,7 @@ Pocket starts by itself at power-up: no login, no keyboard, no network (owner, 2
 
 **What runs.** `pocket.service` runs `python -m voice.autostart` from `~/edgecdss-pocket` as the board's user, after Bluetooth and bluez-alsa and never after the network, and restarts it 3 s after any exit, however often.
 - The voice (Piper, 18 s on this board) loads in a thread while Vosk loads and the speaker is asked to connect.
-- The speaker: the connected A2DP speaker, else each paired speaker is asked to connect every 5 s. On connecting: the start-up line; after a drop, "Pocket ready."
+- The speaker: the connected A2DP speaker, else each paired speaker is asked to connect, every 5 s for the first minute, then every 30 s: each try keeps the radio paging for about 5 s, and the AIC8800 does Wi-Fi and Bluetooth on one chip. A trusted speaker that is switched on connects by itself in between. On connecting: the start-up line; after a drop, "Pocket ready."
 - The button is the speaker's own (toggle). None within 10 s: "No button found.", and it keeps looking.
 - The mic: the first USB sound card that records, through ALSA's plug at 16 kHz (speex, `/etc/asound.conf`). None: "No microphone found.", again on each press, until one is plugged in; pulled out mid-session: the same.
 - Its files: `~/edgecdss-pocket/bench-out/autostart-<time>-<boot id>/`: `doses.jsonl`, `heard.jsonl`, the WAVs and `autostart.jsonl` (loaded, ready, speaker lost, no mic, each with seconds since power-on). Its log: `journalctl -u pocket -f`.
