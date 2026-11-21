@@ -1,5 +1,5 @@
 {
- "grammar_sha256": "491ea0226c9be000f6c296d1a315b6f05075e9a33eb4310227768c644fa22a70",
+ "grammar_sha256": "34468d8d0d0a605833f7e04ce82868609799be56e2016c20f8fddb380ddf79c6",
  "voices": [
   "af_nicole",
   "am_liam",
@@ -211,7 +211,7 @@
    "primary": "atropine",
    "asks": [],
    "voice": "af_nicole",
-   "heard": "astro been",
+   "heard": "add troy pin",
    "decoder": "spelled",
    "heard_as": [
     "atropine"
@@ -237,7 +237,7 @@
    "primary": "atropine",
    "asks": [],
    "voice": "bf_lily",
-   "heard": "that troy pin",
+   "heard": "add troy pin",
    "decoder": "spelled",
    "heard_as": [
     "atropine"
@@ -1117,7 +1117,7 @@
    "primary": "levetiracetam",
    "asks": [],
    "voice": "bf_lily",
-   "heard": "levitt tourists said i'm",
+   "heard": "levitt tourists adam",
    "decoder": "spelled",
    "heard_as": [
     "levetiracetam"
@@ -1518,7 +1518,7 @@
    "primary": "naloxone",
    "asks": [],
    "voice": "af_nicole",
-   "heard": "larkin",
+   "heard": "nor kin",
    "decoder": "spelled",
    "heard_as": [
     "naloxone"
@@ -1982,7 +1982,7 @@
    "primary": "propofol",
    "asks": [],
    "voice": "am_liam",
-   "heard": "deborah van",
+   "heard": "dipper van",
    "decoder": "spelled",
    "heard_as": [
     "propofol"
@@ -2228,7 +2228,7 @@
    "primary": "succinylcholine",
    "asks": [],
    "voice": "am_liam",
-   "heard": "zack's",
+   "heard": "suggs",
    "decoder": "spelled",
    "heard_as": [
     "succinylcholine"
@@ -2358,7 +2358,7 @@
    "primary": "tranexamic acid",
    "asks": [],
    "voice": "bf_lily",
-   "heard": "drank sammich acid",
+   "heard": "trying sammich acid",
    "decoder": "spelled",
    "heard_as": [
     "tranexamic acid"

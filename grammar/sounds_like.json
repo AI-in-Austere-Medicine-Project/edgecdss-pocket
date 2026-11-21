@@ -226,6 +226,7 @@
    "that troy pin"
   ],
   "atropine": [
+   "add troy pin",
    "add true pine",
    "add true pines",
    "add your pine",
@@ -464,6 +465,7 @@
    "decks my dad redeem"
   ],
   "dextrose": [
+   "dexterous",
    "dextrose him",
    "dextrose or"
   ],
@@ -866,6 +868,7 @@
    "lever phlox isn't"
   ],
   "levophed": [
+   "lever fan",
    "lever oft",
    "live aft",
    "live oft",
@@ -1383,6 +1386,7 @@
    "rocky own yum"
   ],
   "rocuronium": [
+   "rock iranian",
    "rock iranians",
    "rock uranium",
    "rock you roni him",
@@ -1625,6 +1629,7 @@
   "versed": [
    "first",
    "verse",
+   "versed said",
    "worst"
   ],
   "voriconazole": [
@@ -1652,6 +1657,121 @@
    "those sin",
    "those then"
   ]
+ },
+ "teach_added": {
+  "atropine": [
+   "add troy pin"
+  ],
+  "dextrose": [
+   "dexterous"
+  ],
+  "levophed": [
+   "lever fan"
+  ],
+  "rocuronium": [
+   "rock iranian"
+  ],
+  "versed": [
+   "versed said"
+  ]
+ },
+ "teach_note": "spellings from the teach page (voice/tools/teach_spellings.py): what Vosk heard for each name, owner and contributors, kept when safe; teach_refused says why not",
+ "teach_refused": {
+  "acetaminophen": {
+   "a pseudonym of and": "holds 'a', which means something else to the parser",
+   "a pseudonym of them": "holds 'a', which means something else to the parser",
+   "as soon as a method": "holds 'a', which means something else to the parser",
+   "see the name of and": "too unlike the name (0.36)",
+   "the pseudonym a fun": "holds 'a', which means something else to the parser",
+   "the pseudonym muffin": "too unlike the name (0.26)",
+   "the pseudonym of them": "too unlike the name (0.26)"
+  },
+  "atropine": {
+   "accurate pain": "holds 'pain', which means something else to the parser",
+   "add repeat": "holds 'repeat', which means something else to the parser",
+   "add tripping": "heard once, not for a missed clip of the owner's",
+   "add true p": "holds 'p', which means something else to the parser",
+   "add true pin": "heard once, not for a missed clip of the owner's",
+   "at repeat": "holds 'repeat', which means something else to the parser",
+   "at your pain": "holds 'pain', which means something else to the parser",
+   "atrophy": "an everyday word or phrase"
+  },
+  "calcium gluconate": {
+   "calcium carbonate": "heard once, not for a missed clip of the owner's",
+   "calcium coconut": "heard once, not for a missed clip of the owner's",
+   "calcium company": "heard once, not for a missed clip of the owner's",
+   "calcium cool can aid": "heard once, not for a missed clip of the owner's",
+   "calcium cool guinea": "heard once, not for a missed clip of the owner's",
+   "calcium glue can eight": "holds 'eight', which means something else to the parser"
+  },
+  "dextrose": {
+   "the extras": "heard once, not for a missed clip of the owner's"
+  },
+  "epi": {
+   "at b": "too unlike the name (0.00)",
+   "at the": "everyday words only"
+  },
+  "epi drip": {
+   "abby trip": "too unlike the name (0.40)",
+   "at be trip": "heard once, not for a missed clip of the owner's"
+  },
+  "epinephrine": {
+   "at the my friend": "too unlike the name (0.33)",
+   "epa know friend": "heard once, not for a missed clip of the owner's",
+   "ethernet friend": "heard once, not for a missed clip of the owner's",
+   "i've been that friend": "too unlike the name (0.41)",
+   "i've been up front": "too unlike the name (0.23)",
+   "that been a friend": "holds 'a', which means something else to the parser"
+  },
+  "fentanyl": {
+   "and to know": "holds 'to', which means something else to the parser",
+   "and tunnel": "too unlike the name (0.35)"
+  },
+  "levophed": {
+   "leave a fan": "holds 'a', which means something else to the parser",
+   "leave a fed": "holds 'a', which means something else to the parser",
+   "liver failure": "holds 'failure', 'liver', which means something else to the parser"
+  },
+  "lorazepam": {
+   "la raza pam": "holds a word of another drug's name",
+   "lore as a pam": "holds 'a', which means something else to the parser",
+   "or as a pam": "holds 'a', which means something else to the parser",
+   "or as a pan": "holds 'a', which means something else to the parser",
+   "or as a pen": "holds 'a', which means something else to the parser"
+  },
+  "midazolam": {
+   "a dazzling": "holds 'a', which means something else to the parser",
+   "madame lamb": "heard once, not for a missed clip of the owner's",
+   "that doesn't lamb": "too unlike the name (0.42)",
+   "the dazzle him": "heard once, not for a missed clip of the owner's",
+   "the dazzling": "too unlike the name (0.40)"
+  },
+  "naloxone": {
+   "no locks on": "holds 'no', 'on', which means something else to the parser",
+   "the locks on": "holds 'on', which means something else to the parser"
+  },
+  "norepinephrine": {
+   "nor up enough from": "too unlike the name (0.41)",
+   "nora ephron": "heard once, not for a missed clip of the owner's"
+  },
+  "propofol": {
+   "brought before": "too unlike the name (0.38)",
+   "pro before": "holds 'pro', which means something else to the parser",
+   "proper fall": "heard once, not for a missed clip of the owner's"
+  },
+  "succinylcholine": {
+   "since you know colin": "heard once, not for a missed clip of the owner's",
+   "such cynically": "too unlike the name (0.36)",
+   "such single coin": "holds 'single', which means something else to the parser"
+  },
+  "tranexamic acid": {
+   "he had say": "everyday words only",
+   "tx a": "holds 'a', which means something else to the parser"
+  },
+  "versed": {
+   "first said": "too unlike the name (0.40)",
+   "for said": "everyday words only"
+  }
  },
  "voices": [
   "af_bella",

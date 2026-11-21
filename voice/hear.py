@@ -17,21 +17,23 @@ RATE = 16000
 
 
 class Hearing:
-    def __init__(self, model, grammar: dict, vocab):
+    def __init__(self, model, grammar: dict, vocab, sounds=None):
+        """sounds: the spellings to read the heard text with (default
+        grammar/sounds_like.json); voice/tools/teach_spellings.py scores others."""
         import vosk
         vosk.SetLogLevel(-1)
-        self.vosk, self.model, self.vocab = vosk, model, vocab
+        self.vosk, self.model, self.vocab, self.sounds = vosk, model, vocab, sounds
         self.base = json.dumps(grammar["base_words"])
         self.full = json.dumps(grammar["words"])
 
     def start(self):
         return Utterance(self.vosk.KaldiRecognizer(self.model, RATE, self.base),
-                         self.vosk.KaldiRecognizer(self.model, RATE, self.full), self.vocab)
+                         self.vosk.KaldiRecognizer(self.model, RATE, self.full), self.vocab, self.sounds)
 
 
 class Utterance:
-    def __init__(self, base, spelled, vocab):
-        self.recs, self.vocab = (base, spelled), vocab
+    def __init__(self, base, spelled, vocab, sounds=None):
+        self.recs, self.vocab, self.sounds = (base, spelled), vocab, sounds
 
     def feed(self, data: bytes):
         for r in self.recs:
@@ -40,7 +42,7 @@ class Utterance:
     def finish(self) -> tuple:
         """(what was heard, the text for the parser, "spelled" | "base")."""
         heard = json.loads(self.recs[1].FinalResult())["text"]
-        text = spoken.normalise(heard)
+        text = spoken.normalise(heard, self.sounds)
         if heard and not parse(text, self.vocab).unknown:
             return heard, text, "spelled"
         base = json.loads(self.recs[0].FinalResult())["text"]

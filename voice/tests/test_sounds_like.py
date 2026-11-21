@@ -33,14 +33,9 @@ def test_a_spelling_uses_only_words_that_mean_nothing_else_to_the_parser():
     # The words only the home menu's longer commands use ("what can i say", "list drugs")
     # mean nothing alone (owner, 2026-11-21): "nor can" keeps spelling narcan. The whole
     # command, said in a spelling, would mean something: no spelling holds one.
-    from grammar.vocabulary import MENU_CONTROLS
-    others = VOCAB.words() - {w for c in MENU_CONTROLS for w in c.split()}
-    others |= {w for c in CONTROLS if c not in MENU_CONTROLS for w in c.split()}
-    for c in MENU_CONTROLS:
-        if len(c.split()) == 1:
-            others.add(c)
-    menu_only = {w for c in MENU_CONTROLS if len(c.split()) > 1 for w in c.split()} - others
-    meaningful = ((VOCAB.words() - set(FILLERS)) | {w for c in CONTROLS for w in c.split()}) - menu_only
+    from grammar.vocabulary import menu_only_words
+    assert menu_only_words(VOCAB) == {"what", "can", "say", "list"}       # not "i": "i v"
+    meaningful = ((VOCAB.words() - set(FILLERS)) | {w for c in CONTROLS for w in c.split()}) - menu_only_words(VOCAB)
     for name, spellings in SOUNDS["spellings"].items():
         own = set(name.split()) | set(spoken.SPELLED.get(name, "").split())  # "iv" is said "i v"
         for s in spellings:
