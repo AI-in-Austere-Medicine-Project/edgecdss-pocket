@@ -181,7 +181,7 @@ def test_2_procedures_come_from_the_signed_procedures_loaded():
 OWNER_HELP = (
     "Pocket gives signed drug doses and procedure steps by voice. Press the button, wait for "
     "the beep, speak, then press again. For a drug, say the drug, what it is for, the route and "
-    "the weight. For example: ketamine for pain, I V, eighty kilos. Pocket repeats what it heard. "
+    "the weight. For example: ketamine for agitation, I V, eighty kilos. Pocket repeats what it heard. "
     "Say yes to hear the dose, or no to cancel. For a procedure, say its name and the weight. For "
     "example: R S I, eighty kilos. Then say next, back or repeat. Say new patient to start again. "
     "Say drugs or procedures to hear what Pocket knows. Say what can I say at any time.")
@@ -198,6 +198,18 @@ def test_3_help_speaks_the_owners_text_and_changes_nothing(state):
     # Shown: the letters.
     assert t.written_text == HELP_WRITTEN == OWNER_HELP.replace("I V,", "IV,").replace("R S I,", "RSI,")
     assert (s._pending, s._misses, s._run and (s._run.i, s._run.answer), s.req) == before
+
+
+def test_3_each_help_example_asks_nothing_first():
+    """Owner, 2026-11-21: the drug example goes straight to a read-back, with no question."""
+    drug, procedure = re.findall(r"For example: ([^.]+)\.", HELP_WRITTEN)
+    assert drug == "ketamine for agitation, IV, eighty kilos" and procedure == "RSI, eighty kilos"
+    for said, spoken in ((drug, False), ("ketamine for agitation i v eighty kilos", True)):
+        t = _session().handle(said, spoken=spoken)
+        assert (t.kind, t.written_text) == ("readback", "Ketamine, agitation, IV, eighty kilos. Confirm?")
+    for said in (procedure, "r s i eighty kilos"):
+        t = _session().handle(said, spoken=True)
+        assert t.kind == "step" and "Step one of eleven." in t.written_text, t.written_text
 
 
 # ── 4. what can I say ───────────────────────────────────────────────────────
