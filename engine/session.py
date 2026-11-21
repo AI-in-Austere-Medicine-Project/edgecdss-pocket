@@ -49,11 +49,12 @@ START_UP_LINE = ("Pocket ready. Research prototype, not for patient care. "
                  "Say drugs, procedures, or help.")
 HOME_LINE = "Pocket ready. Say drugs, procedures, or help."
 # Help (the owner's text, 2026-11-21). Shown with the letters; said with the owner's route
-# words (2026-11-19) and RSI letter by letter.
+# words (2026-11-19) and RSI letter by letter. Each example asks nothing first: the drug one
+# goes straight to its read-back (owner, 2026-11-21: agitation, not pain, which asks which one).
 HELP_WRITTEN = (
     "Pocket gives signed drug doses and procedure steps by voice. Press the button, wait for "
     "the beep, speak, then press again. For a drug, say the drug, what it is for, the route and "
-    "the weight. For example: ketamine for pain, IV, eighty kilos. Pocket repeats what it heard. "
+    "the weight. For example: ketamine for agitation, IV, eighty kilos. Pocket repeats what it heard. "
     "Say yes to hear the dose, or no to cancel. For a procedure, say its name and the weight. For "
     "example: RSI, eighty kilos. Then say next, back or repeat. Say new patient to start again. "
     "Say drugs or procedures to hear what Pocket knows. Say what can I say at any time.")
