@@ -465,3 +465,9 @@ def test_a_voice_that_fails_to_load_fails_the_service_so_it_restarts(tmp_path):
     p.speaker = au.Later(broken)
     with pytest.raises(RuntimeError, match="no voice"):
         p.run(forever=False)
+
+
+def test_the_voice_says_when_it_has_loaded():
+    done = []
+    later = au.Later(lambda: "voice", done=lambda: done.append(True))
+    assert later.get() == "voice" and done == [True]
