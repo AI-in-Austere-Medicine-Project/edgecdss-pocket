@@ -486,3 +486,59 @@ def test_after_a_minute_it_asks_the_speaker_less_often(tmp_path):
     assert sleeps[:fast] == [au.SPEAKER_RETRY_S] * fast
     assert set(sleeps[fast:20]) == {au.SPEAKER_RETRY_SLOW_S}
     assert speaker.said[0] == START_UP_LINE
+
+
+# ── any USB mic, at a sensible level (owner, 2026-11-21) ───────────────────
+
+AMIXER = {
+    ("amixer", "-c", "Microphone", "scontrols"): "Simple mixer control 'Mic',0\nSimple mixer control 'Auto Gain Control',0\n",
+    ("amixer", "-c", "Microphone", "sget", "Mic"): "Simple mixer control 'Mic',0\n  Capabilities: cvolume cvolume-joined cswitch\n",
+    ("amixer", "-c", "Microphone", "sget", "Auto Gain Control"): "Simple mixer control 'Auto Gain Control',0\n  Capabilities: pswitch\n",
+}
+
+
+def _usb_mic(tmp_path, cid="Microphone"):
+    card = tmp_path / "card1"
+    card.mkdir()
+    (card / "id").write_text(cid + "\n")
+    (card / "usbid").write_text("12d1:0010\n")
+    (card / "pcm0c").mkdir()
+    return tmp_path
+
+
+def test_a_usb_mic_found_gets_its_recording_level_set_once(tmp_path, monkeypatch):
+    monkeypatch.delenv("POCKET_CAPTURE", raising=False)
+    calls = []
+
+    def run(cmd, timeout=20):
+        calls.append(tuple(cmd))
+        return AMIXER.get(tuple(cmd), "")
+    b = au.Board(run=run)
+    cards = _usb_mic(tmp_path)
+    assert b.mic(cards)[:4] == ["arecord", "-q", "-D", "plughw:CARD=Microphone,DEV=0"]
+    sets = [c for c in calls if "sset" in c]
+    assert sets == [("amixer", "-q", "-c", "Microphone", "sset", "Mic", f"{au.MIC_LEVEL}%", "cap")]
+    b.mic(cards)
+    assert [c for c in calls if "sset" in c] == sets          # once per mic plugged in
+
+
+def test_any_usb_mic_is_used_whatever_it_is_called(tmp_path, monkeypatch):
+    monkeypatch.delenv("POCKET_CAPTURE", raising=False)
+    b = au.Board(run=lambda cmd, timeout=20: "")
+    cards = _usb_mic(tmp_path, cid="UACDemoV10")
+    assert "plughw:CARD=UACDemoV10,DEV=0" in b.mic(cards)
+    assert "-r" in b.mic(cards) and "16000" in b.mic(cards)
+
+
+def test_a_mic_plugged_in_again_gets_its_level_set_again(tmp_path, monkeypatch):
+    monkeypatch.delenv("POCKET_CAPTURE", raising=False)
+    sets = []
+    b = au.Board(run=lambda cmd, timeout=20: sets.append(cmd) or AMIXER.get(tuple(cmd), ""))
+    cards = _usb_mic(tmp_path)
+    b.mic(cards)
+    import shutil
+    shutil.rmtree(cards / "card1")
+    assert b.mic(cards) is None                               # pulled out
+    _usb_mic(tmp_path)
+    b.mic(cards)
+    assert sum("sset" in c for c in sets) == 2
