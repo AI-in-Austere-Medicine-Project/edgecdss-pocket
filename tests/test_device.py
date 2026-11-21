@@ -8,7 +8,7 @@ import pathlib
 
 import pytest
 
-from engine.session import boot, jsonl_log
+from engine.session import HELP_SPOKEN, START_UP_LINE, boot, jsonl_log
 from voice import device as dev
 from voice import spoken
 from voice import speak
@@ -116,7 +116,7 @@ def heard_log(tmp_path):
 def test_it_starts_by_saying_the_short_start_up_line(tmp_path):
     d, speaker = make(tmp_path, [], [])
     d.start()
-    assert speaker.said == ["PFC set, version one point four point zero."]
+    assert speaker.said == [START_UP_LINE]
 
 
 def test_a_press_a_beep_then_what_is_heard_is_answered_aloud_in_the_spoken_form(tmp_path):
@@ -271,7 +271,7 @@ def test_the_a2dp_speaker_stays_44_1_khz_stereo():
 def test_typed_mode_speaks_the_start_up_line_then_each_answer_in_the_spoken_form(tmp_path):
     speaker = Speaker()
     dev.typed(boot(BANK), speaker, ["ketamine for agitation iv 80kg", "", "confirm"], print=lambda *a, **k: None)
-    assert speaker.said[0] == "PFC set, version one point four point zero."
+    assert speaker.said[0] == START_UP_LINE
     assert speaker.said[1] == "Ketamine, agitation, eye vee, eighty kilos. Confirm?"
     assert speaker.said[2].startswith("Ketamine one hundred and sixty milligrams.")
     assert len(speaker.said) == 3 and speaker.beeps == 0      # a blank line says nothing
@@ -303,3 +303,77 @@ def test_typed_mode_plays_over_the_music_link_and_opens_no_mic(tmp_path, monkeyp
     dev.main(["--typed", "--out", str(tmp_path)])
     assert made == {"headset": None, "device": None}
     assert json.loads((tmp_path / "doses.jsonl").read_text().splitlines()[0])["event"] == "boot"
+
+
+# ── the home menu by voice (owner, 2026-11-21): a press or Enter cuts off anything ──
+
+def test_a_press_cuts_off_help_and_listens_at_once(tmp_path):
+    d, speaker = make(tmp_path, ["help", "drugs"], ["down", "down", "down", "down"],
+                      stop_on={HELP_SPOKEN})
+    run(d, 2)
+    assert speaker.said[0] == HELP_SPOKEN and speaker.said[1].startswith("Signed drugs:")
+    assert [r["stopped"] for r in heard_log(tmp_path) if "stopped" in r] == [True, False]
+
+
+class TypedSpeaker(Speaker):
+    """Plays until `interrupted()` says Enter was pressed."""
+    def say(self, text, interrupted=lambda: False):
+        self.said.append(text)
+        stopped = interrupted()
+        self.stopped = getattr(self, "stopped", []) + [stopped]
+        return not stopped
+
+
+def test_enter_in_typed_mode_cuts_off_what_it_is_saying():
+    speaker, presses = TypedSpeaker(), iter([False, True, False])   # Enter during help
+    dev.typed(boot(BANK), speaker, ["help", "", "home"], print=lambda *a, **k: None,
+              interrupted=lambda: next(presses))
+    assert speaker.said == [START_UP_LINE, HELP_SPOKEN, "Pocket ready. Say drugs, procedures, or help."]
+    assert speaker.stopped == [False, True, False]
+
+
+class _Pipe:
+    def __init__(self):
+        self.written = []
+
+    def write(self, b):
+        self.written.append(len(b))
+
+    def flush(self):
+        pass
+
+    def close(self):
+        pass
+
+
+class _Proc:
+    def __init__(self, stdin=None):
+        self.stdin = stdin
+
+    def poll(self):
+        return 0
+
+    def kill(self):
+        pass
+
+    def wait(self):
+        pass
+
+
+def test_a_press_is_seen_within_a_tenth_of_a_second_of_audio_not_at_the_end_of_a_sentence():
+    from voice import speak as sp
+    s = object.__new__(sp.Speaker)
+    s.rate, s.device, s.out_rate, s.out_channels = 16000, "null", 16000, 1
+    pipe = _Pipe()
+    s._open = lambda: (_Proc(pipe), _Proc())
+    checks = []
+
+    def interrupted():
+        checks.append(sum(pipe.written))
+        return len(checks) > 5
+    sentence = bytes(2 * 16000 * 6)                    # one six-second sentence
+    assert s._play([sentence], interrupted) is False
+    piece = 2 * int(16000 * sp.PIECE_S)
+    lead, speech = pipe.written[0], pipe.written[1:]   # the lead-in silence, then the sentence
+    assert lead == 2 * int(16000 * sp.LEAD_S)
+    assert max(speech) <= piece and sum(speech) <= 5 * piece     # stopped after five pieces

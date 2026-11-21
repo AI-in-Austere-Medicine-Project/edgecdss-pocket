@@ -30,11 +30,23 @@ def test_every_signed_drug_has_a_name_the_model_can_hear():
 def test_a_spelling_uses_only_words_that_mean_nothing_else_to_the_parser():
     # Its own name's words excepted: "push dose amie" spells "push dose epi". Fillers
     # ("the", "and") are skipped by the parser, so they mean nothing: "i the" spells "iv".
-    meaningful = (VOCAB.words() - set(FILLERS)) | {w for c in CONTROLS for w in c.split()}
+    # The words only the home menu's longer commands use ("what can i say", "list drugs")
+    # mean nothing alone (owner, 2026-11-21): "nor can" keeps spelling narcan. The whole
+    # command, said in a spelling, would mean something: no spelling holds one.
+    from grammar.vocabulary import MENU_CONTROLS
+    others = VOCAB.words() - {w for c in MENU_CONTROLS for w in c.split()}
+    others |= {w for c in CONTROLS if c not in MENU_CONTROLS for w in c.split()}
+    for c in MENU_CONTROLS:
+        if len(c.split()) == 1:
+            others.add(c)
+    menu_only = {w for c in MENU_CONTROLS if len(c.split()) > 1 for w in c.split()} - others
+    meaningful = ((VOCAB.words() - set(FILLERS)) | {w for c in CONTROLS for w in c.split()}) - menu_only
     for name, spellings in SOUNDS["spellings"].items():
         own = set(name.split()) | set(spoken.SPELLED.get(name, "").split())  # "iv" is said "i v"
         for s in spellings:
             assert not (set(s.split()) - own) & meaningful, (name, s)
+            for c in CONTROLS:
+                assert f" {c} " not in f" {s} ", (name, s, c)
 
 
 def test_no_spelling_belongs_to_two_names():

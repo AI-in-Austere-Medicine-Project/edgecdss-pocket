@@ -172,7 +172,7 @@ Typed in, spoken out (no mic; the answer plays on the JBL over A2DP):
 
     cd ~/edgecdss-pocket && ~/pocket-venv/bin/python -m voice.device --typed
 
-Type what you would say at the `>` prompt; the written answer is printed and the spoken one played. Ctrl-D or Ctrl-C stops it.
+Type what you would say at the `>` prompt; the written answer is printed and the spoken one played. Enter while it speaks cuts it off (a typed line is then read as the next one). Ctrl-D or Ctrl-C stops it.
 
 **Bluetooth mic input is parked** (owner, 2026-11-21) until the USB speaker-mic arrives: the owner's run on the JBL's own mic gave no beep and nothing heard, in both toggle and `--enter` modes. The code path below is kept but unproven.
 

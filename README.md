@@ -60,13 +60,23 @@ The Pi Zero 2 W runs Pocket, but below the memory floor. The Radxa ZERO 3W is re
 
 ## Vocabulary
 
-Drug names and aliases from the bank; indication names from the bank; routes (IV, IO, IM, IN, PO, NEB, "line", and "intravenous", "in the vein", "intramuscular", "intraosseous", "by mouth", "oral", "intranasal"); numbers, "kilos," "pounds," "estimated"; "child," "years"; conditions the medic can state ("burns," "crush injury," "head injury," "asthma"), each one found in the signed contraindications or cautions; control words: confirm, cancel, repeat, next, back, start over, why, new patient, log, battery; procedures: "RSI" ("r s i", "rapid sequence intubation") and "failed airway". About forty words plus numbers.
+Drug names and aliases from the bank; indication names from the bank; routes (IV, IO, IM, IN, PO, NEB, "line", and "intravenous", "in the vein", "intramuscular", "intraosseous", "by mouth", "oral", "intranasal"); numbers, "kilos," "pounds," "estimated"; "child," "years"; conditions the medic can state ("burns," "crush injury," "head injury," "asthma"), each one found in the signed contraindications or cautions; control words: confirm, cancel, repeat, next, back, start over, why, new patient, log, battery; the home menu: home, drugs ("list drugs"), procedures ("list procedures"), help, what can I say; procedures: "RSI" ("r s i", "rapid sequence intubation") and "failed airway". About forty words plus numbers.
 
 What Vosk can hear (`grammar/vosk_grammar.json`) is narrower than what the typed parser reads (owner, 2026-11-15):
 - **Signed drugs only.** The grammar's drug words, and their phonetic spellings, come only from the bank's signed drugs. An unsigned drug cannot be heard as itself or pull a nearby sound to it: said, it is "Not recognised." Typed, it still holds by name ("No signed dose for magnesium.").
 - **Typed numbers.** Typed digits are read as their words: "80kg", "80 kg" and "eighty kilos" are the same phrase (owner, 2026-11-21). A typed dose amount stays words, as a spoken one does, and is only read back. Vosk only ever gives words.
 - **Confused pairs ask first.** A pair that the owner's clips or the sound-alike checks confuse is listed in `grammar/confusable.json` with where it was seen. When it is heard, Pocket always asks "X or Y?" before the read-back, and the answer settles it. The pairs today are epinephrine and norepinephrine, and IM and IN said by letters. "intramuscular" and "intranasal" do not ask. Typed text cannot be misheard, so it does not ask.
 - **Words left out.** Three entries the parser reads are left out because they took the "v" of a spoken "i v" (`voice/grammar.py`, `NOT_IN_GRAMMAR`). "dvt" is now said as "blood clot" or "thrombosis"; "norepi" spelled "no ip" is left out, and norepinephrine is still heard by its other names.
+
+## Home menu and help
+
+For someone who has never used Pocket (owner, 2026-11-21). None of it ever speaks a dose: names and instructions only. A button press, or Enter in typed mode, cuts off anything being spoken.
+- **Start-up:** "Pocket ready.", the notice above in one sentence, then "Say drugs, procedures, or help." The set's name, version and hash go to the log, not the speaker.
+- **"home"** returns here from anywhere: a waiting read-back is dropped and the steps end; the patient's weight and age stay ("new patient" clears them). It says "Pocket ready. Say drugs, procedures, or help."
+- **"drugs"** ("list drugs") reads the signed drugs in the loaded set, by the name each is heard as, then "Say a drug name to begin." **"procedures"** ("list procedures") reads the signed procedures, then "Say a procedure name to begin." Both lists come from the bank, never from a copy.
+- **"help"** says what Pocket does and how to ask, in the owner's words.
+- **"what can I say"** lists only what works now: at the start, "drugs, procedures, help, new patient, or a drug or procedure name"; at a read-back, "yes, no, repeat, or why"; in a procedure, "next, back, repeat, start over, failed airway, or home"; at a yes-or-no question, "yes or no"; waiting for a weight, how to say one; at "X or Y?", the two names.
+- "help", "what can I say", "drugs" and "procedures" change nothing: a read-back still waits (and is not a miss), a step or question still stands.
 
 ## Flow
 
@@ -137,7 +147,7 @@ Every answer comes in two forms (owner, 2026-11-19): the spoken form for the voi
 - C2 unsigned drug speaks the hold and nothing else.
 - D1 read-back on 100 % of dose flows; only a confirm word proceeds ("confirm", "yes", "correct", "affirmative"), and only straight after that dose's own read-back (see Confirm step).
 - E1 unsigned or EXAMPLE bank: device announces it and refuses all dose flows.
-- G1 "why" speaks the source for every entry. At start-up Pocket says the set's name and version ("PFC set, version one point four point zero."), and logs the full version and hash (owner, 2026-11-21).
+- G1 "why" speaks the source for every entry. At start-up Pocket says "Pocket ready." and logs the set's name, the full version and the hash (owner, 2026-11-21).
 
 ## Test bank (bench only)
 

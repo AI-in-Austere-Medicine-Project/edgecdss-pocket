@@ -19,6 +19,7 @@ import time
 OUT_RATE = 44100
 LEAD_S = 0.15          # silence first: a Bluetooth speaker that has gone idle drops the start
 BEEP = (880.0, 0.12)   # "speak now"
+PIECE_S = 0.1          # a press is checked for between pieces of this much audio
 
 
 def play_device(headset=None) -> str:
@@ -85,11 +86,15 @@ class Speaker:
         sox, play = self._open()
         try:
             sox.stdin.write(bytes(int(self.rate * LEAD_S) * 2))
+            step = int(self.rate * PIECE_S) * 2
             for pcm in chunks:
-                if interrupted():
-                    return False
-                sox.stdin.write(pcm)
-                sox.stdin.flush()
+                # In small pieces: a write blocks while the pipe is full, so a press is
+                # seen within a piece, not at the end of a long sentence (owner, 2026-11-21).
+                for i in range(0, len(pcm), step):
+                    if interrupted():
+                        return False
+                    sox.stdin.write(pcm[i:i + step])
+                    sox.stdin.flush()
             sox.stdin.close()
             while play.poll() is None:
                 if interrupted():

@@ -9,7 +9,7 @@ import re
 from typing import Optional
 
 from engine.words import number_words
-from grammar.vocabulary import (AGE_UNITS, CONDITIONS, CONTROLS, DOSE_UNITS, FILLERS, NUMBERS, PATIENT, PROCEDURE_TERMS,
+from grammar.vocabulary import (AGE_UNITS, CONDITIONS, CONTROL_WORDS, CONTROLS, DOSE_UNITS, FILLERS, NUMBERS, PATIENT, PROCEDURE_TERMS,
                                 ROUTE_WORDS, ROUTES, VOLUME_UNITS, WEIGHT_UNITS, Vocabulary)
 
 _ONES = {w: i for i, w in enumerate("zero one two three four five six seven eight nine".split())}
@@ -180,7 +180,7 @@ def parse(text: str, vocab: Vocabulary) -> Parsed:
     estimated = False
     while i < len(toks):
         t = toks[i]
-        term, n = _match(toks, i, CONTROLS, 2)
+        term, n = _match(toks, i, CONTROLS, CONTROL_WORDS)
         if term:
             p.controls.append(term)
             i += n

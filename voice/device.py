@@ -141,17 +141,25 @@ def _lines():
         yield input("> ")
 
 
-def typed(session, speaker, lines, print=print) -> None:
+def _stdin_ready() -> bool:
+    """A line typed (or Enter alone) while it speaks: it stops, and the line is read next."""
+    import select
+    import sys
+    return bool(select.select([sys.stdin], [], [], 0)[0])
+
+
+def typed(session, speaker, lines, print=print, interrupted=lambda: False) -> None:
     """Typed in, spoken out: each typed line goes to the session as typed (as the typed
     path does), and its answer is spoken. No mic, so no headset call link is opened and
-    the speaker stays on A2DP."""
-    speaker.say(session.announce.text)
+    the speaker stays on A2DP. Enter while it speaks cuts it off (owner, 2026-11-21)."""
+    print(session.announce.written_text, flush=True)
+    speaker.say(session.announce.text, interrupted)
     for line in lines:
         if not line.strip():
             continue
         turn = session.handle(line)
         print(turn.written_text, flush=True)
-        speaker.say(turn.text)
+        speaker.say(turn.text, interrupted)
 
 
 def main(argv=None):
@@ -173,9 +181,9 @@ def main(argv=None):
         from voice.speak import Speaker
         session = boot(a.bank, log=jsonl_log(out / "doses.jsonl"))
         speaker = Speaker(a.piper)
-        print(f"out: {out}\nspeaker: {speaker.device}\n{session.announce.written_text}", flush=True)
+        print(f"out: {out}\nspeaker: {speaker.device}", flush=True)
         try:
-            typed(session, speaker, _lines())
+            typed(session, speaker, _lines(), interrupted=_stdin_ready)
         except (KeyboardInterrupt, EOFError):
             pass
         return
