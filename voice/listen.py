@@ -75,10 +75,13 @@ class Mic:
                 else:
                     self.pre.append(data)
 
-    def start(self, sink):
+    def start(self, sink, pre_roll=True):
+        """pre_roll=False: only what comes after now (the device beeps first, and the
+        beep is not speech)."""
         with self.lock:
-            for d in self.pre:
-                sink(d)
+            if pre_roll:
+                for d in self.pre:
+                    sink(d)
             self.pre.clear()
             self.sink = sink
 
@@ -129,6 +132,17 @@ class Button:
         while select.select([self.fd], [], [], 0)[0]:
             os.read(self.fd, _EVENT.size)
 
+    def poll(self, timeout: float):
+        """"down" or "up" if a button key moved within timeout seconds, else None."""
+        end = time.monotonic() + timeout
+        while True:
+            left = end - time.monotonic()
+            if left < 0 or not select.select([self.fd], [], [], max(left, 0))[0]:
+                return None
+            _s, _us, typ, code, value = _EVENT.unpack(os.read(self.fd, _EVENT.size))
+            if typ == EV_KEY and code in BUTTON_KEYS and value in (0, 1):
+                return "down" if value == 1 else "up"
+
     def press(self):
         while True:
             value, t, key = self._key()
@@ -144,9 +158,17 @@ class Button:
 
 class EnterKey:
     """Bench fallback: Enter starts, Enter stops."""
+    mode = "toggle"
 
     def drain(self):
         pass
+
+    def poll(self, timeout: float):
+        if select.select([sys.stdin], [], [], timeout)[0]:
+            if not sys.stdin.readline():
+                raise EOFError
+            return "down"
+        return None
 
     def press(self):
         sys.stdin.readline()

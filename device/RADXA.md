@@ -164,6 +164,20 @@ without saying the names again.
 - The first `sudo systemctl reboot` hung after "Journal stopped" for about 9 minutes and
   came back, probably via the 10-minute hardware watchdog. Not yet rechecked.
 
+## The voice session (2026-11-21)
+
+`voice/device.py` is the device itself: press, beep, speak, and the answer is spoken. Drugs and the procedure steps work the same way as typed. Run it from the repo on the board, with the JBL connected (A2DP) and the USB mic plugged in:
+
+    cd ~/edgecdss-pocket
+    POCKET_CAPTURE="arecord -q -D pocketmic -t raw -f S16_LE -r 16000 -c 1" \
+      ~/pocket-venv/bin/python -m voice.device --mode toggle
+
+- **Button:** the JBL's play/pause. Press once, wait for the beep, speak, then press again. A press while it is speaking stops it and listens.
+- **Speaker:** the connected A2DP device that `bluealsa-cli list-pcms` shows, or `POCKET_PLAY`. `POCKET_PLAY=null` plays nowhere.
+- **Keyboard instead of the button:** `--enter`. Enter starts and Enter stops.
+- **Output:** `bench-out/device-<time>/` holds `doses.jsonl` (the start-up line, then each dose), `heard.jsonl` (each utterance: what was heard, the answer in both forms, timings) and one WAV per utterance.
+- **Stop:** Ctrl-C.
+
 ## What changes from the Pi
 
 - **Memory.** The memory floor is met on a 1 GB or larger board. The memory controller is
