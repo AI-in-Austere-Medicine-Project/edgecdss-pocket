@@ -158,13 +158,15 @@ class Later:
     """Something slow to make (Piper takes 18 s on the board), made in a thread while
     the rest loads and the speaker connects. get() waits for it."""
 
-    def __init__(self, make):
+    def __init__(self, make, done=None):
         import threading
         self._value, self._error = None, None
 
         def run():
             try:
                 self._value = make()
+                if done is not None:
+                    done()
             except BaseException as e:     # raised again in get(), in the main thread
                 self._error = e
         self._thread = threading.Thread(target=run, name="pocket-load", daemon=True)
@@ -236,7 +238,6 @@ class Pocket:
     def on_speaker(self, mac: str) -> None:
         if isinstance(self.speaker, Later):
             self.speaker = self.speaker.get()
-            self.event("loaded", what="voice")
         self.mac = mac
         self.speaker.device = f"bluealsa:DEV={mac},PROFILE=a2dp"
         self.sleep(SETTLE_S)
@@ -346,10 +347,13 @@ def main() -> None:
     from voice.hear import Hearing
     from voice.speak import Speaker
     vosk.SetLogLevel(-1)
-    speaker = Later(lambda: Speaker(dev.PIPER, device="null"))      # the slowest: first
+    holder = []
+    speaker = Later(lambda: Speaker(dev.PIPER, device="null"),       # the slowest: first
+                    done=lambda: holder and holder[0].event("loaded", what="voice"))
     session = boot(ROOT / "bank", log=log)
     hearing = Hearing(vosk.Model(str(dev.MODEL)), json.loads(dev.GRAMMAR.read_text()), session.vocab)
     pocket = Pocket(board, session, hearing, speaker, out)
+    holder.append(pocket)
     pocket.event("loaded", what="hearing", load_s=round(board.uptime() - t0, 2))
     pocket.run()
 
