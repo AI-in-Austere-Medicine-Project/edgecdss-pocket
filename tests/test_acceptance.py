@@ -6,7 +6,7 @@ import shutil
 
 import pytest
 
-from engine.session import boot
+from engine.session import START_UP_LINE, boot
 
 BANK = pathlib.Path(__file__).resolve().parents[1] / "bank"
 
@@ -225,15 +225,16 @@ def test_e1_a_missing_bank_is_refused(tmp_path):
 ENTRIES = json.loads((BANK / "bank.json").read_text())["entries"]
 
 
-def test_g1_boot_announces_the_set_and_version_and_logs_the_full_version_and_hash():
-    """Owner, 2026-11-21: the spoken line is short; the full version and hash are logged."""
+def test_g1_boot_says_pocket_ready_and_logs_the_set_the_full_version_and_hash():
+    """Owner, 2026-11-21: "Pocket ready." and the prototype sentence are spoken; the set name,
+    version and hash go to the log, not the speaker."""
     man = json.loads((BANK / "manifest.json").read_text())
     records = []
     s = boot(BANK, log=records.append)
     assert s.announce.kind == "boot"
     assert s.announce.data["bank_version"] == man["bank_version"]
     assert s.announce.data["hash"] == man["sha256"]["bank.json"][:8]
-    assert s.announce.say == "PFC set, version one point four point zero."
+    assert s.announce.say == START_UP_LINE
     assert (records[0]["bank_version"], records[0]["bank_hash"]) == (man["bank_version"],
                                                                     man["sha256"]["bank.json"])
 
