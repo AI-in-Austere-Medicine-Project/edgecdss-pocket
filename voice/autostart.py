@@ -154,6 +154,29 @@ class Watched:
             raise SpeakerLost() from None
 
 
+class Later:
+    """Something slow to make (Piper takes 18 s on the board), made in a thread while
+    the rest loads and the speaker connects. get() waits for it."""
+
+    def __init__(self, make):
+        import threading
+        self._value, self._error = None, None
+
+        def run():
+            try:
+                self._value = make()
+            except BaseException as e:     # raised again in get(), in the main thread
+                self._error = e
+        self._thread = threading.Thread(target=run, name="pocket-load", daemon=True)
+        self._thread.start()
+
+    def get(self):
+        self._thread.join()
+        if self._error is not None:
+            raise self._error
+        return self._value
+
+
 class LiveMic:
     """voice.listen.Mic, and whether its capture is still running (a USB mic pulled out
     ends arecord)."""
@@ -211,6 +234,9 @@ class Pocket:
                 self.sleep(SPEAKER_RETRY_S)
 
     def on_speaker(self, mac: str) -> None:
+        if isinstance(self.speaker, Later):
+            self.speaker = self.speaker.get()
+            self.event("loaded", what="voice")
         self.mac = mac
         self.speaker.device = f"bluealsa:DEV={mac},PROFILE=a2dp"
         self.sleep(SETTLE_S)
@@ -320,11 +346,11 @@ def main() -> None:
     from voice.hear import Hearing
     from voice.speak import Speaker
     vosk.SetLogLevel(-1)
+    speaker = Later(lambda: Speaker(dev.PIPER, device="null"))      # the slowest: first
     session = boot(ROOT / "bank", log=log)
     hearing = Hearing(vosk.Model(str(dev.MODEL)), json.loads(dev.GRAMMAR.read_text()), session.vocab)
-    speaker = Speaker(dev.PIPER, device="null")
     pocket = Pocket(board, session, hearing, speaker, out)
-    pocket.event("loaded", load_s=round(board.uptime() - t0, 2))
+    pocket.event("loaded", what="hearing", load_s=round(board.uptime() - t0, 2))
     pocket.run()
 
 

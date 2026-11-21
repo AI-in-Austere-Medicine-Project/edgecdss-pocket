@@ -204,6 +204,36 @@ Every drug name, route, procedure name and command word, numbered and one at a t
 
 `--only 7,12` says just those again, `--from 40` starts part way, and `--list` prints the list without speaking. A word that sounds wrong gets a spoken spelling in `engine/words.SAY_AS`: it changes only what is said, never what is shown or logged.
 
+## Power-up and power-off (2026-11-21)
+
+Pocket starts by itself at power-up: no login, no keyboard, no network (owner, 2026-11-21). On a fresh board, one command:
+
+    git clone https://github.com/AI-in-Austere-Medicine-Project/edgecdss-pocket ~/edgecdss-pocket \
+      && bash ~/edgecdss-pocket/device/install.sh --speaker 2C:FD:B4:DD:BD:A5
+
+`--speaker` pairs and trusts that speaker (switch it to pairing mode first); without it, the speakers already paired are trusted. The script needs the network and sudo while it runs, and is safe to run again.
+
+**What runs.** `pocket.service` runs `python -m voice.autostart` from `~/edgecdss-pocket` as the board's user, after Bluetooth and bluez-alsa and never after the network, and restarts it 3 s after any exit, however often.
+- The voice (Piper, 18 s on this board) loads in a thread while Vosk loads and the speaker is asked to connect.
+- The speaker: the connected A2DP speaker, else each paired speaker is asked to connect every 5 s. On connecting: the start-up line; after a drop, "Pocket ready."
+- The button is the speaker's own (toggle). None within 10 s: "No button found.", and it keeps looking.
+- The mic: the first USB sound card that records, through ALSA's plug at 16 kHz (speex, `/etc/asound.conf`). None: "No microphone found.", again on each press, until one is plugged in; pulled out mid-session: the same.
+- Its files: `~/edgecdss-pocket/bench-out/autostart-<time>-<boot id>/`: `doses.jsonl`, `heard.jsonl`, the WAVs and `autostart.jsonl` (loaded, ready, speaker lost, no mic, each with seconds since power-on). Its log: `journalctl -u pocket -f`.
+- To use the board by hand (`voice.device --typed`), stop it first: `sudo systemctl stop pocket`.
+
+**A power cut at any time.** What was done:
+- The dose log is written and fsynced before the dose is spoken; its directory is fsynced when the file is made. A dose that was heard is on the card.
+- No swap on the card (the swap file is commented out of `/etc/fstab`; 8 GB of RAM).
+- The system journal is kept in RAM (`/etc/systemd/journald.conf.d/pocket.conf`), so the card is not written all the time. The old journal files are left where they were.
+- `noatime` on the root file system: reading a file no longer writes to the card.
+- No package updates in the background: `apt-daily`, `apt-daily-upgrade` and `man-db` timers are off. A cut in the middle of a package install is the way to break a Debian system.
+- ext4's journal replays at the next boot, and the root file system is checked at boot (`fstab` pass 1).
+
+What risk remains:
+- **The card itself.** An SD card cut while it is writing can lose more than the last write, or fail, inside its own controller. No setting on the board prevents that. Lower it with a card made for it (industrial or "high endurance", pSLC), or remove it with a read-only root and a small separate partition for the logs; neither is done.
+- **The last utterance.** `heard.jsonl` and the WAVs are not fsynced: the last few seconds before a cut can be missing from them. Doses are not.
+- **The clock.** The board has no battery clock. Without the network, the time on a log line can be wrong after a power cut. Every dose-log line also carries the boot id and the seconds since power-on, so the order of doses within one power-on is exact; `power_on` records whether the clock was synchronised.
+
 ## What changes from the Pi
 
 - **Memory.** The memory floor is met on a 1 GB or larger board. The memory controller is
