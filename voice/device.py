@@ -12,12 +12,16 @@ Everything goes to DIR (default bench-out/device-<time>/): doses.jsonl (the star
 then each dose: the session's log, rule 3), heard.jsonl (one line per utterance: what was
 heard, by which decoder, the answer in both forms, timings) and NNN.wav.
 
+With no POCKET_CAPTURE the mic is the connected headset's own (the JBL's, 8 kHz), and
+speech then goes back over its call link, since its A2DP link stalls while the mic is open.
+
   POCKET_CAPTURE  the capture command (voice/listen.py); POCKET_PLAY the aplay device
   (voice/speak.py); POCKET_PTT_NAME the button's input device name.
 """
 import argparse
 import datetime
 import json
+import os
 import pathlib
 import time
 import wave
@@ -152,7 +156,8 @@ def main(argv=None):
 
     session = boot(a.bank, log=jsonl_log(out / "doses.jsonl"))
     hearing = Hearing(vosk.Model(a.model), json.loads(GRAMMAR.read_text()), session.vocab)
-    speaker = Speaker(a.piper)
+    headset = None if os.getenv("POCKET_CAPTURE") else listen.bluealsa_headset()
+    speaker = Speaker(a.piper, headset=headset)
     if a.enter:
         button = listen.EnterKey()
     else:
@@ -160,7 +165,7 @@ def main(argv=None):
         if not path:
             raise SystemExit("No headset button found in /proc/bus/input/devices (or use --enter).")
         button = listen.Button(path, a.mode)
-    capture = listen.capture_command()
+    capture = listen.capture_command(headset)
     mic = listen.Mic(capture)
     print(f"out: {out}\nmic: {' '.join(capture)}\nspeaker: {speaker.device}\n"
           f"button: {'Enter' if a.enter else name} ({button.mode})\n{session.announce.written_text}", flush=True)
