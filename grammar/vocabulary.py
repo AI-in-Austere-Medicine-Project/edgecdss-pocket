@@ -16,9 +16,15 @@ import re
 # cancel word is heard as a confirm word, nor the reverse.
 CONFIRM_WORDS = ("confirm", "yes", "correct", "affirmative")
 CANCEL_WORDS = ("cancel", "no", "negative", "stop", "wrong")
-CONTROL_OF = {**{w: "confirm" for w in CONFIRM_WORDS}, **{w: "cancel" for w in CANCEL_WORDS}}
+CONTROL_OF = {**{w: "confirm" for w in CONFIRM_WORDS}, **{w: "cancel" for w in CANCEL_WORDS}}  # noqa: E501
+# The home menu, help and command lists (owner, 2026-11-21): names and instructions only,
+# never a dose. "list drugs" is "drugs", "list procedures" is "procedures".
+MENU_CONTROLS = ("home", "drugs", "list drugs", "procedures", "list procedures", "help",
+                 "what can i say")
+MENU_OF = {"list drugs": "drugs", "list procedures": "procedures"}
 CONTROLS = ("new patient", *CONFIRM_WORDS, *CANCEL_WORDS, "repeat", "next", "back", "start over",
-            "why", "log", "battery")
+            "why", "log", "battery", *MENU_CONTROLS)
+CONTROL_WORDS = max(len(c.split()) for c in CONTROLS)   # the longest, in words ("what can i say")
 # Signed procedures, said by name (owner, 2026-11-20). "rsi" and "r s i" are the RSI class
 # term already: said alone, they start the RSI steps (engine/session.py).
 PROCEDURE_TERMS = {"failed airway": "failed airway", "rapid sequence intubation": "rsi"}
@@ -140,6 +146,18 @@ class Vocabulary:
     def signed_terms(self) -> dict:
         """The drug terms every one of whose drugs is signed."""
         return {t: g for t, g in self.drug_terms.items() if set(g) <= self.signed}
+
+    def listed_name(self, generic: str) -> str:
+        """The name "drugs" reads for a signed drug: its own name as said, when that is
+        heard as it; else the shortest signed term for it alone ("sodium chloride three
+        percent" is said as a term the grammar holds)."""
+        from engine.words import say_name
+        own = say_name(generic).lower()
+        if self.signed_terms().get(own) == (generic,):
+            return own
+        terms = sorted((t for t, g in self.signed_terms().items() if g == (generic,)),
+                       key=lambda t: (len(t.split()), len(t), t))
+        return terms[0] if terms else own
 
     def named(self, generic: str) -> list:
         return [t for t, g in self.drug_terms.items() if g == (generic,)]

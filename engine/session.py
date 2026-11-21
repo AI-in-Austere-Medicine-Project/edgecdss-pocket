@@ -26,8 +26,8 @@ from engine import contracts, vials, words
 from engine.bank import Bank, BankRefused, load_bank
 from engine.procedures import Procedure, ProceduresRefused, load_procedures
 from grammar.parser import Age, Parsed, parse
-from grammar.vocabulary import (CONDITION_PATTERNS, CONFUSABLE_ROUTE_TERMS, CONTROL_OF, PROCEDURE_TITLES,
-                                VOLUME_UNITS, build, label_tokens, names_condition)
+from grammar.vocabulary import (CONDITION_PATTERNS, CONFUSABLE_ROUTE_TERMS, CONTROL_OF, MENU_CONTROLS, MENU_OF,
+                                PROCEDURE_TITLES, VOLUME_UNITS, build, label_tokens, names_condition)
 
 PEDIATRIC_WEIGHT_CEILING_KG = 40.0  # EdgeCDSS openai_client: not spoken, a gate
 ROUTE_ORDER = ("IV", "IM", "IN", "PO", "NEB")
@@ -43,8 +43,26 @@ CANCELLED = "Cancelled."
 PENDING_S = 30.0     # a read-back not confirmed within this is cancelled
 MISSES_TO_CANCEL = 2
 TEST_NOTICE = "Test set. Not for patient use."
-# The start-up line (owner, 2026-11-21): the set's name and version; the full version and
-# hash go to the log. The bank names no set, so the kit does.
+# The start-up line and the home menu (owner, 2026-11-21): the set's name, version and
+# hash go to the log, not the speaker. The bank names no set, so the kit does.
+START_UP_LINE = ("Pocket ready. Research prototype, not for patient care. "
+                 "Say drugs, procedures, or help.")
+HOME_LINE = "Pocket ready. Say drugs, procedures, or help."
+# Help (the owner's text, 2026-11-21). Shown with the letters; said with the owner's route
+# words (2026-11-19) and RSI letter by letter.
+HELP_WRITTEN = (
+    "Pocket gives signed drug doses and procedure steps by voice. Press the button, wait for "
+    "the beep, speak, then press again. For a drug, say the drug, what it is for, the route and "
+    "the weight. For example: ketamine for pain, IV, eighty kilos. Pocket repeats what it heard. "
+    "Say yes to hear the dose, or no to cancel. For a procedure, say its name and the weight. For "
+    "example: RSI, eighty kilos. Then say next, back or repeat. Say new patient to start again. "
+    "Say drugs or procedures to hear what Pocket knows. Say what can I say at any time.")
+_MENU_LETTERS = {"RSI": "R S I"}
+# "What can I say": only what works in the state Pocket is in.
+CAN_SAY_IDLE = "Say drugs, procedures, help, new patient, or a drug or procedure name."
+CAN_SAY_READBACK = "Say yes, no, repeat, or why."
+CAN_SAY_STEPS = "Say next, back, repeat, start over, failed airway, or home."
+CAN_SAY_WEIGHT = "Say the weight, for example eighty kilos."
 SET_NAMES = {"austere-deployment-default": "PFC set", "ems-formulary": "EMS set"}
 # Failed airway's question (owner, 2026-11-21): only "yes" or "no" answers it.
 SAY_YES_OR_NO = "Say yes or no."
@@ -216,9 +234,20 @@ def _said(turn: Turn) -> Turn:
     is built in the written form. `data` (the log record) is untouched. A procedure
     step's signed text is also said with its symbols in words (words.say_step)."""
     step = words.say_step if "step" in turn.data else (lambda t: t)
+    if turn.kind == "menu":
+        step = _say_menu
     return dataclasses.replace(turn, say=words.say_routes(step(turn.say)),
                                after=[words.say_routes(a) for a in turn.after],
                                written=turn.say, written_after=list(turn.after))
+
+
+def _say_menu(text: str) -> str:
+    for letters, said in _MENU_LETTERS.items():
+        text = re.sub(rf"\b{letters}\b", said, text)
+    return text
+
+
+HELP_SPOKEN = words.say_routes(_say_menu(HELP_WRITTEN))
 
 
 @dataclasses.dataclass
@@ -273,13 +302,13 @@ class Session:
         self.announce = _said(self._boot_turn())
 
     def _boot_turn(self) -> Turn:
-        """The set's name and its version ("1.4.0" of "1.4.0+2026-11-04.0b0af9b"), spoken;
-        the full version and the full hash, logged."""
+        """"Pocket ready." and the prototype sentence, spoken (owner, 2026-11-21); the set's
+        name, the full version and the full hash, logged."""
         if self.refused:
             return Turn("refused", f"Bank refused: {self.refused}. No doses.")
         bank, short = self.bank, self.bank.hash[:8]
         name = set_name(bank.kit_id)
-        say = f"{name}, version {words.say_chars(bank.version.split('+')[0])}."
+        say = START_UP_LINE
         if bank.test:
             say = f"{TEST_NOTICE} {say}"
         self._log({"event": "boot", "time": self._now(), "set": name, "bank_version": bank.version,
@@ -303,6 +332,11 @@ class Session:
         if self.refused:
             return self.announce
         self._expired()
+        menu = self._menu_word(self.parse(text))
+        if menu:
+            turn = self._menu(menu)
+            self._last_say = turn
+            return turn
         if self._pending is not None:
             turn = self._confirm_step(self.parse(text))
             if turn.kind != "repeat":
@@ -315,6 +349,48 @@ class Session:
         if turn.kind != "repeat":
             self._last_say = turn
         return turn
+
+    # ── the home menu, help and command lists (owner, 2026-11-21) ──────────
+
+    @staticmethod
+    def _menu_word(p: Parsed) -> Optional[str]:
+        """A menu command said alone. Names and instructions only: none of these ever
+        speaks a dose, and only "home" changes anything."""
+        if len(p.controls) == 1 and p.controls[0] in MENU_CONTROLS and not (p.unknown or p.has_slots()):
+            return MENU_OF.get(p.controls[0], p.controls[0])
+        return None
+
+    def _menu(self, word: str) -> Turn:
+        if word == "home":                    # from anywhere; the patient stays
+            self.req, self._pending, self._misses, self._run = Request(), None, 0, None
+            return Turn("menu", HOME_LINE)
+        if word == "drugs":
+            names = sorted({self.vocab.listed_name(d) for d in self.bank.signed_drugs})
+            if not names:
+                return Turn("menu", "No signed drugs.")
+            return Turn("menu", f"Signed drugs: {', '.join(names)}. Say a drug name to begin.")
+        if word == "procedures":
+            titles = [p.title for p in self.procedures.values()]
+            if not titles:
+                return Turn("menu", "No signed procedures.")
+            return Turn("menu", f"Signed procedures: {', '.join(titles)}. Say a procedure name to begin.")
+        if word == "help":
+            return Turn("menu", HELP_WRITTEN)
+        return Turn("menu", self._can_say())
+
+    def _can_say(self) -> str:
+        run, req = self._run, self.req
+        if self._pending is not None:
+            return CAN_SAY_READBACK
+        if run is not None and run.asking:
+            return SAY_YES_OR_NO
+        if run is not None and run.steps is None:
+            return CAN_SAY_WEIGHT
+        if run is not None:
+            return CAN_SAY_STEPS
+        if req.options:
+            return f"Say {_choice([words.say_name(o) for o in req.options])}."
+        return CAN_SAY_IDLE
 
     # ── the confirm step ───────────────────────────────────────────────────
 

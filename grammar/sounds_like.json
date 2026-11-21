@@ -9,6 +9,9 @@
    "back dream",
    "back trim"
   ],
+  "ceftriaxone": [
+   "zev drugs own"
+  ],
   "cyanokit": [
    "so you're no good"
   ],
@@ -17,6 +20,12 @@
   ],
   "dimercaprol": [
    "geimer cap wrong"
+  ],
+  "etomidate": [
+   "at home or date"
+  ],
+  "hydroxyzine": [
+   "hi drugs is een"
   ],
   "medrol": [
    "made wrong",
@@ -43,7 +52,7 @@
    "try me stop him"
   ]
  },
- "control_words_dropped_note": "2026-11-16: spellings holding a confirm or cancel word (the confirm step's words mean something to the parser now); 2026-11-20: spellings holding \"next\" or \"back\" (the step reader's words)",
+ "control_words_dropped_note": "2026-11-16: spellings holding a confirm or cancel word (the confirm step's words mean something to the parser now); 2026-11-20: spellings holding \"next\" or \"back\" (the step reader's words); 2026-11-21: spellings holding \"home\", \"drugs\", \"procedures\" or \"help\" (the home menu's one-word commands). Spellings holding \"what\", \"can\", \"i\", \"say\" or \"list\" are kept: alone those words mean nothing to the parser, only the whole command does",
  "model": "vosk-model-small-en-us-0.15",
  "model_am_sha256": "75370a0137f9daf8f469dedd7daa4513ae7a621f03240c6e512e2b50b656a7b6",
  "no_spelling": [
@@ -356,8 +365,7 @@
    "soft react sony",
    "soft reacts own",
    "they have reacts own",
-   "this he acts own",
-   "zev drugs own"
+   "this he acts own"
   ],
   "cephalexin": [
    "savvy oxen",
@@ -589,7 +597,6 @@
   ],
   "etomidate": [
    "adama date",
-   "at home or date",
    "atomic date"
   ],
   "famotidine": [
@@ -704,7 +711,6 @@
   ],
   "hydroxyzine": [
    "hi drug scene",
-   "hi drugs is een",
    "hydroxy seen",
    "hydroxyl roxanne",
    "hydroxyl scene",
