@@ -4,7 +4,8 @@
 
 The models load once. Then, for as long as the board has power:
   - the speaker: the connected A2DP speaker, else each paired one is asked to connect,
-    every SPEAKER_RETRY_S, since it may be switched on after the board. On connecting,
+    every 5 s for a minute and then every 30 s, since it may be switched on after the
+    board (a trusted speaker switched on also connects by itself). On connecting,
     the start-up line ("Pocket ready. Research prototype ..."); on coming back after a
     drop, "Pocket ready." The speaker's own button is push-to-talk (toggle: the JBL).
   - the mic: a USB sound card that can record. None: "No microphone found." through the
@@ -35,6 +36,8 @@ READY = "Pocket ready."
 NO_MIC = "No microphone found."
 NO_BUTTON = "No button found."
 SPEAKER_RETRY_S = 5.0
+SPEAKER_FAST_FOR_S = 60.0    # then every SPEAKER_RETRY_SLOW_S: each try pages for ~5 s,
+SPEAKER_RETRY_SLOW_S = 30.0  # on the chip that also does the board's Wi-Fi
 MIC_RETRY_S = 3.0
 CHECK_S = 2.0           # while listening or idle: is the speaker still there, the mic?
 SETTLE_S = 1.5          # a speaker just connected drops the first second it is sent
@@ -224,6 +227,10 @@ class Pocket:
     # the speaker
 
     def wait_speaker(self) -> str:
+        """Asks each paired speaker to connect: every SPEAKER_RETRY_S for the first
+        SPEAKER_FAST_FOR_S of waiting, then every SPEAKER_RETRY_SLOW_S. A trusted speaker
+        switched on connects to the board by itself in between."""
+        waited = 0.0
         while True:
             mac = self.board.connected_speaker()
             if mac:
@@ -233,7 +240,9 @@ class Pocket:
                 if self.board.connected_speaker():
                     break
             else:
-                self.sleep(SPEAKER_RETRY_S)
+                pause = SPEAKER_RETRY_S if waited < SPEAKER_FAST_FOR_S else SPEAKER_RETRY_SLOW_S
+                self.sleep(pause)
+                waited += pause
 
     def on_speaker(self, mac: str) -> None:
         if isinstance(self.speaker, Later):
