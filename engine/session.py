@@ -24,9 +24,10 @@ from typing import Callable, Optional
 
 from engine import contracts, vials, words
 from engine.bank import Bank, BankRefused, load_bank
+from engine.procedures import Procedure, ProceduresRefused, load_procedures
 from grammar.parser import Age, Parsed, parse
-from grammar.vocabulary import (CONDITION_PATTERNS, CONFUSABLE_ROUTE_TERMS, CONTROL_OF, VOLUME_UNITS,
-                                build, label_tokens, names_condition)
+from grammar.vocabulary import (CONDITION_PATTERNS, CONFUSABLE_ROUTE_TERMS, CONTROL_OF, PROCEDURE_TITLES,
+                                VOLUME_UNITS, build, label_tokens, names_condition)
 
 PEDIATRIC_WEIGHT_CEILING_KG = 40.0  # EdgeCDSS openai_client: not spoken, a gate
 ROUTE_ORDER = ("IV", "IM", "IN", "PO", "NEB")
@@ -141,6 +142,9 @@ class Request:
     labels: list = dataclasses.field(default_factory=list)
     stated: list = dataclasses.field(default_factory=list)
     stated_vial: list = dataclasses.field(default_factory=list)
+    # A drug said at a procedure step that names it: only the step's signed entries (Q5).
+    only: tuple = ()
+    step: tuple = ()          # (procedure, step id), for the log
 
     @property
     def empty(self) -> bool:
@@ -204,10 +208,21 @@ def why_text(e: dict) -> str:
 def _said(turn: Turn) -> Turn:
     """Both forms of a turn (owner, 2026-11-19): spoken, with routes in words, in `say`
     and `after`; written, with the letters, in `written` and `written_after`. Every turn
-    is built in the written form. `data` (the log record) is untouched."""
-    return dataclasses.replace(turn, say=words.say_routes(turn.say),
+    is built in the written form. `data` (the log record) is untouched. A procedure
+    step's signed text is also said with its symbols in words (words.say_step)."""
+    step = words.say_step if "step" in turn.data else (lambda t: t)
+    return dataclasses.replace(turn, say=words.say_routes(step(turn.say)),
                                after=[words.say_routes(a) for a in turn.after],
                                written=turn.say, written_after=list(turn.after))
+
+
+@dataclasses.dataclass
+class Run:
+    """A procedure being read: its steps for this patient (None until the weight is
+    known, Q2), and the step being read."""
+    proc: Procedure
+    steps: Optional[list] = None
+    i: int = 0
 
 
 def _choice(items: list, joiner: str = " or ") -> str:
@@ -226,8 +241,10 @@ def _on_route(entry: dict, route: str) -> bool:
 class Session:
     def __init__(self, bank: Optional[Bank], refused: Optional[str] = None,
                  log: Optional[Callable] = None, now: Optional[Callable] = None,
-                 clock: Optional[Callable] = None):
+                 clock: Optional[Callable] = None, procedures: Optional[dict] = None):
         self.bank, self.refused = bank, refused
+        self.procedures = procedures or {}
+        self._run = None
         self.records = []
         self._log = log if log is not None else self.records.append
         self._now = now or (lambda: datetime.datetime.now(datetime.timezone.utc).isoformat())
@@ -349,6 +366,7 @@ class Session:
             self.patient, self.req = Patient(), Request()
             self._pending = self._last_entry = None
             self._last_volume = False
+            self._run = None
             lead = "New patient. Weight and age cleared."
             if not controls and not p.has_slots():
                 return Turn("control", lead)
@@ -356,7 +374,14 @@ class Session:
             if len(controls) > 1 or p.has_slots():
                 return Turn("control", "One command at a time.")
             return self._control(controls[0])
-        turn = self._slots(p)
+        name = self._procedure_named(p)
+        if name:
+            turn = self._start(name, p)
+        elif self._run is not None and self._run.steps is None and p.weight and not p.drugs:
+            self.patient.apply(p)
+            turn = self._begin()
+        else:
+            turn = self._slots(p)
         if lead:
             turn.say = f"{lead} {turn.say}"
         return turn
@@ -365,8 +390,10 @@ class Session:
         if word == "confirm":
             return self._dose() if self._pending else Turn("control", "Nothing to confirm.")
         if word == "cancel":
-            self.req, self._pending = Request(), None
+            self.req, self._pending, self._run = Request(), None, None
             return Turn("control", "Cancelled.")
+        if word in ("next", "back"):
+            return self._move(1 if word == "next" else -1)
         if word == "repeat":
             last = self._last_say
             if last is None:
@@ -390,6 +417,7 @@ class Session:
             return Turn("ask", "One drug at a time.")
         if p.drugs:
             self._name_drug(p.drugs[0])
+            self._at_step()
         if len(set(p.classes)) > 1:
             return Turn("ask", "One indication at a time.")
         req = self.req
@@ -441,6 +469,78 @@ class Session:
             return
         self.req = Request(drug=generic, heard=match.term, **keep)
 
+    # ── procedures (owner, 2026-11-20) ─────────────────────────────────────
+
+    def _procedure_named(self, p: Parsed) -> Optional[str]:
+        """"failed airway"; or the RSI class said with nothing about a drug: "rsi",
+        "rsi eighty kilos". "Rocuronium for RSI" stays a dose request."""
+        if p.procedures:
+            return p.procedures[0]
+        if (p.classes and set(p.classes) == {"RSI"} and not (p.drugs or p.routes or p.labels
+                                                             or p.stated or p.stated_vial)):
+            return "rsi"
+        return None
+
+    def _start(self, name: str, p: Parsed) -> Turn:
+        self.patient.apply(p)
+        self.req, self._pending, self._run = Request(), None, None
+        proc = self.procedures.get(name)
+        if proc is None:
+            return self._hold(f"No signed steps for {PROCEDURE_TITLES[name]}.")
+        self._run = Run(proc)
+        return self._begin()
+
+    def _begin(self) -> Turn:
+        """The weight, once, at the start (Q2); access is never asked."""
+        run, patient = self._run, self.patient
+        if run.proc.needs_weight:
+            if patient.estimate_kg is not None and patient.weight is None:
+                return Turn("ask", ASK_ESTIMATE)
+            if patient.weight is None:
+                return Turn("ask", "Weight?")
+        years = patient.age.years if patient.age else None
+        run.steps, run.i = run.proc.for_patient(patient.is_child, years), 0
+        who = []
+        if patient.known:
+            who = ["child" if patient.is_child else "adult"] + [x for x in patient.said() if x != "child"]
+        lead = words.sentence(", ".join([run.proc.title, *who])) + ". "
+        return self._step_turn(lead)
+
+    def _step_turn(self, lead: str = "") -> Turn:
+        run = self._run
+        step = run.steps[run.i]
+        say = (f"{lead}Step {words.num(run.i + 1)} of {words.num(len(run.steps))}. {step.text}")
+        after = []
+        if step.doses:
+            after.append(f"For the dose, say {_choice([words.say_name(d) for d in step.drugs])}.")
+        return Turn("step", say, after, data={"step": step.id, "procedure": run.proc.name})
+
+    def _move(self, by: int) -> Turn:
+        run = self._run
+        if run is None:
+            return Turn("control", "No steps running.")
+        if run.steps is None:
+            return Turn("ask", "Weight?")
+        self.req = Request()
+        if run.i + by < 0:
+            return Turn("step", "First step.")
+        if run.i + by >= len(run.steps):
+            self._run = None
+            return Turn("step", f"End of {run.proc.title} steps.")
+        run.i += by
+        return self._step_turn()
+
+    def _at_step(self) -> None:
+        """A drug the current step names: only that step's signed entries (Q5). Any
+        other drug is asked for as usual."""
+        run, req = self._run, self.req
+        if run is None or run.steps is None or not req.drug:
+            return
+        step = run.steps[run.i]
+        if req.drug in step.drugs:
+            req.only = tuple(_key(e) for e in step.doses if e["drug"] == req.drug)
+            req.step = (run.proc.name, step.id)
+
     # ── the gate ───────────────────────────────────────────────────────────
 
     def _hold(self, say: str) -> Turn:
@@ -461,6 +561,8 @@ class Session:
 
         name = words.say_name(drug)
         cands = [e for e in self.bank.entries if e["drug"] == drug]
+        if req.only:
+            cands = [e for e in cands if _key(e) in req.only]
         for_cls = f" for {_say_class(req.cls)}" if req.cls else ""
         if req.cls:
             cands = [e for e in cands if e["indication_class"] == req.cls]
@@ -611,6 +713,8 @@ class Session:
             if entry["check_failed"]:
                 say = f"{UNVERIFIED} {say}"
             record.update(test=True, check_failed=list(entry["check_failed"]))
+        if req.step:
+            record.update(procedure=req.step[0], step=req.step[1])
         record.update(time=self._now(), drug=entry["drug"], indication=entry["indication"],
                       route=req.route or entry["route"], population=entry["population"],
                       weight_kg=weight, stated=req.stated + req.stated_vial,
@@ -632,6 +736,10 @@ class Session:
             return True
         signed = {p for v in self.bank.kit.get(drug) or [] for p in _vial_phrasings(v)}
         return all(_vial_words(s) in signed for s in stated)
+
+
+def _key(e: dict) -> tuple:
+    return (e["drug"], e["indication"], e["population"])
 
 
 def _class_labels(bank, drug, cls, route, patient, years) -> int:
@@ -698,9 +806,14 @@ def boot(bank_dir, log: Optional[Callable] = None, now: Optional[Callable] = Non
          clock: Optional[Callable] = None) -> Session:
     """A session, refused if the bank is. A refused session answers nothing else."""
     try:
-        return Session(load_bank(bank_dir), log=log, now=now, clock=clock)
+        bank = load_bank(bank_dir)
     except BankRefused as e:
         return Session(None, refused=str(e))
+    try:
+        procedures = load_procedures(bank_dir, bank)
+    except ProceduresRefused:
+        procedures = {}            # every procedure holds; the doses are unaffected
+    return Session(bank, log=log, now=now, clock=clock, procedures=procedures)
 
 
 def jsonl_log(path) -> Callable:

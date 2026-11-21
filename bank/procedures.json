@@ -1,0 +1,96 @@
+{
+ "version": "2026-11-20",
+ "signed_from": "RSI steps signing packet, 2026-11-20 (kept outside the repo)",
+ "rulings": {
+  "Q1": "ID39 p.28",
+  "Q2": "ask weight once at the start; do not ask access",
+  "Q3": "as proposed: P2 before 6; P3 and P4 replace 6 and 6b for a child; P5 replaces only the surgical airway line",
+  "Q4": "(a) as written, no dose",
+  "Q5": "the step names the signed options, the medic says which, it computes that one and reads it back",
+  "Q6": "neither",
+  "Q7": "its own procedure, called by \"failed airway\"",
+  "Q8": "no",
+  "Q9": "confirmed: no RSI entry is signed in the EMS set, so an EMS RSI request holds",
+  "Q10": "confirmed: read verbatim, reference numbers stripped"
+ },
+ "struck": [
+  {"id": "PT", "why": "struck by the owner, 2026-11-20 (pretreat, SMOG p.12 only)"}
+ ],
+ "not_spoken": ["etomidate", "vecuronium"],
+ "procedures": [
+  {
+   "name": "rsi",
+   "title": "rapid sequence intubation",
+   "source": "JTS CPG ID39, Airway Management in Trauma, 28 Jan 2026, Appendix I, Rapid Sequence Induction (RSI) and Intubation Pathway",
+   "page": 28,
+   "signer": "Andrew Azelton",
+   "date": "2026-11-20",
+   "order": {
+    "adult": ["1", "2", "3", "4", "5", "6", "6b", "7", "8", "9", "10"],
+    "child": ["1", "P1", "2", "3", "4", "5", "P2", "P3", "P4", "7", "8", "9", "10"]
+   },
+   "steps": [
+    {"id": "1", "signed": "as written",
+     "text": "Confirm equipment availability and function: Suction, oxygen source, self-inflating bag and mask, oral & nasal airways, ETT with stylet and/or bougie, supraglottic airway, surgical airway kit, drugs, monitors, ventilator, laryngoscope- direct and video, CO2 detector."},
+    {"id": "2", "signed": "as written",
+     "text": "Pre-Oxygenate (Denitrogenate) the lungs. Prolongs tolerance of apneic period. Goal is ≈ 3 minutes of tidal volume breathing at 90% FiO2. With standard reservoir facemask set flow rate of oxygen as high as possible. Recommend augmenting with nasal cannula at 15L/min oxygen in preparation for apneic oxygenation, leave in situ throughout procedure. Elevate head of bed if not contraindicated."},
+    {"id": "3", "signed": "as written", "text": "Maintain cervical spine stabilization"},
+    {"id": "4", "signed": "as written", "text": "Remove front of cervical collar"},
+    {"id": "5", "signed": "as written", "text": "Consider cricoid pressure simultaneous w/ medication administration"},
+    {"id": "6", "signed": "amended: unsigned drugs (etomidate) are not spoken",
+     "text": "Administer medications: Initiate RSI. ALWAYS SEDATE PRIOR TO PARALYZING. Sedative/hypnotic: Ketamine (First Line): 2 mg/kg IV/IO. Unstable patients require reduced dosage of induction agent.",
+     "doses": [{"drug": "ketamine", "indication": "RSI induction", "population": "adult"}]},
+    {"id": "6b", "signed": "amended: unsigned drugs (vecuronium) are not spoken",
+     "text": "Neuromuscular Blockade: Rocuronium: 1.2 mg/kg IV/IO or Succinylcholine: 1.5 mg/kg IV/IO",
+     "doses": [{"drug": "rocuronium", "indication": "RSI paralytic", "population": "adult"},
+               {"drug": "succinylcholine", "indication": "RSI paralytic", "population": "adult"}]},
+    {"id": "7", "signed": "as written",
+     "text": "Perform laryngoscopic tracheal intubation. Following onset of neuromuscular blockade. Recommend gum elastic bougie as primary ETT stylet"},
+    {"id": "8", "signed": "as written",
+     "text": "If laryngoscopic view is poor: Apply external laryngeal manipulation technique(s). Consider alternative visualization method or Supraglottic airway device"},
+    {"id": "9", "signed": "as written",
+     "text": "Confirm tracheal intubation: Visualize tube passing between the vocal cords. Easy chest rise, equal axillary breath sounds/absence of gastric insufflation, CO2 Calorimeter, and \"fog\" in ETT. Wave form or digital capnography"},
+    {"id": "10", "signed": "amended: text as written, no dose computed",
+     "text": "Provide continuing care IAW JTS Anesthesia for Trauma Patients CPG"},
+    {"id": "P1", "signed": "amended",
+     "text": "Have a dedicated pediatric airway cart, including Broselow tape or equivalent."},
+    {"id": "P2", "signed": "as written",
+     "text": "Pre-dose with atropine IV/IO (0.02mg/kg, minimum dose 0.1mg, maximum dose 0.5mg) in all <1 years old, those <5 who are receiving succinylcholine, and in all who receive a 2nd dose of succinylcholine",
+     "doses": [{"drug": "atropine", "indication": "RSI pre-dose — paediatric intubation", "population": "peds"}]},
+    {"id": "P3", "signed": "amended: unsigned drugs (etomidate) are not spoken",
+     "text": "Induction - Ketamine (first line) 2mg/kg IV/IO.",
+     "doses": [{"drug": "ketamine", "indication": "RSI induction", "population": "peds"}]},
+    {"id": "P4", "signed": "as written",
+     "text": "Neuromuscular blockade - Succinylcholine 1.5mg/kg IV/IO (2mg/kg <5 years old) or Rocuronium 1mg/kg IV/IO",
+     "doses": [{"drug": "succinylcholine", "indication": "RSI paralytic — under 5 years", "population": "peds"},
+               {"drug": "succinylcholine", "indication": "RSI paralytic — 5 years and above", "population": "peds"},
+               {"drug": "rocuronium", "indication": "RSI paralytic", "population": "peds"}]}
+   ]
+  },
+  {
+   "name": "failed airway",
+   "title": "failed airway",
+   "source": "JTS CPG ID39, Airway Management in Trauma, 28 Jan 2026, Appendix I, Rapid Sequence Induction (RSI) and Intubation Pathway",
+   "page": 28,
+   "signer": "Andrew Azelton",
+   "date": "2026-11-20",
+   "order": {
+    "adult": ["FA1", "FA2", "FA3", "FA4"],
+    "child": ["FA1", "FA2", "FA3", "FA4"]
+   },
+   "child_under": {"years": 12, "replace": "FA3", "with": "P5"},
+   "steps": [
+    {"id": "FA1", "signed": "as written (FA, first lines)",
+     "text": "Unable to Intubate: Can You Mask Ventilate? Improve position, video laryngoscope, gum elastic bougie change blade/operator."},
+    {"id": "FA2", "signed": "as written (FA)",
+     "text": "More than ≈ 3 attempts at intubation may abolish your ability to mask ventilate due to edema caused by laryngoscopy."},
+    {"id": "FA3", "signed": "as written (FA, the surgical airway line)",
+     "text": "YES → Surgical airway (Cricothyroidotomy or tracheostomy)."},
+    {"id": "FA4", "signed": "as written (FA, last lines)",
+     "text": "NO → Emergency pathway. Seconds matter. Supraglottic airway or Surgical cricothyroidotomy."},
+    {"id": "P5", "signed": "as written",
+     "text": "Avoid surgical airway in <12 years old - use needle cricothyroidotomy (12-14 gauge), tracheostomy preferred over surgical cricothyroidotomy"}
+   ]
+  }
+ ]
+}

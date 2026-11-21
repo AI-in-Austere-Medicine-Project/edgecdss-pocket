@@ -16,3 +16,4 @@ The order of the sections is in [ROADMAP.md](../ROADMAP.md). Device notes are in
 ## Log
 
 - 2026-11-20: work order started with the rules above.
+- 2026-11-20: RSI step reader on the steps the owner signed from the 2026-11-20 packet (`bank/procedures.json`). Next batch, not now: etomidate, vecuronium, and ketamine post-intubation re-sourced to SMOG p.12.

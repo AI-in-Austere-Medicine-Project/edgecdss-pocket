@@ -17,7 +17,11 @@ import re
 CONFIRM_WORDS = ("confirm", "yes", "correct", "affirmative")
 CANCEL_WORDS = ("cancel", "no", "negative", "stop", "wrong")
 CONTROL_OF = {**{w: "confirm" for w in CONFIRM_WORDS}, **{w: "cancel" for w in CANCEL_WORDS}}
-CONTROLS = ("new patient", *CONFIRM_WORDS, *CANCEL_WORDS, "repeat", "why", "log", "battery")
+CONTROLS = ("new patient", *CONFIRM_WORDS, *CANCEL_WORDS, "repeat", "next", "back", "why", "log", "battery")
+# Signed procedures, said by name (owner, 2026-11-20). "rsi" and "r s i" are the RSI class
+# term already: said alone, they start the RSI steps (engine/session.py).
+PROCEDURE_TERMS = {"failed airway": "failed airway", "rapid sequence intubation": "rsi"}
+PROCEDURE_TITLES = {"rsi": "rapid sequence intubation", "failed airway": "failed airway"}
 ROUTES = {"iv": "IV", "i v": "IV", "io": "IO", "i o": "IO", "im": "IM", "i m": "IM",
           "in": "IN", "i n": "IN", "po": "PO", "p o": "PO", "line": "IV", "neb": "NEB",
           # owner, 2026-11-15 (hearing fixes): the words medics say for each route
@@ -127,7 +131,7 @@ class Vocabulary:
         out = set(NUMBERS) | set(PATIENT) | set(WEIGHT_UNITS) | set(AGE_UNITS)
         out |= set(DOSE_UNITS) | set(VOLUME_UNITS) | set(FILLERS) | self.label_words
         drugs = self.signed_terms() if signed_only else self.drug_terms
-        for group in (CONTROLS, ROUTES, CONDITIONS, drugs, self.class_terms):
+        for group in (CONTROLS, ROUTES, CONDITIONS, drugs, self.class_terms, PROCEDURE_TERMS):
             for term in group:
                 out.update(term.split())
         return out

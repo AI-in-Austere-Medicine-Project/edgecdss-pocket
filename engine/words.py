@@ -109,3 +109,23 @@ def say_chars(text: str) -> str:
     for c in text:
         out.append(_ONES[int(c)] if c.isdigit() else names.get(c, c))
     return " ".join(out)
+
+
+# A signed procedure step said aloud (owner, 2026-11-20): the text is read as signed; only
+# its symbols, units and numbers are written out, in this order. The written form keeps it.
+_STEP_SAY = [
+    (r"≈\s*", "about "), (r"\s*→\s*", ", then "), (r"\bw/\s", "with "), (r"\s*&\s*", " and "),
+    (r"<\s*", "under "), (r"(\d)\s*-\s*(\d)", r"\1 to \2"), (r"\b2nd\b", "second"),
+    (r"(\d)\s*L/min\b", r"\1 litres per minute"), (r"(\d)\s*mg/kg\b", r"\1 milligrams per kilogram"),
+    (r"(\d)\s*mg\b", r"\1 milligrams"), (r"(\d)\s*%", r"\1 percent"),
+    (r"\bIAW\b", "in accordance with"),
+]
+
+
+def say_step(text: str) -> str:
+    for pattern, repl in _STEP_SAY:
+        text = re.sub(pattern, repl, text)
+    # Numbers alone are written out; one inside a name ("CO2", "FiO2") is left to the voice.
+    text = re.sub(r"(?<![A-Za-z\d.])\d+(?:\.\d+)?(?![A-Za-z\d])", lambda m: number_words(m.group(0)), text)
+    text = re.sub(r"\s+", " ", text).strip()
+    return text if text[-1:] in ".?!\"" else text + "."    # a pause before what follows

@@ -60,7 +60,7 @@ The Pi Zero 2 W runs Pocket, but below the memory floor. The Radxa ZERO 3W is re
 
 ## Vocabulary
 
-Drug names and aliases from the bank; indication names from the bank; routes (IV, IO, IM, IN, PO, NEB, "line", and "intravenous", "in the vein", "intramuscular", "intraosseous", "by mouth", "oral", "intranasal"); numbers, "kilos," "pounds," "estimated"; "child," "years"; conditions the medic can state ("burns," "crush injury," "head injury," "asthma"), each one found in the signed contraindications or cautions; control words: confirm, cancel, repeat, why, new patient, log, battery. About forty words plus numbers.
+Drug names and aliases from the bank; indication names from the bank; routes (IV, IO, IM, IN, PO, NEB, "line", and "intravenous", "in the vein", "intramuscular", "intraosseous", "by mouth", "oral", "intranasal"); numbers, "kilos," "pounds," "estimated"; "child," "years"; conditions the medic can state ("burns," "crush injury," "head injury," "asthma"), each one found in the signed contraindications or cautions; control words: confirm, cancel, repeat, next, back, why, new patient, log, battery; procedures: "RSI" ("r s i", "rapid sequence intubation") and "failed airway". About forty words plus numbers.
 
 What Vosk can hear (`grammar/vosk_grammar.json`) is narrower than what the typed parser reads (owner, 2026-11-15):
 - **Signed drugs only.** The grammar's drug words, and their phonetic spellings, come only from the bank's signed drugs. An unsigned drug cannot be heard as itself or pull a nearby sound to it: said, it is "Not recognised." Typed, it still holds by name ("No signed dose for magnesium.").
@@ -76,6 +76,22 @@ What Vosk can hear (`grammar/vosk_grammar.json`) is narrower than what the typed
 - "Why" speaks the source (quotes word for word), then every caution and contraindication. When no volume was given, a spoken caution leaves out what states a volume ("10 mL", "0.1 mL/kg"); concentrations ("1 mg/mL", "1:1,000") stay. The signed text in `bank.json` is unchanged.
 - A stated vial that is the kit's signed vial ("fifty milligrams per mil" for ketamine) gives the volume; any other stated vial gives milligrams only. The words are compared with the signed vial's; nothing is computed from them.
 - Unsigned drug: "No signed dose for magnesium." Nothing else.
+
+## Procedure steps
+
+Signed steps are read one at a time (owner, 2026-11-20). They come from `bank/procedures.json`, signed by name from the RSI packet (JTS CPG ID39 p.28):
+- **"RSI"** reads the RSI steps.
+  - The weight is asked once, at the start. Access is never asked.
+  - An adult gets steps 1–10. A child gets P1 after step 1, P2 before the induction step, and P3 and P4 in place of 6 and 6b.
+- **"failed airway"** is its own procedure and needs no weight. For a child under 12, or a child of unknown age, P5 replaces only the surgical airway line.
+- **"next", "back" and "repeat"** move through the steps. "cancel" or "new patient" ends them.
+- **A step with a dose names its signed drugs:** "For the dose, say rocuronium or succinylcholine." The drug the medic says is read back for that step's signed entry, and doses only on "confirm". The usual holds and questions apply, such as a contraindication or the age band. The log line names the procedure and step.
+- **What is not spoken:**
+  - unsigned drugs (etomidate, vecuronium);
+  - the struck pretreat step;
+  - any dose at step 10.
+- **What holds:** a procedure that is not wholly signed holds as a whole: "No signed steps for rapid sequence intubation." This covers a missing or unsigned step file, and a step naming an entry that is not in the bank. A test bank (POCKET_TEST=1) has no steps.
+- **Spoken and written forms:** the written form is the signed text. The spoken form says its symbols, units and lone numbers in words ("≈" is "about", "mg/kg" is "milligrams per kilogram", "IV/IO" is "eye vee or eye oh").
 
 ## Build order
 
@@ -134,7 +150,7 @@ Pocket does not read an entry's `kit_vial` yet. Until it does, an entry that nam
 ```
 edgecdss-pocket/
 ├── README.md
-├── bank/            bank.json, kit.json (exported; versioned; hash in manifest)
+├── bank/            bank.json, kit.json (exported; versioned; hash in manifest); procedures.json (signed steps)
 ├── engine/          dose engine + tests (ported from EdgeCDSS)
 ├── grammar/         generator: bank → Vosk grammar
 ├── voice/           vosk + piper glue, push-to-talk, templates

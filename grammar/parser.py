@@ -8,8 +8,8 @@ import dataclasses
 import re
 from typing import Optional
 
-from grammar.vocabulary import (AGE_UNITS, CONDITIONS, CONTROLS, DOSE_UNITS, FILLERS, NUMBERS, PATIENT, ROUTE_WORDS,
-                                ROUTES, VOLUME_UNITS, WEIGHT_UNITS, Vocabulary)
+from grammar.vocabulary import (AGE_UNITS, CONDITIONS, CONTROLS, DOSE_UNITS, FILLERS, NUMBERS, PATIENT, PROCEDURE_TERMS,
+                                ROUTE_WORDS, ROUTES, VOLUME_UNITS, WEIGHT_UNITS, Vocabulary)
 
 _ONES = {w: i for i, w in enumerate("zero one two three four five six seven eight nine".split())}
 _TEENS = {w: i + 10 for i, w in enumerate(
@@ -67,12 +67,13 @@ class Parsed:
     conditions: list = dataclasses.field(default_factory=list)
     bare_number: bool = False
     bad_number: bool = False
+    procedures: list = dataclasses.field(default_factory=list)   # "failed airway"
     unknown: list = dataclasses.field(default_factory=list)
 
     def has_slots(self) -> bool:
         return bool(self.drugs or self.classes or self.labels or self.routes or self.weight
                     or self.age or self.child or self.adult or self.stated or self.stated_vial or self.conditions
-                    or self.bare_number or self.bad_number)
+                    or self.bare_number or self.bad_number or self.procedures)
 
 
 def _under_100(toks: list):
@@ -166,6 +167,11 @@ def parse(text: str, vocab: Vocabulary) -> Parsed:
         term, n = _match(toks, i, CONTROLS, 2)
         if term:
             p.controls.append(term)
+            i += n
+            continue
+        term, n = _match(toks, i, PROCEDURE_TERMS, 3)
+        if term:
+            p.procedures.append(PROCEDURE_TERMS[term])
             i += n
             continue
         if t in _NUMBER_TOKENS:
