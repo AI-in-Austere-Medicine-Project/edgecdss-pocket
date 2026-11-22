@@ -30,7 +30,9 @@ import pytest
 from engine import words
 from engine.bank import load_bank
 from engine.procedures import load_procedures
-from engine.session import (HELP_SPOKEN, HELP_WRITTEN, HOME_LINE, START_UP_LINE, TEST_NOTICE, Session, boot)
+from engine.session import (HELP_SPOKEN, HELP_WRITTEN, HOME_LINE, START_UP_LINE, TEST_NOTICE, Session, boot,
+                            start_up_line)
+from tests.test_sets import PFC_START
 from grammar.parser import NUMBERS, parse
 from grammar.vocabulary import (CONTROLS, MENU_CONTROLS, PROCEDURE_TERMS, ROUTES, CONDITIONS, build)
 
@@ -92,8 +94,9 @@ def test_1_start_up_says_pocket_ready_and_logs_the_set_version_and_hash():
     assert START_UP_LINE == ("Pocket ready. Research prototype, not for patient care. "
                              "Say drugs, procedures, or help.")
     assert s.announce.kind == "boot"
-    assert s.announce.text == s.announce.written_text == START_UP_LINE
-    for not_said in ("PFC", "set", "version", "one point four", man["sha256"]["bank.json"][:8]):
+    assert s.announce.written_text == start_up_line("PFC set")       # the set named (owner, 2026-11-22)
+    assert s.announce.text == PFC_START
+    for not_said in ("PFC", "version", "one point four", man["sha256"]["bank.json"][:8]):   # the set is said, as letters
         assert not_said not in s.announce.text
     assert records[0]["event"] == "boot" and records[0]["set"] == "PFC set"
     assert records[0]["bank_version"] == man["bank_version"]
@@ -366,4 +369,4 @@ def test_7_a_test_bank_says_its_notice_before_pocket_ready(tmp_path):
         s = boot(make_test_bank(tmp_path))
     finally:
         del os.environ["POCKET_TEST"]
-    assert s.announce.text == f"{TEST_NOTICE} {START_UP_LINE}"
+    assert s.announce.text.startswith(f"{TEST_NOTICE} Pocket ready. ") and s.announce.text.endswith(START_UP_LINE[len('Pocket ready. '):])

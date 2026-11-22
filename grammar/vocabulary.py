@@ -19,8 +19,10 @@ CANCEL_WORDS = ("cancel", "no", "negative", "stop", "wrong")
 CONTROL_OF = {**{w: "confirm" for w in CONFIRM_WORDS}, **{w: "cancel" for w in CANCEL_WORDS}}  # noqa: E501
 # The home menu, help and command lists (owner, 2026-11-21): names and instructions only,
 # never a dose. "list drugs" is "drugs", "list procedures" is "procedures".
+# Choosing the set (owner, 2026-11-22): its name, letter by letter, then "set".
+SET_CONTROLS = {"ems set": "EMS", "pfc set": "PFC"}
 MENU_CONTROLS = ("home", "drugs", "list drugs", "procedures", "list procedures", "help",
-                 "what can i say")
+                 "what can i say", *SET_CONTROLS)
 MENU_OF = {"list drugs": "drugs", "list procedures": "procedures"}
 CONTROLS = ("new patient", *CONFIRM_WORDS, *CANCEL_WORDS, "repeat", "next", "back", "start over",
             "why", "log", "battery", *MENU_CONTROLS)

@@ -26,7 +26,7 @@ from engine import contracts, vials, words
 from engine.bank import Bank, BankRefused, load_bank
 from engine.procedures import Procedure, ProceduresRefused, load_procedures
 from grammar.parser import Age, Parsed, parse
-from grammar.vocabulary import (CONDITION_PATTERNS, CONFUSABLE_ROUTE_TERMS, CONTROL_OF, MENU_CONTROLS, MENU_OF,
+from grammar.vocabulary import (CONDITION_PATTERNS, CONFUSABLE_ROUTE_TERMS, CONTROL_OF, MENU_CONTROLS, MENU_OF, SET_CONTROLS,
                                 PROCEDURE_TITLES, VOLUME_UNITS, build, label_tokens, names_condition)
 
 PEDIATRIC_WEIGHT_CEILING_KG = 40.0  # EdgeCDSS openai_client: not spoken, a gate
@@ -47,6 +47,13 @@ TEST_NOTICE = "Test set. Not for patient use."
 # hash go to the log, not the speaker. The bank names no set, so the kit does.
 START_UP_LINE = ("Pocket ready. Research prototype, not for patient care. "
                  "Say drugs, procedures, or help.")
+# The start-up line names the set loaded (owner, 2026-11-22), and so does a set change.
+SET_LOADED = "{name} loaded. Research prototype, not for patient care. Say drugs, procedures, or help."
+SET_KEYS = {"PFC": "PFC set", "EMS": "EMS set"}
+
+
+def start_up_line(name: str) -> str:
+    return START_UP_LINE.replace("Pocket ready. ", f"Pocket ready. {name}. ", 1)
 HOME_LINE = "Pocket ready. Say drugs, procedures, or help."
 # Help (the owner's text, 2026-11-21). Shown with the letters; said with the owner's route
 # words (2026-11-19) and RSI letter by letter. Each example asks nothing first: the drug one
@@ -58,7 +65,7 @@ HELP_WRITTEN = (
     "Say yes to hear the dose, or no to cancel. For a procedure, say its name and the weight. For "
     "example: RSI, eighty kilos. Then say next, back or repeat. Say new patient to start again. "
     "Say drugs or procedures to hear what Pocket knows. Say what can I say at any time.")
-_MENU_LETTERS = {"RSI": "R S I"}
+_MENU_LETTERS = {"RSI": "R S I", "PFC": "P F C", "EMS": "E M S"}
 # "What can I say": only what works in the state Pocket is in.
 CAN_SAY_IDLE = "Say drugs, procedures, help, new patient, or a drug or procedure name."
 CAN_SAY_READBACK = "Say yes, no, repeat, or why."
@@ -265,7 +272,7 @@ def _said(turn: Turn) -> Turn:
     is built in the written form. `data` (the log record) is untouched. A procedure
     step's signed text is also said with its symbols in words (words.say_step)."""
     step = words.say_step if "step" in turn.data else (lambda t: t)
-    if turn.kind == "menu":
+    if turn.kind in ("menu", "boot"):
         step = _say_menu
     return dataclasses.replace(turn, say=words.say_as(words.say_routes(step(turn.say))),
                                after=[words.say_as(words.say_routes(a)) for a in turn.after],
@@ -311,8 +318,11 @@ def _on_route(entry: dict, route: str) -> bool:
 class Session:
     def __init__(self, bank: Optional[Bank], refused: Optional[str] = None,
                  log: Optional[Callable] = None, now: Optional[Callable] = None,
-                 clock: Optional[Callable] = None, procedures: Optional[dict] = None):
+                 clock: Optional[Callable] = None, procedures: Optional[dict] = None,
+                 sets: Optional[dict] = None, on_set: Optional[Callable] = None):
         self.bank, self.refused = bank, refused
+        self.sets = sets or {}             # {"PFC": (bank, procedures) or refusal text, ...}
+        self._on_set = on_set
         self.procedures = procedures or {}
         self._run = None
         self.records = []
@@ -339,7 +349,7 @@ class Session:
             return Turn("refused", f"Bank refused: {self.refused}. No doses.")
         bank, short = self.bank, self.bank.hash[:8]
         name = set_name(bank.kit_id)
-        say = START_UP_LINE
+        say = start_up_line(name)
         if bank.test:
             say = f"{TEST_NOTICE} {say}"
         self._log({"event": "boot", "time": self._now(), "set": name, "bank_version": bank.version,
@@ -391,7 +401,31 @@ class Session:
             return MENU_OF.get(p.controls[0], p.controls[0])
         return None
 
+    @property
+    def set_name(self) -> str:
+        return set_name(self.bank.kit_id) if self.bank else ""
+
+    def _load_set(self, key: str) -> Turn:
+        """Load a set by its key, from anywhere: the read-back is cancelled and the patient
+        starts again, so one set's doses never meet the other's patient."""
+        name = SET_KEYS[key]
+        held = self.sets.get(key)
+        if held is None:
+            return Turn("menu", f"Only the {self.set_name} is on this device.")
+        if isinstance(held, str):
+            return Turn("menu", f"{name} refused: {held}. The {self.set_name} stays.")
+        self.bank, self.procedures = held
+        self.vocab = build(self.bank)
+        self.patient, self.req, self._run = Patient(), Request(), None
+        self._pending, self._misses, self._last_entry, self._last_volume = None, 0, None, False
+        self.announce = _said(self._boot_turn())
+        if self._on_set:
+            self._on_set(key)
+        return Turn("menu", SET_LOADED.format(name=name))
+
     def _menu(self, word: str) -> Turn:
+        if word in SET_CONTROLS:
+            return self._load_set(SET_CONTROLS[word])
         if word == "home":                    # from anywhere; the patient stays
             self.req, self._pending, self._misses, self._run = Request(), None, 0, None
             return Turn("menu", HOME_LINE)
@@ -974,6 +1008,31 @@ def _volume_words(vol: dict, withheld: bool) -> str:
 def _recipe(d: dict) -> str:
     return (f"Dilute {words.mils(d['drug_ml'])} of {words.num(d['from_concentration_mg_ml'])} "
             f"in {words.mils(d['diluent_ml'])} of {d['diluent']}.")
+
+
+def boot_sets(dirs: dict, chosen: str = "PFC", log: Optional[Callable] = None,
+              now: Optional[Callable] = None, clock: Optional[Callable] = None,
+              on_set: Optional[Callable] = None) -> "Session":
+    """Both sets, the chosen one loaded ({"PFC": dir, "EMS": dir}). A set that is refused
+    is named when it is asked for; if the chosen one is refused, the other loads."""
+    sets = {}
+    for key, d in dirs.items():
+        try:
+            bank = load_bank(d)
+        except BankRefused as e:
+            sets[key] = str(e)
+            continue
+        try:
+            procedures = load_procedures(d, bank)
+        except ProceduresRefused:
+            procedures = {}
+        sets[key] = (bank, procedures)
+    order = [chosen] + [k for k in dirs if k != chosen]
+    key = next((k for k in order if not isinstance(sets.get(k), str) and k in sets), None)
+    if key is None:
+        return Session(None, refused=sets.get(chosen) or "no set", sets=sets)
+    bank, procedures = sets[key]
+    return Session(bank, log=log, now=now, clock=clock, procedures=procedures, sets=sets, on_set=on_set)
 
 
 def boot(bank_dir, log: Optional[Callable] = None, now: Optional[Callable] = None,

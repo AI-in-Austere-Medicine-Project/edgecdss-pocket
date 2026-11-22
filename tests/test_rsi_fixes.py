@@ -286,13 +286,13 @@ def test_the_question_is_said_and_written_alike():
 
 # ── 5. the start-up line ────────────────────────────────────────────────────
 
-def test_the_start_up_line_names_no_set_and_no_version():
-    """Superseded by the home menu's start-up line (owner, 2026-11-21: tests/test_home_menu.py):
-    the set name and version are still logged, never spoken."""
+def test_the_start_up_line_names_the_set_and_no_version():
+    """Superseded twice: the home menu's start-up line (owner, 2026-11-21), then the set
+    named in it (owner, 2026-11-22: tests/test_sets.py). The version is logged, never spoken."""
     s = boot(BANK)
     assert s.announce.kind == "boot"
-    assert s.announce.written == s.announce.say
-    assert "PFC set" not in s.announce.say and "version" not in s.announce.say
+    assert "PFC set" in s.announce.written and "P F C set" in s.announce.say
+    assert "version" not in s.announce.say
 
 
 def test_the_full_version_and_hash_go_to_the_log():

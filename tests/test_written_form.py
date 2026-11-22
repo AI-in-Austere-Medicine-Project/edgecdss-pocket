@@ -1,6 +1,7 @@
 """Two forms of every answer (owner, 2026-11-19): the spoken form for the voice ("eye
 vee", "pee oh") and a written form for a screen, with the route letters IV, IM, IO, IN,
 PO and NEB. Only the routes differ; the written form is never spoken."""
+import dataclasses
 import re
 
 import pytest
@@ -63,7 +64,8 @@ def test_questions_holds_and_the_pair_question_have_both_forms():
 
 def test_the_boot_line_and_an_expired_read_back_have_both_forms():
     s = Session(BANK)
-    _forms(s.announce)
+    a = s.announce                       # the set's letters are said one by one (2026-11-22)
+    _forms(dataclasses.replace(a, say=a.say.replace("P F C set", "PFC set")))
     t = [0.0]
     s = Session(BANK, clock=lambda: t[0])
     s.handle("ketamine for agitation iv eighty kilos")
