@@ -94,7 +94,7 @@ For someone who has never used Pocket (owner, 2026-11-21). None of it ever speak
 
 ## On the device
 
-`python -m voice.device` is the voice session: press the headset button, hear the beep, speak; the answer is spoken. How to run it on the Radxa: [device/RADXA.md](device/RADXA.md#the-voice-session-2026-11-21).
+`python -m voice.device` is the voice session: press the headset button, hear the beep, speak; the answer is spoken. How to run it on the Radxa: [device/RADXA.md](device/RADXA.md#the-voice-session-2026-11-21). On the Radxa it starts by itself at power-up (`pocket.service`, `device/install.sh`): [device/RADXA.md](device/RADXA.md#power-up-and-power-off-2026-11-21).
 
 ## Procedure steps
 
@@ -175,8 +175,8 @@ edgecdss-pocket/
 ├── bank/            bank.json, kit.json (exported; versioned; hash in manifest); procedures.json (signed steps)
 ├── engine/          dose engine + tests (ported from EdgeCDSS)
 ├── grammar/         generator: bank → Vosk grammar
-├── voice/           vosk + piper glue, push-to-talk, templates; device.py is the voice session
-├── device/          OS image notes, service unit, Bluetooth pairing, power
+├── voice/           vosk + piper glue, push-to-talk, templates; device.py is the voice session, autostart.py runs it from power-up
+├── device/          OS image notes, pocket.service, install.sh (a fresh board in one command), power
 └── tests/           acceptance tests A–G, replay corpus of phrases
 ```
 

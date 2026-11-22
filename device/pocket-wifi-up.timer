@@ -1,0 +1,10 @@
+[Unit]
+Description=EdgeCDSS Pocket: check Wi-Fi every 30 s
+
+[Timer]
+OnBootSec=20
+OnUnitActiveSec=30
+AccuracySec=1
+
+[Install]
+WantedBy=timers.target

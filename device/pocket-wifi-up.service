@@ -1,0 +1,8 @@
+[Unit]
+Description=EdgeCDSS Pocket: join the saved Wi-Fi if NetworkManager has not
+After=NetworkManager.service
+Requires=NetworkManager.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/pocket-wifi-up
