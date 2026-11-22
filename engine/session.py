@@ -23,7 +23,7 @@ import time
 from typing import Callable, Optional
 
 from engine import contracts, vials, words
-from engine.bank import Bank, BankRefused, load_bank
+from engine.bank import Bank, BankRefused, load_bank, merge_banks
 from engine.procedures import Procedure, ProceduresRefused, load_procedures
 from grammar.parser import Age, Parsed, parse
 from grammar.vocabulary import (CONDITION_PATTERNS, CONFUSABLE_ROUTE_TERMS, CONTROL_OF, MENU_CONTROLS, MENU_OF, SET_CONTROLS,
@@ -50,6 +50,7 @@ START_UP_LINE = ("Pocket ready. Research prototype, not for patient care. "
 # The start-up line names the set loaded (owner, 2026-11-22), and so does a set change.
 SET_LOADED = "{name} loaded. Research prototype, not for patient care. Say drugs, procedures, or help."
 SET_KEYS = {"PFC": "PFC set", "EMS": "EMS set"}
+IN_OTHER_SET = "No signed dose of {name} in the {here}. It is in the {there}; say {there} to load it."
 
 
 def start_up_line(name: str) -> str:
@@ -274,7 +275,7 @@ def _said(turn: Turn) -> Turn:
     is built in the written form. `data` (the log record) is untouched. A procedure
     step's signed text is also said with its symbols in words (words.say_step)."""
     step = words.say_step if "step" in turn.data else (lambda t: t)
-    if turn.kind in ("menu", "boot"):
+    if turn.kind in ("menu", "boot") or turn.data.get("letters"):
         step = _say_menu
     return dataclasses.replace(turn, say=words.say_as(words.say_routes(step(turn.say))),
                                after=[words.say_as(words.say_routes(a)) for a in turn.after],
@@ -331,7 +332,10 @@ class Session:
         self._log = log if log is not None else self.records.append
         self._now = now or (lambda: datetime.datetime.now(datetime.timezone.utc).isoformat())
         self._logged = 0
-        self.vocab = build(bank) if bank else None
+        # With both sets, Pocket hears every set's names (owner, 2026-11-22) and doses from
+        # the loaded one only.
+        loaded = [v[0] for v in self.sets.values() if not isinstance(v, str)]
+        self.vocab = (build(merge_banks(loaded)) if len(loaded) > 1 else build(bank)) if bank else None
         self.patient, self.req = Patient(), Request()
         self._pending = None   # the entry a read-back is waiting on
         self._clock = clock or time.monotonic
@@ -403,6 +407,15 @@ class Session:
             return MENU_OF.get(p.controls[0], p.controls[0])
         return None
 
+    def _set_holding(self, drug: str) -> Optional[str]:
+        """The name of another set on this device that signs this drug, or None."""
+        for key, held in self.sets.items():
+            if isinstance(held, str) or held[0] is self.bank:
+                continue
+            if drug in held[0].signed_drugs or drug in held[0].silent_drugs:
+                return SET_KEYS[key]
+        return None
+
     @property
     def set_name(self) -> str:
         return set_name(self.bank.kit_id) if self.bank else ""
@@ -417,7 +430,6 @@ class Session:
         if isinstance(held, str):
             return Turn("menu", f"{name} refused: {held}. The {self.set_name} stays.")
         self.bank, self.procedures = held
-        self.vocab = build(self.bank)
         self.patient, self.req, self._run = Patient(), Request(), None
         self._pending, self._misses, self._last_entry, self._last_volume = None, 0, None, False
         self.announce = _said(self._boot_turn())
@@ -753,6 +765,10 @@ class Session:
         if drug not in self.bank.signed_drugs:
             if drug in self.bank.silent_drugs:
                 return self._hold(SIGNED_SILENT.format(name=words.say_name(drug).capitalize()))
+            other = self._set_holding(drug)
+            if other:
+                held = self._hold(IN_OTHER_SET.format(name=words.say_name(drug), here=self.set_name, there=other))
+                return dataclasses.replace(held, data={"letters": True})
             return self._hold(f"No signed dose for {req.heard}.")
         if req.route_options:
             return Turn("ask", _choice(list(req.route_options)) + "?")
@@ -771,7 +787,10 @@ class Session:
             if not cands:
                 return self._hold(f"No signed {req.route} dose of {name}{for_cls}.")
         if req.labels:
-            cands = [e for e in cands if set(req.labels) <= label_tokens(e["indication"])]
+            printed = [e for e in cands if set(req.labels) <= label_tokens(e["indication"])]
+            # none: the class's words too ("calcium channel blocker overdose", label "... OD")
+            cands = printed or [e for e in cands if set(req.labels) <= label_tokens(e["indication"])
+                                | label_tokens(e["indication_class"])]
             if not cands:
                 return self._hold(f"No signed dose of {name} for that.")
 

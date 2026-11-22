@@ -332,13 +332,17 @@ def test_5_each_new_phrase_is_heard_as_itself_never_as_a_drug_or_a_dose_word(hea
     assert not p.drugs and not set(p.controls) & {"yes", "confirm", "correct", "affirmative"}, heard
     assert set(p.controls) <= {phrase}, heard
     if clip.stem in KNOWN_MISSES:                      # a miss: "Not recognised.", nothing else
-        assert (heard, p.controls) == (KNOWN_MISSES[clip.stem], []), heard
+        assert heard == KNOWN_MISSES[clip.stem], heard
+        assert boot(BANK).handle(text, spoken=True).say == "Not recognised."
     else:
         assert p.controls == [phrase], heard
 
 
 # Measured 2026-11-21 (27 of 28 heard as said). A miss is pinned, so a change shows here.
-KNOWN_MISSES = {"kokoro__drugs__bf_lily": "drugs as"}
+# 2026-11-22: the grammar hears both sets' names and indications (1,034 entries, was 715):
+# 25 of 28; each miss is "Not recognised." and nothing else.
+KNOWN_MISSES = {"kokoro__drugs__bf_lily": "drugs it", "kokoro__home__am_liam": "zone",
+                "kokoro__list_drugs__bf_lily": "list drugs her"}
 
 
 # ── 7. never a dose ─────────────────────────────────────────────────────────

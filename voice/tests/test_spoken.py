@@ -83,11 +83,14 @@ def test_the_grammar_is_the_bank_words_the_model_knows_plus_letters_and_unk():
 
 
 def test_the_committed_grammar_file_matches_the_bank():
+    from engine.bank import load_sets, merge_banks
+    union = merge_banks(load_sets().values())        # both sets' names (2026-11-22)
+    words = build(union).words()
     g = json.loads((ROOT / "grammar" / "vosk_grammar.json").read_text())
-    assert g["bank_hash"] == BANK.hash
+    assert g["bank_hash"] == union.hash
     phrases = set(spoken.spellings())
-    assert set(g["words"]) - {"[unk]"} <= VOCAB.words() | set("abcdefghijklmnopqrstuvwxyz") | phrases
-    assert set(g["not_in_model"]) <= VOCAB.words()
+    assert set(g["words"]) - {"[unk]"} <= words | set("abcdefghijklmnopqrstuvwxyz") | phrases
+    assert set(g["not_in_model"]) <= words
     assert not set(g["words"]) & set(g["not_in_model"])
 
 

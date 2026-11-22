@@ -21,7 +21,7 @@ import pathlib
 import sys
 import wave
 
-from engine.bank import load_bank
+from engine.bank import load_sets, merge_banks
 from grammar.vocabulary import CONTROLS, build
 from voice import spoken
 from voice.grammar import grammar_words, model_id
@@ -56,7 +56,7 @@ def main(model_dir, wavdir):
     import vosk
     vosk.SetLogLevel(-1)
     model = vosk.Model(str(model_dir))
-    vocab = build(load_bank(ROOT / "bank"))
+    vocab = build(merge_banks(load_sets().values()))       # every set's names (2026-11-22)
     meaningful = vocab.words() | {w for c in CONTROLS for w in c.split()}
     wavs = sorted(pathlib.Path(wavdir).glob("*__*.wav"))
     cache_path = pathlib.Path(wavdir) / "decodes.json"
@@ -113,10 +113,13 @@ def main(model_dir, wavdir):
             dropped[target] = clash
     voices = sorted({w.stem.split("__")[1] for w in wavs})
     targets = {target_of(w) for w in wavs}
-    out = {**model_id(model_dir), "voices": voices, "spellings": spellings,
-           "shared_spellings_dropped": dropped,
-           "no_spelling": sorted(t for t in targets - set(spellings)
-                                 if any(model.vosk_model_find_word(w) < 0 for w in t.split()))}
+    # Merged into what is there: the teach page's, the owner clips' and the dropped lists stay.
+    out = json.loads(OUT.read_text()) if OUT.exists() else {}
+    out.update({**model_id(model_dir), "spellings": spellings})
+    out["voices"] = sorted(set(out.get("voices", [])) | set(voices))
+    out["shared_spellings_dropped"] = {**out.get("shared_spellings_dropped", {}), **dropped}
+    out["no_spelling"] = sorted(set(out.get("no_spelling", [])) - set(spellings) | {
+        t for t in targets - set(spellings) if any(model.vosk_model_find_word(w) < 0 for w in t.split())})
     OUT.write_text(json.dumps(out, indent=1, sort_keys=True) + "\n")
     print(f"{len(spellings)} names spelled, {sum(map(len, spellings.values()))} spellings; "
           f"no spelling: {', '.join(out['no_spelling']) or 'none'}")

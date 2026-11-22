@@ -109,7 +109,19 @@ STOPWORDS = frozenset("and the for with without not dose doses patient incl no o
 MIN_STEM = 3
 # How medics say signed drugs where the bank has no such alias yet (owner, phase 2).
 # Pocket-side spoken names only; listed in docs/UPSTREAM.md for EdgeCDSS to sign.
-MEDIC_NAMES = {"ancef": "cefazolin", "cal gluc": "calcium gluconate"}
+MEDIC_NAMES = {"ancef": "cefazolin", "cal gluc": "calcium gluconate",
+               # the EMS set's drugs by the names medics use (owner, 2026-11-22: "every EMS
+               # drug name and its common names"); a name joins only when its drug is signed
+               "adenocard": "adenosine", "ventolin": "albuterol", "proventil": "albuterol",
+               "salbutamol": "albuterol", "cordarone": "amiodarone", "amio": "amiodarone",
+               "subutex": "buprenorphine", "decadron": "dexamethasone", "cardizem": "diltiazem",
+               "benadryl": "diphenhydramine", "inapsine": "droperidol", "glucagen": "glucagon",
+               "cyanokit": "hydroxocobalamin", "motrin": "ibuprofen", "advil": "ibuprofen",
+               "atrovent": "ipratropium", "magnesium": "magnesium sulfate",
+               "magnesium sulphate": "magnesium sulfate", "mag sulfate": "magnesium sulfate",
+               "nitro": "nitroglycerin", "zyprexa": "olanzapine", "protopam": "pralidoxime",
+               "mag sulphate": "magnesium sulfate", "sodium bicarb": "sodium bicarbonate"}
+# "two pam" (2-PAM) is left out: "two" is read as a number before any name.
 
 
 def label_tokens(label: str) -> set:
@@ -190,6 +202,12 @@ def _class_terms(classes) -> dict:
     for cls in classes:
         for part in cls.split(" / "):
             term = part.strip().lower()
+            if re.search(r"[^a-z ]", term):         # said, a term has no punctuation (EMS classes)
+                bits = [b.strip() for b in term.replace("-", " ").split(",")]
+                for b in bits:
+                    if re.fullmatch(r"[a-z]+(?: [a-z]+)+", b):   # two words or more: "crush" alone is not
+                        out[b] = cls
+                continue
             out[term] = cls
             if "aem" in term:                       # hemorrhage, hypoglycemia
                 out[term.replace("aem", "em")] = cls
@@ -207,7 +225,8 @@ def _close(token: str, name: str) -> bool:
 
 def build(bank) -> Vocabulary:
     names, unspeakable = {}, set()   # said name -> generic
-    signed = {e["drug"] for e in bank.entries}
+    # Signed but silent drugs (mEq, topical) are signed too: heard, so Pocket can say so.
+    signed = {e["drug"] for e in bank.entries} | {x["drug"] for x in getattr(bank, "silent", [])}
     groups = {}
     for e in bank.entries:
         groups.setdefault(e["drug"], set()).update(e["aliases"])

@@ -1,4 +1,4 @@
-"""Dev tool: are all 25 signed drugs heard? Synthetic held-out voices, the real grammar.
+"""Dev tool: is every signed drug heard, in both sets? Synthetic held-out voices, the real grammar.
 
   python3 -m voice.tools.dryrun_drugs jobs JOBS.json
   ~/pi-cloud-cdss/.venv/bin/python voice/tools/synth_kokoro.py JOBS.json WAVDIR
@@ -16,8 +16,8 @@ import pathlib
 import sys
 import wave
 
-from engine.bank import load_bank
-from engine.session import boot
+from engine.bank import SET_DIRS, load_sets, merge_banks
+from engine.session import boot_sets
 from grammar.vocabulary import MEDIC_NAMES, _say_term, build
 from voice import spoken
 
@@ -26,14 +26,15 @@ VOICES = ("af_nicole", "am_liam", "bf_lily")
 
 
 def names():
-    bank = load_bank(ROOT / "bank")
+    bank = merge_banks(load_sets().values())       # both sets (owner, 2026-11-22)
     vocab = build(bank)
     groups = {}
-    for e in bank.entries:
+    for e in bank.entries + bank.silent:
         groups.setdefault(e["drug"], [e["drug"]])
         groups[e["drug"]] += [a for a in e["aliases"] if a not in groups[e["drug"]]]
     for said, generic in MEDIC_NAMES.items():
-        groups[generic].append(said)
+        if generic in groups:
+            groups[generic].append(said)
     out = []
     for drug, raw in sorted(groups.items()):
         said = [s for s in dict.fromkeys(_say_term(n) for n in raw) if s]
@@ -44,9 +45,13 @@ def names():
     return out
 
 
+def clip_id(name, voice):
+    return f"{name.replace(' ', '+')}__{voice}"
+
+
 def jobs(path):
     rows = names()
-    js = [[f"{i:03d}__{v}", spoken.prompt(r["name"]), v, 1.0] for i, r in enumerate(rows) for v in VOICES]
+    js = [[clip_id(r["name"], v), spoken.prompt(r["name"]), v, 1.0] for r in rows for v in VOICES]
     pathlib.Path(path).write_text(json.dumps(js))
     print(len(rows), "names,", len(js), "clips")
 
@@ -57,18 +62,23 @@ def score(model_dir, wavdir):
     gpath = ROOT / "grammar" / "vosk_grammar.json"
     g = json.loads(gpath.read_text())
     from voice.hear import Hearing
-    vocab = build(load_bank(ROOT / "bank"))
+    vocab = build(merge_banks(load_sets().values()))
     hearing = Hearing(vosk.Model(str(model_dir)), g, vocab)
+    sets = load_sets()
+    EMS_DRUGS = (sets["EMS"].signed_drugs | sets["EMS"].silent_drugs) - sets["PFC"].signed_drugs
     out = []
-    for i, r in enumerate(names()):
+    for r in names():
         for v in VOICES:
             u = hearing.start()
-            with wave.open(str(pathlib.Path(wavdir) / f"{i:03d}__{v}.wav")) as w:
+            with wave.open(str(pathlib.Path(wavdir) / f"{clip_id(r['name'], v)}.wav")) as w:
                 u.feed(w.readframes(w.getnframes()))
             heard, text, which = u.finish()
-            s = boot(ROOT / "bank")
+            s = boot_sets(SET_DIRS, "EMS" if r["drug"] in EMS_DRUGS else "PFC")   # the drug's own set
+            parsed = s.parse(text)
             turn = s.handle(text, spoken=True)
             heard_as = [s.req.drug] if s.req.drug else list(s.req.options)
+            if not heard_as and turn.kind == "hold" and len(parsed.drugs) == 1:
+                heard_as = list(parsed.drugs[0].generics)     # signed but silent: held, named
             out.append({**r, "voice": v, "heard": heard, "decoder": which, "heard_as": heard_as,
                         "turn": turn.say})
     # A confusable pair (grammar/confusable.json) is asked, never dosed: "X or Y?" with
