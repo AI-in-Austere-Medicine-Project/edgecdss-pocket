@@ -36,7 +36,7 @@ def test_under_005_ml_is_still_too_small_to_draw_and_names_no_dilution():
 
 def test_from_half_a_mil_up_the_rounding_is_unchanged():
     assert V.volume_ml(KIT, "x", 5.0) == (0.5, 10.0)
-    assert V.volume_ml(KIT, "x", 13.33) == (1.33, 10.0)
+    assert V.volume_ml(KIT, "x", 13.33) == (1.3, 10.0)        # 1 to 10 mL: 0.1 (owner ruling, same day)
 
 
 def test_pocket_adds_use_a_one_mil_syringe_under_half_a_mil():
@@ -44,7 +44,7 @@ def test_pocket_adds_use_a_one_mil_syringe_under_half_a_mil():
     s = boot(BANK)
     s.handle("ketamine for pain iv twenty kilos")          # 0.2 mg/kg x 20 kg = 4 mg of 50 mg/mL
     said = s.handle("confirm").say
-    assert "Zero point zero eight mils of fifty. Use a one mil syringe." in said
+    assert "Zero point zero eight mils of five hundred per ten. Use a one mil syringe." in said   # as the label reads
     assert "Dilute" not in said and "dilution" not in said
     s = boot(BANK)
     s.handle("ketamine for pain iv four kilos")             # 0.016 mL: too small, no recipe

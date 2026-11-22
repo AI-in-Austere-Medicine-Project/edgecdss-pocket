@@ -42,7 +42,7 @@ def test_saying_the_set_loads_it_and_says_so():
     assert s.set_name == "EMS set" and "adenosine" in s.bank.signed_drugs
     assert "adenosine" in s.handle("drugs").written
     s.handle("adenosine for svt iv adult")
-    assert s.handle("confirm").say == "Adenosine twelve milligrams. Four mils of three."
+    assert s.handle("confirm").say == "Adenosine twelve milligrams. Four mils of twelve per four."
     t = s.handle("pfc set")
     assert t.say.startswith("P F C set loaded.") and s.set_name == "PFC set" and "adenosine" not in s.bank.signed_drugs
     assert s.announce.written.startswith("Pocket ready. PFC set.")      # what a reconnect would say

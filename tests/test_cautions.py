@@ -46,7 +46,7 @@ def s():
 def test_with_no_condition_stated_nothing_follows_the_dose(s):
     s.handle(SUX_RSI)
     dose = s.handle("confirm")
-    assert dose.say == "Succinylcholine one hundred and twenty milligrams. Two point four mils of fifty."
+    assert dose.say == "Succinylcholine one hundred and twenty milligrams. Two point four mils of one hundred per two."
     assert dose.after == []
 
 
@@ -54,7 +54,7 @@ def test_a_stated_condition_a_caution_names_is_spoken_after_the_dose(s):
     readback = s.handle(f"{SUX_RSI} crush injury")
     assert readback.say == "Succinylcholine, RSI, eye vee, eighty kilos, crush injury. Confirm?"
     dose = s.handle("confirm")
-    assert dose.say == "Succinylcholine one hundred and twenty milligrams. Two point four mils of fifty."
+    assert dose.say == "Succinylcholine one hundred and twenty milligrams. Two point four mils of one hundred per two."
     assert dose.after == [
         "Caution: Contraindicated in hyperkalemia, burns >24hr, crush injury, denervation."]
 
@@ -256,9 +256,9 @@ def test_with_a_volume_the_signed_caution_is_spoken_whole(s):
     s.handle("ketamine for moderate pain iv eighty kilos")
     dose = s.handle("confirm")
     assert dose.data["record"]["volume_ml"] == 0.4
-    e = entry("ketamine", "IV", "adult", "pain")
-    assert s.handle("why").after[0] == "Caution: " + words.say_routes(e["serve_cautions"][0])
-    assert "mL" in e["serve_cautions"][0]
+    why = s.handle("why").after                     # the dilution cautions: not said (owner ruling 2026-11-22)
+    assert any(w.startswith("Caution: ") for w in why)
+    assert not any("dilution" in w.lower() for w in why)
 
 
 def test_without_a_volume_only_the_sentences_with_a_volume_drop(s):

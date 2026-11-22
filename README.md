@@ -11,9 +11,9 @@ Roadmap: see [ROADMAP.md](ROADMAP.md) for the build order and where help is welc
 <p align="center"><img src="docs/pocket-board.jpg" alt="EdgeCDSS Pocket: Radxa Zero 3W with Shokz bone-conduction headset" width="320"></p>
 A wearable that gives a signed drug dose in millilitres by voice. No language model, no network, no screen.
 
-Say "ketamine for moderate pain, IV, eighty kilos." It says "Ketamine, moderate to severe pain analgesia, eye vee, eighty kilos. Confirm?" Say "confirm." It says "Ketamine twenty milligrams. Zero point four mils of fifty. Use a one mil syringe." It logs the time.
+Say "ketamine for moderate pain, IV, eighty kilos." It says "Ketamine, moderate to severe pain analgesia, eye vee, eighty kilos. Confirm?" Say "confirm." It says "Ketamine twenty milligrams. Zero point four mils of five hundred per ten. Use a one mil syringe." It logs the time.
 
-That is the signed 0.25 mg/kg: 0.4 mL of the kit's 50 mg/mL vial. Pocket never dilutes (owner rule, 2026-11-22): a volume under 0.5 mL is said to the nearest 0.01 mL with "Use a one mil syringe.", and under 0.05 mL it is too small to draw.
+That is the signed 0.25 mg/kg: 0.4 mL of the kit's 50 mg/mL vial. Pocket never dilutes (owner rule, 2026-11-22): a volume under 0.5 mL is said to the nearest 0.01 mL with "Use a one mil syringe.", and under 0.05 mL it is too small to draw. Volumes are rounded by band (under 1 mL to 0.01, 1 to 10 mL to 0.1, from 10 mL to 1 mL, never above the signed maximum), and the strength is said as the vial's label reads ("five hundred per ten").
 
 Part of the [AI in Austere Medicine Project](https://github.com/AI-in-Austere-Medicine-Project). 
 

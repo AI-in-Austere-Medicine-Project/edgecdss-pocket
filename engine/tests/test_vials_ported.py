@@ -17,7 +17,7 @@ K3_DILUTION = {"concentration_mg_ml": 5.0, "from_concentration_mg_ml": 50.0, "dr
 
 @pytest.mark.parametrize("dose_mg,conc,expected", [
     (6.25, 50.0, 0.13), (2.5, 50.0, 0.05), (7.5, 10.0, 0.75),   # under 0.5 mL: 0.01 (owner rule 2026-11-22)
-    (142.1, 50.0, 2.84), (96.0, 10.0, 9.6), (1000.0, 100.0, 10.0),
+    (142.1, 50.0, 2.8), (96.0, 10.0, 9.6), (1000.0, 100.0, 10.0),
 ])
 def test_a_volume_is_drawn_to_the_places_a_syringe_shows(dose_mg, conc, expected):
     assert v.volume_ml({"ketamine": [vial(conc)]}, "ketamine", dose_mg) == (expected, conc)

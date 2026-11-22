@@ -78,3 +78,21 @@ def test_the_owners_examples_as_pocket_says_them():
     s = boot(ROOT / "bank" / "ems")
     s.handle("fentanyl for pain iv adult")
     assert "Zero point five mils of fifty micrograms per mil." in s.handle("confirm").say
+
+
+def test_the_pfc_ketamine_dilution_cautions_are_not_said_and_stay_in_the_record():
+    """Owner ruling, 2026-11-22: "PFC ketamine dilution cautions: drop them from what Pocket
+    says; keep the signed text in the record." (No dilution in Pocket.)"""
+    import json
+    from engine.session import caution_lines
+    entries = [e for e in json.loads((ROOT / "bank" / "bank.json").read_text())["entries"]
+               if e["drug"] == "ketamine" and e["route"] == "IV"]
+    held = [c for e in entries for c in e["serve_cautions"] if "dilution" in c.lower()]
+    assert len(held) == 6                                             # still in the signed record
+    for e in entries:
+        said = " ".join(caution_lines(e, True))
+        assert "dilution" not in said.lower()
+    s = boot(ROOT / "bank")
+    s.handle("ketamine for moderate pain iv eighty kilos")
+    s.handle("confirm")
+    assert "dilution" not in " ".join(s.handle("why").after).lower()

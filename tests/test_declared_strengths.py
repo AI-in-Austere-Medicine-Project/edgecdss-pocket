@@ -63,7 +63,7 @@ def test_calcium_chloride_100_mg_per_ml_gives_its_volume():
     _declared(v)
     assert v["concentration_mg_ml"] == 100.0 and "misprint" in v["note"]
     assert _dose("calcium chloride for hyperkalemia iv adult", "confirm").startswith(
-        "Calcium chloride one gram. Ten mils of one hundred.")
+        "Calcium chloride one gram. Ten mils of one gram per ten.")
 
 
 def test_magnesium_sulfate_500_mg_per_ml_gives_its_volume():
@@ -72,7 +72,7 @@ def test_magnesium_sulfate_500_mg_per_ml_gives_its_volume():
     assert v["concentration_mg_ml"] == 500.0 and "misprint" in v["note"]
     assert _volume("EMS-143", 2000.0) == 4.0                         # 2 g, the row's 4 mL
     assert _dose("magnesium sulfate for torsades iv twenty kilos", "confirm") == (
-        "Magnesium sulfate one thousand milligrams. Two mils of five hundred. Over five minutes.")
+        "Magnesium sulfate one thousand milligrams. Two mils of five hundred per mil. Over five minutes.")
 
 
 def test_pralidoxime_50_mg_per_ml_gives_the_vials_volume_not_the_auto_injectors():
@@ -90,9 +90,9 @@ def test_acetaminophen_oral_liquid_160_mg_in_5_ml_serves_the_childs_po_dose_only
     assert v["concentration_mg_ml"] == 32.0 and v["routes"] == ["PO"]
     assert _vial("acetaminophen", "100 mL")["routes"] == ["IV"]
     assert _dose("acetaminophen for fever po twenty kilos", "confirm") == (
-        "Acetaminophen three hundred milligrams. Nine point three eight mils of thirty-two.")
+        "Acetaminophen three hundred milligrams. Nine point four mils of one sixty per five.")
     assert _dose("acetaminophen for fever iv twenty kilos", "confirm").startswith(
-        "Acetaminophen three hundred milligrams. Thirty mils of ten.")        # the IV bag, not the liquid
+        "Acetaminophen three hundred milligrams. Thirty mils of one gram per one hundred.")        # the IV bag, not the liquid
     assert _dose("acetaminophen for fever po adult", "confirm").endswith(PINNED_VIAL)   # tablets
 
 
