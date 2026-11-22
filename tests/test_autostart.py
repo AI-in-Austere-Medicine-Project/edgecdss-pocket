@@ -542,3 +542,67 @@ def test_a_mic_plugged_in_again_gets_its_level_set_again(tmp_path, monkeypatch):
     _usb_mic(tmp_path)
     b.mic(cards)
     assert sum("sset" in c for c in sets) == 2
+
+
+# The Wi-Fi keeper (2026-11-22). On the board NetworkManager joined the saved (hidden)
+# network only once a scan had seen it: after 3 min, after 47 s, and in two boots never
+# (14 h and 7 min off the network). Asked to join, it joined in about a second.
+WIFI_UP = ROOT / "device" / "pocket-wifi-up"
+WIFI_TIMER = ROOT / "device" / "pocket-wifi-up.timer"
+
+
+def _nmcli(tmp_path, radio="enabled", wlan0="disconnected", up_ok=True):
+    """A stand-in nmcli on PATH that answers like the board's and records each call."""
+    calls = tmp_path / "calls"
+    fake = tmp_path / "bin" / "nmcli"
+    fake.parent.mkdir()
+    fake.write_text(f"""#!/bin/sh
+echo "$*" >> {calls}
+case "$*" in
+  "radio wifi") echo {radio} ;;
+  "-t -f DEVICE,STATE device") printf 'wlan0:{wlan0}\\ntailscale0:connected (externally)\\nlo:unmanaged\\n' ;;
+  "-t -f UUID,TYPE,AUTOCONNECT connection show")
+     printf 'aaaa-eth:802-3-ethernet:yes\\nbbbb-off:802-11-wireless:no\\n64f8-base:802-11-wireless:yes\\n' ;;
+  *"connection up"*) {"exit 0" if up_ok else "exit 4"} ;;
+esac
+""")
+    fake.chmod(0o755)
+    env = dict(os.environ, PATH=f"{fake.parent}:{os.environ['PATH']}")
+    r = subprocess.run(["sh", str(WIFI_UP)], env=env, capture_output=True, text=True)
+    ups = [c for c in calls.read_text().splitlines() if "connection up" in c] if calls.exists() else []
+    return r.returncode, ups
+
+
+def test_wifi_on_but_not_connected_is_asked_to_join_the_saved_network(tmp_path):
+    rc, ups = _nmcli(tmp_path)
+    assert rc == 0
+    assert ups == ["--wait 25 connection up uuid 64f8-base ifname wlan0"]   # only the Wi-Fi profile set to connect
+
+
+def test_wifi_already_connected_or_connecting_is_left_alone(tmp_path):
+    for state in ("connected", "connecting (configuring)"):
+        d = tmp_path / state.split()[0]
+        d.mkdir()
+        assert _nmcli(d, wlan0=state) == (0, [])
+
+
+def test_wifi_turned_off_on_purpose_stays_off(tmp_path):
+    """Pocket works with no network; the keeper never turns the radio on."""
+    rc, ups = _nmcli(tmp_path, radio="disabled")
+    assert (rc, ups) == (0, [])
+    assert "radio wifi on" not in WIFI_UP.read_text()
+
+
+def test_a_join_that_fails_is_not_an_error_and_is_tried_again_by_the_timer(tmp_path):
+    assert _nmcli(tmp_path, up_ok=False)[0] == 0
+    t = WIFI_TIMER.read_text()
+    assert "OnBootSec=20" in t and "OnUnitActiveSec=30" in t and "WantedBy=timers.target" in t
+
+
+def test_the_install_script_puts_the_wifi_keeper_on_the_board_and_removes_the_test_timer():
+    s = INSTALL.read_text()
+    assert "/usr/local/sbin/pocket-wifi-up" in s
+    assert "systemctl enable --now pocket-wifi-up.timer" in s
+    assert "pocket-test-wifi-on" in s                       # the no-network test's timer, if left behind
+    unit = (ROOT / "device" / "pocket-wifi-up.service").read_text()
+    assert "ExecStart=/usr/local/sbin/pocket-wifi-up" in unit and "Type=oneshot" in unit
