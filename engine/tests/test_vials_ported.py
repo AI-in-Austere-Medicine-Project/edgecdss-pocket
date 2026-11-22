@@ -16,7 +16,7 @@ K3_DILUTION = {"concentration_mg_ml": 5.0, "from_concentration_mg_ml": 50.0, "dr
 
 
 @pytest.mark.parametrize("dose_mg,conc,expected", [
-    (6.25, 50.0, 0.125), (2.5, 50.0, 0.05), (7.5, 10.0, 0.75),
+    (6.25, 50.0, 0.13), (2.5, 50.0, 0.05), (7.5, 10.0, 0.75),   # under 0.5 mL: 0.01 (owner rule 2026-11-22)
     (142.1, 50.0, 2.84), (96.0, 10.0, 9.6), (1000.0, 100.0, 10.0),
 ])
 def test_a_volume_is_drawn_to_the_places_a_syringe_shows(dose_mg, conc, expected):
@@ -60,18 +60,19 @@ def test_the_volume_moves_with_the_declared_concentration():
 
 def test_k1_75_kg_without_a_dilution_draws_from_the_vial():
     r = v.dose_volume({"ketamine": [vial(50.0)]}, {"drug": "ketamine", "dilution": None}, 18.75)
-    assert (r["volume_ml"], r["concentration_mg_ml"], r["diluted"]) == (0.375, 50.0, False)
+    assert (r["volume_ml"], r["concentration_mg_ml"], r["diluted"]) == (0.38, 50.0, False)
 
 
-def test_k3_under_half_a_mil_draws_from_the_signed_dilution():
-    """#195 ruling 1: 75 kg gives 3.75 mL of 5 mg/mL."""
+def test_k3_is_replaced_a_signed_dilution_is_not_used():
+    """K3 (#195) drew under 0.5 mL from the signed dilution; the owner rule of 2026-11-22
+    replaced it: no dilution in Pocket, the vial to 0.01 mL and a one mil syringe."""
     r = v.dose_volume({"ketamine": [vial(50.0)]}, {"drug": "ketamine", "dilution": K3_DILUTION}, 18.75)
-    assert (r["volume_ml"], r["concentration_mg_ml"], r["diluted"]) == (3.75, 5.0, True)
+    assert (r["volume_ml"], r["concentration_mg_ml"], r["diluted"]) == (0.38, 50.0, False)
 
 
-def test_k3_the_ped_20_kg_case():
+def test_k3_the_ped_20_kg_case_is_now_drawn_from_the_vial():
     r = v.dose_volume({"ketamine": [vial(50.0)]}, {"drug": "ketamine", "dilution": K3_DILUTION}, 4.0)
-    assert (r["volume_ml"], r["concentration_mg_ml"], r["diluted"]) == (0.8, 5.0, True)
+    assert (r["volume_ml"], r["concentration_mg_ml"], r["diluted"]) == (0.08, 50.0, False)
 
 
 def test_k3_half_a_mil_exactly_stays_at_the_vial():
@@ -85,11 +86,11 @@ def test_k3_a_recipe_for_another_vial_is_not_used():
     assert (r["volume_ml"], r["concentration_mg_ml"], r["diluted"]) == (0.4, 10.0, False)
 
 
-def test_a_dose_too_small_for_the_vial_refuses_and_names_the_dilution():
+def test_a_dose_too_small_for_the_vial_refuses_and_names_no_dilution():
     r = v.dose_volume({"ketamine": [vial(50.0)]}, {"drug": "ketamine", "dilution": K3_DILUTION}, 1.0)
     assert r["volume_ml"] is None
     assert r["refusal"] == v.TOO_SMALL
-    assert r["recipe"] == K3_DILUTION
+    assert r["recipe"] is None
 
 
 def test_a_dose_too_small_with_no_dilution_refuses():

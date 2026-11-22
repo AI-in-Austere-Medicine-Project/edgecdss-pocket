@@ -1,7 +1,12 @@
-"""Vial and dilution to mL, ported from EdgeCDSS server/drug_concentrations.py and
-openai_client.resolve_dose_volume. A volume comes only from a signed vial in kit.json
-or a signed dilution made from it. kit is {drug: [vial, ...]}.
+"""Vial to mL, ported from EdgeCDSS server/drug_concentrations.py and
+openai_client.resolve_dose_volume. A volume comes only from a signed vial in kit.json.
+kit is {drug: [vial, ...]}.
+
+No dilution in Pocket (owner rule, 2026-11-22): a volume under 0.5 mL is said to the
+nearest 0.01 mL, with "Use a one mil syringe."; under 0.05 mL it is too small to draw.
+A signed dilution in an entry is not used (it replaced K3, owner 2026-10-28).
 """
+from decimal import ROUND_HALF_UP, Decimal
 from typing import Optional
 
 RESOLVED = "RESOLVED"
@@ -13,7 +18,7 @@ TOO_LARGE = "TOO_LARGE"
 
 MIN_DRAWABLE_ML = 0.05
 MAX_BOLUS_ML = 60.0
-DILUTE_BELOW_ML = 0.5  # K3, owner 2026-10-28
+ONE_MIL_BELOW_ML = 0.5  # owner rule 2026-11-22: nearest 0.01 mL, a one mil syringe
 
 
 def resolve(kit: dict, drug: str, route: Optional[str] = None) -> tuple:
@@ -56,19 +61,15 @@ def volume_ml(kit: dict, drug: str, dose_mg: float, route: Optional[str] = None)
     true_vol = dose_mg / conc
     if not drawable(true_vol)[0]:
         return None, None
+    if true_vol < ONE_MIL_BELOW_ML:              # half up, as a medic rounds: 0.075 is 0.08
+        return float(Decimal(repr(true_vol)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)), conc
     return round(true_vol, draw_precision(true_vol)), conc
 
 
-def _dilution_for(dilution: Optional[dict], conc: Optional[float]) -> Optional[dict]:
-    """The dilution, only if its recipe starts from the vial `conc` is."""
-    if not dilution or not conc:
-        return None
-    return dilution if abs(dilution["from_concentration_mg_ml"] - conc) < 1e-9 else None
-
-
 def dose_volume(kit: dict, entry: dict, dose_mg: float) -> dict:
-    """{status, volume_ml, concentration_mg_ml, diluted, recipe, refusal}."""
-    drug, dilution = entry.get("drug"), entry.get("dilution")
+    """{status, volume_ml, concentration_mg_ml, diluted, recipe, refusal}. diluted is
+    always False and recipe always None: no dilution in Pocket (owner rule, 2026-11-22)."""
+    drug = entry.get("drug")
     status, resolved = resolve(kit, drug, entry.get("route"))
     out = {"status": status, "volume_ml": None, "concentration_mg_ml": None,
            "diluted": False, "recipe": None, "refusal": None}
@@ -76,16 +77,6 @@ def dose_volume(kit: dict, entry: dict, dose_mg: float) -> dict:
     if vol is None:
         if status == RESOLVED:
             _ok, out["refusal"] = drawable(dose_mg / resolved)
-            if out["refusal"] == TOO_SMALL:
-                out["recipe"] = _dilution_for(dilution, resolved)
         return out
-    dil = _dilution_for(dilution, conc)
-    if dil and vol < DILUTE_BELOW_ML:
-        dil_conc = float(dil["concentration_mg_ml"])
-        true_vol = dose_mg / dil_conc
-        if drawable(true_vol)[0]:
-            out.update(volume_ml=round(true_vol, draw_precision(true_vol)),
-                       concentration_mg_ml=dil_conc, diluted=True, recipe=dil)
-            return out
     out.update(volume_ml=vol, concentration_mg_ml=conc)
     return out
