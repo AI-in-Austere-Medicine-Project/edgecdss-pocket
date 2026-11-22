@@ -1,0 +1,336 @@
+{
+ "kit_id": "ems-formulary-2026-11-22",
+ "strengths_to_declare": [
+  {
+   "drug": "acetaminophen",
+   "form": "oral liquid",
+   "why": "not printed; the children's PO table in mL needs one (its volumes fit 160 mg/5 mL)"
+  },
+  {
+   "drug": "albuterol",
+   "form": "metered-dose inhaler, per puff",
+   "why": "not printed"
+  },
+  {
+   "drug": "calcium chloride",
+   "form": "injection",
+   "why": "strength line blank; the table label says 10 mg/mL, the rows 1 g = 10 mL (100 mg/mL)"
+  },
+  {
+   "drug": "diphenhydramine",
+   "form": "tablet",
+   "why": "printed '1 Tablet = 25mL'"
+  },
+  {
+   "drug": "magnesium sulfate",
+   "form": "injection",
+   "why": "strength line 5 mg/mL; the rows (2 g = 4 mL) and table use 500 mg/mL"
+  },
+  {
+   "drug": "nitroglycerin",
+   "form": "paste",
+   "why": "not printed ('1 inch')"
+  },
+  {
+   "drug": "olanzapine",
+   "form": "tablet",
+   "why": "strength line blank; '10mg = 2 Tabs' implies 5 mg"
+  },
+  {
+   "drug": "pralidoxime",
+   "form": "injection (vial)",
+   "why": "children's table label 30 mg/mL; its volumes and the header use 50 mg/mL"
+  }
+ ],
+ "vials": [
+  {
+   "concentration_mg_ml": 10.0,
+   "confirm_required": false,
+   "date": "2026-11-12",
+   "drug": "acetaminophen",
+   "label": "1 g / 100 mL",
+   "mass_mg": 1000.0,
+   "review": "individually read by owner",
+   "review_note": "signing batch 4 rulings, 2026-11-12",
+   "signed_by": "Andrew Azelton",
+   "signer": "clinician",
+   "volume_ml": 100.0
+  },
+  {
+   "concentration_mg_ml": 3.0,
+   "confirm_required": false,
+   "date": "2026-11-22",
+   "drug": "adenosine",
+   "label": "12 mg / 4 mL",
+   "mass_mg": 12.0,
+   "note": "Owner, 2026-11-22: the 100 mg/mL header on the formulary page is a misprint.",
+   "owner_declared": true,
+   "review": "declared by owner",
+   "signed_by": "Andrew Azelton",
+   "signer": "clinician",
+   "volume_ml": 4.0
+  },
+  {
+   "concentration_mg_ml": 0.833333,
+   "confirm_required": false,
+   "date": "2026-11-12",
+   "drug": "albuterol",
+   "label": "2.5 mg / 3 mL nebule",
+   "mass_mg": 2.5,
+   "review": "individually read by owner",
+   "review_note": "signing batch 4 rulings, 2026-11-12",
+   "signed_by": "Andrew Azelton",
+   "signer": "clinician",
+   "volume_ml": 3.0
+  },
+  {
+   "concentration_mg_ml": 50.0,
+   "confirm_required": false,
+   "date": "2026-11-12",
+   "drug": "amiodarone",
+   "label": "50 mg/mL (vial size not stated)",
+   "mass_mg": 50.0,
+   "review": "individually read by owner",
+   "review_note": "signing batch 4 rulings, 2026-11-12",
+   "signed_by": "Andrew Azelton",
+   "signer": "clinician",
+   "volume_ml": 1.0
+  },
+  {
+   "concentration_mg_ml": 0.4,
+   "confirm_required": false,
+   "date": "2026-11-12",
+   "drug": "atropine",
+   "label": "0.4 mg/mL (vial size not stated)",
+   "mass_mg": 0.4,
+   "review": "individually read by owner",
+   "review_note": "signing batch 4 rulings, 2026-11-12",
+   "signed_by": "Andrew Azelton",
+   "signer": "clinician",
+   "volume_ml": 1.0
+  },
+  {
+   "concentration_mg_ml": 10.0,
+   "confirm_required": false,
+   "date": "2026-11-12",
+   "drug": "dexamethasone",
+   "label": "10 mg / 1 mL",
+   "mass_mg": 10.0,
+   "review": "individually read by owner",
+   "review_note": "signing batch 4 rulings, 2026-11-12",
+   "signed_by": "Andrew Azelton",
+   "signer": "clinician",
+   "volume_ml": 1.0
+  },
+  {
+   "concentration_mg_ml": 100.0,
+   "confirm_required": false,
+   "date": "2026-11-12",
+   "drug": "dextrose",
+   "label": "D10W 25 g / 250 mL",
+   "mass_mg": 25000.0,
+   "review": "individually read by owner",
+   "review_note": "signing batch 4 rulings, 2026-11-12",
+   "signed_by": "Andrew Azelton",
+   "signer": "clinician",
+   "volume_ml": 250.0
+  },
+  {
+   "concentration_mg_ml": 5.0,
+   "confirm_required": false,
+   "date": "2026-11-12",
+   "drug": "diltiazem",
+   "label": "5 mg/mL (vial size not stated)",
+   "mass_mg": 5.0,
+   "review": "individually read by owner",
+   "review_note": "signing batch 4 rulings, 2026-11-12",
+   "signed_by": "Andrew Azelton",
+   "signer": "clinician",
+   "volume_ml": 1.0
+  },
+  {
+   "concentration_mg_ml": 50.0,
+   "confirm_required": false,
+   "date": "2026-11-22",
+   "drug": "diphenhydramine",
+   "label": "50 mg/mL (vial size not stated)",
+   "mass_mg": 50.0,
+   "note": "Printed: 'Concentrations: 50mg/mL' (PDF p.21).",
+   "owner_declared": false,
+   "review": "bulk-signed by owner without item review",
+   "signed_by": "Andrew Azelton",
+   "signer": "clinician",
+   "volume_ml": 1.0
+  },
+  {
+   "concentration_mg_ml": 2.5,
+   "confirm_required": false,
+   "date": "2026-11-12",
+   "drug": "droperidol",
+   "label": "2.5 mg/mL (vial size not stated)",
+   "mass_mg": 2.5,
+   "review": "individually read by owner",
+   "review_note": "signing batch 4 rulings, 2026-11-12",
+   "signed_by": "Andrew Azelton",
+   "signer": "clinician",
+   "volume_ml": 1.0
+  },
+  {
+   "concentration_mg_ml": 1.0,
+   "confirm_required": true,
+   "date": "2026-11-12",
+   "drug": "epinephrine",
+   "label": "1 mg / 1 mL (1:1,000)",
+   "mass_mg": 1.0,
+   "review": "individually read by owner",
+   "review_note": "signing batch 4 rulings, 2026-11-12",
+   "signed_by": "Andrew Azelton",
+   "signer": "clinician",
+   "volume_ml": 1.0
+  },
+  {
+   "concentration_mg_ml": 0.05,
+   "confirm_required": false,
+   "date": "2026-11-12",
+   "drug": "fentanyl",
+   "label": "50 mcg/mL (vial size not stated)",
+   "mass_mg": 0.05,
+   "review": "individually read by owner",
+   "review_note": "signing batch 4 rulings, 2026-11-12",
+   "signed_by": "Andrew Azelton",
+   "signer": "clinician",
+   "volume_ml": 1.0
+  },
+  {
+   "concentration_mg_ml": 1.0,
+   "confirm_required": false,
+   "date": "2026-11-12",
+   "drug": "glucagon",
+   "label": "1 mg / 1 mL",
+   "mass_mg": 1.0,
+   "review": "individually read by owner",
+   "review_note": "signing batch 4 rulings, 2026-11-12",
+   "signed_by": "Andrew Azelton",
+   "signer": "clinician",
+   "volume_ml": 1.0
+  },
+  {
+   "concentration_mg_ml": 25.0,
+   "confirm_required": false,
+   "date": "2026-11-12",
+   "drug": "hydroxocobalamin",
+   "label": "5 g / 200 mL (reconstituted)",
+   "mass_mg": 5000.0,
+   "review": "individually read by owner",
+   "review_note": "signing batch 4 rulings, 2026-11-12",
+   "signed_by": "Andrew Azelton",
+   "signer": "clinician",
+   "volume_ml": 200.0
+  },
+  {
+   "concentration_mg_ml": 100.0,
+   "confirm_required": false,
+   "date": "2026-11-12",
+   "drug": "ketamine",
+   "label": "100 mg/mL (vial size not stated)",
+   "mass_mg": 100.0,
+   "review": "individually read by owner",
+   "review_note": "signing batch 4 rulings, 2026-11-12",
+   "signed_by": "Andrew Azelton",
+   "signer": "clinician",
+   "volume_ml": 1.0
+  },
+  {
+   "concentration_mg_ml": 20.0,
+   "confirm_required": false,
+   "date": "2026-11-12",
+   "drug": "lidocaine",
+   "label": "20 mg/mL (vial size not stated)",
+   "mass_mg": 20.0,
+   "review": "individually read by owner",
+   "review_note": "signing batch 4 rulings, 2026-11-12",
+   "signed_by": "Andrew Azelton",
+   "signer": "clinician",
+   "volume_ml": 1.0
+  },
+  {
+   "concentration_mg_ml": 5.0,
+   "confirm_required": false,
+   "date": "2026-11-12",
+   "drug": "midazolam",
+   "label": "5 mg/mL (vial size not stated)",
+   "mass_mg": 5.0,
+   "review": "individually read by owner",
+   "review_note": "signing batch 4 rulings, 2026-11-12",
+   "signed_by": "Andrew Azelton",
+   "signer": "clinician",
+   "volume_ml": 1.0
+  },
+  {
+   "concentration_mg_ml": 1.0,
+   "confirm_required": false,
+   "date": "2026-11-22",
+   "drug": "naloxone",
+   "label": "1 mg/mL (vial size not stated)",
+   "mass_mg": 1.0,
+   "note": "Printed: 'Concentration: 1mg/mL' (PDF p.45).",
+   "owner_declared": false,
+   "review": "bulk-signed by owner without item review",
+   "signed_by": "Andrew Azelton",
+   "signer": "clinician",
+   "volume_ml": 1.0
+  },
+  {
+   "concentration_mg_ml": 1.0,
+   "confirm_required": false,
+   "date": "2026-11-12",
+   "drug": "norepinephrine",
+   "label": "4 mg / 4 mL",
+   "mass_mg": 4.0,
+   "review": "individually read by owner",
+   "review_note": "signing batch 4 rulings, 2026-11-12",
+   "signed_by": "Andrew Azelton",
+   "signer": "clinician",
+   "volume_ml": 4.0
+  },
+  {
+   "concentration_mg_ml": 2.0,
+   "confirm_required": false,
+   "date": "2026-11-12",
+   "drug": "ondansetron",
+   "label": "2 mg/mL (vial size not stated)",
+   "mass_mg": 2.0,
+   "review": "individually read by owner",
+   "review_note": "signing batch 4 rulings, 2026-11-12",
+   "signed_by": "Andrew Azelton",
+   "signer": "clinician",
+   "volume_ml": 1.0
+  },
+  {
+   "concentration_mg_ml": 10.0,
+   "confirm_required": false,
+   "date": "2026-11-12",
+   "drug": "rocuronium",
+   "label": "10 mg/mL (vial size not stated)",
+   "mass_mg": 10.0,
+   "review": "individually read by owner",
+   "review_note": "signing batch 4 rulings, 2026-11-12",
+   "signed_by": "Andrew Azelton",
+   "signer": "clinician",
+   "volume_ml": 1.0
+  },
+  {
+   "concentration_mg_ml": 100.0,
+   "confirm_required": false,
+   "date": "2026-11-12",
+   "drug": "tranexamic acid",
+   "label": "1 g / 10 mL",
+   "mass_mg": 1000.0,
+   "review": "individually read by owner",
+   "review_note": "signing batch 4 rulings, 2026-11-12",
+   "signed_by": "Andrew Azelton",
+   "signer": "clinician",
+   "volume_ml": 10.0
+  }
+ ]
+}
