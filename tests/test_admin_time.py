@@ -69,3 +69,14 @@ def test_the_time_follows_the_dose_and_volume():
     s.handle("ceftriaxone for sepsis iv adult")
     assert s.handle("confirm").say == ("Ceftriaxone two grams. No signed vial, no volume. "
                                        "Over ten minutes or over thirty minutes.")
+
+
+def test_ems_entries_say_their_time_including_the_owners_four_rulings():
+    ems = json.loads((BANK / "ems" / "bank.json").read_text())["entries"]
+    assert len([e for e in ems if admin_time(e)]) == 28
+    said = {e["ems_id"]: admin_time(e) for e in ems}
+    assert said["EMS-037"] == "Over ten minutes."
+    assert said["EMS-149"] == said["EMS-150"] == said["EMS-151"] == "Over five minutes."
+    s = boot(BANK / "ems")
+    s.handle("magnesium sulfate for torsades iv twenty kilos")
+    assert s.handle("confirm").say.endswith("Milligrams only, no volume. Over five minutes.")
