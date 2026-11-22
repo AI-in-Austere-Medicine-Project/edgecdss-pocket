@@ -73,6 +73,10 @@ UNVERIFIED = "Unverified."
 # entry names (owner, 2026-11-14). null (the vial question stays) and no kit_vial
 # (PFC) work the volume out as before.
 PINNED_VIAL = "Milligrams only, no volume."
+# Signed by the owner, but Pocket cannot say the dose yet (mEq, topical): rule 6, 2026-11-22.
+SIGNED_SILENT = "{name} is signed, but Pocket cannot say its dose yet."
+# A weight band the formulary gives no dose is a weight floor (owner, 2026-11-22).
+NO_DOSE_AT_WEIGHT = "No signed dose at this weight."
 # A stated volume ("10 mL", "0.1 mL/kg", "100 cc"); "1 mg/mL" is a concentration, kept.
 _VOLUME = re.compile(r"(?i)(?<![a-z/])(ml|cc)(?![a-z])")
 _SENTENCE = re.compile(r"(?<=[.!?])\s+")
@@ -685,6 +689,8 @@ class Session:
             return Turn("ask", words.sentence(_choice(names)) + "?")
         drug = req.drug
         if drug not in self.bank.signed_drugs:
+            if drug in self.bank.silent_drugs:
+                return self._hold(SIGNED_SILENT.format(name=words.say_name(drug).capitalize()))
             return self._hold(f"No signed dose for {req.heard}.")
         if req.route_options:
             return Turn("ask", _choice(list(req.route_options)) + "?")
@@ -758,6 +764,8 @@ class Session:
         entry = [e for e in fit if e["indication"] == labels[0]]
         if len(entry) != 1:
             return self._hold(f"No single signed dose of {name}.")
+        if contracts.below_weight_floor(entry[0], patient.weight_kg):
+            return self._hold(NO_DOSE_AT_WEIGHT)
         held = holding_conditions(entry[0], patient.conditions)
         if held:
             return self._contraindicated(entry[0], name, held, years)

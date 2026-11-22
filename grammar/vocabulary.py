@@ -211,6 +211,8 @@ def build(bank) -> Vocabulary:
         groups.setdefault(e["drug"], set()).update(e["aliases"])
     for n in bank.no_signed_dose:
         groups.setdefault(n["drug"], set()).update(n["aliases"])
+    for n in getattr(bank, "silent", []):
+        groups.setdefault(n["drug"], set()).update(n.get("aliases") or [])
     for said, generic in MEDIC_NAMES.items():
         if generic in signed:
             groups[generic].add(said)
