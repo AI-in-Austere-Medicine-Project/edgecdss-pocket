@@ -1983,6 +1983,11 @@
    "indication_class": "pain / fever",
    "kit_vial": null,
    "min_age_months": null,
+   "min_weight": {
+    "exclusive": false,
+    "from": "table: 'No IV dose' at 2, 4, 6 and 8-9 kg; first dose at 10-11 kg",
+    "kg": 10.0
+   },
    "not_signed_automatically_because": [
     "No maximum printed for the pediatric dose; the table stops at 30–36 kg. (on EMS-003, same dose)",
     "Table gives 'No IV dose' for 2–9 kg; the dose row states no weight floor for IV/IO.",
@@ -3826,6 +3831,92 @@
      "citation": "Clinical Operating Guidelines, Medication Formulary — Calcium Chloride, MD 24-15, updated 12.01.2024 — Page 1 of 2 (Calcium Chloride) (PDF p.14)",
      "page": 14,
      "quote": "Blood product administration | 10mg/kg | Slow IV/IO over 3min",
+     "retrieved_date": "2026-11-12",
+     "source_class": "EMS",
+     "supports": "dose, max, route",
+     "tier": 1,
+     "url": "local:agency formulary (kept outside the repository)"
+    }
+   ],
+   "version": "1.0.0"
+  },
+  {
+   "aliases": [],
+   "cap": {
+    "max_cumulative": null,
+    "max_single": null
+   },
+   "cautions": [
+    {
+     "text": "Infusion over 10 min; OLMC required.",
+     "tier": "serve"
+    },
+    {
+     "text": "Provider level: PL5–PL6.",
+     "tier": "serve"
+    },
+    {
+     "text": "The formulary states no maximum single dose for this drug and indication.",
+     "tier": "detail"
+    },
+    {
+     "text": "The formulary states no cumulative maximum for this drug and indication.",
+     "tier": "detail"
+    },
+    {
+     "text": "Adverse/side effects, as the formulary lists them (owner ruling 5, 2026-11-12): Arrythmias (including bradycardias and cardiac arrest); Syncope/hypotension; N/V; Necrosis (extravasation); Toxicity with digitalis; Precipitate with Sodium Bicarbonate; Has been shown to reduce ROSC & Neuro-intact discharge.",
+     "tier": "detail"
+    }
+   ],
+   "contraindications": [],
+   "date": "2026-11-22",
+   "dilution": null,
+   "disagreement": "The row says infusion over 10 minutes; the card's table (300 gtt/min, 60 gtt set, 100 mL) gives 20 minutes.",
+   "drug": "calcium chloride",
+   "ems_id": "EMS-037",
+   "floor": null,
+   "indication": "Calcium channel blocker/beta blocker OD",
+   "indication_class": "calcium channel / beta blocker overdose",
+   "kit_vial": "none",
+   "min_age_months": null,
+   "not_signed_automatically_because": [
+    "No maximum printed.",
+    "No maximum printed. (on EMS-036, same route)",
+    "Table text: 'Place mL dose of medication in 100 mL NS/60 gtts set. Infuse @ 300 gtts/min' = 5 mL/min, i.e. 20 minutes, not the 10 minutes in the route cell.",
+    "contradicts its own card: Table text: 'Place mL dose of medication in 100 mL NS/60 gtts set. Infuse @ 300 gtts/min' = 5 mL/min, i.e. 20 minutes, not the 10 minutes in the route cell.",
+    "contradicts its own card: the card's table label (10 mg/mL) contradicts its rows and volumes (100 mg/mL)"
+   ],
+   "notice": "Research prototype, not for patient care.",
+   "owner_declared": false,
+   "page": 14,
+   "population": "peds",
+   "quote": "Calcium channel blocker/beta blocker OD | 20mg/kg | IV/IO infusion over 10min",
+   "repeat": [],
+   "review": "individually read by owner",
+   "review_note": "owner ruling on the rule-3 entries, 2026-11-22",
+   "route": "IV",
+   "rule": {
+    "max": 20.0,
+    "min": 20.0,
+    "per_kg": true,
+    "units": "mg/kg"
+   },
+   "ruling": "Owner ruling 2026-11-22: use the row's time, over 10 minutes. The table's time is not used.",
+   "serve_cautions": [
+    "Infusion over 10 min; OLMC required.",
+    "Provider level: PL5–PL6."
+   ],
+   "set": "EMS",
+   "signed_by": "Andrew Azelton",
+   "signer": "clinician",
+   "signoff": true,
+   "source": "Clinical Operating Guidelines, Medication Formulary — Calcium Chloride, MD 24-15, updated 12.01.2024 — Page 1 of 2 (Calcium Chloride) (PDF p.14)",
+   "source_basis": "dose",
+   "sources": [
+    {
+     "citation": "Clinical Operating Guidelines, Medication Formulary — Calcium Chloride, MD 24-15, updated 12.01.2024 — Page 1 of 2 (Calcium Chloride) (PDF p.14)",
+     "page": 14,
+     "quote": "Calcium channel blocker/beta blocker OD | 20mg/kg | IV/IO infusion over 10min",
      "retrieved_date": "2026-11-12",
      "source_class": "EMS",
      "supports": "dose, max, route",
@@ -5958,6 +6049,11 @@
    "indication_class": "allergic reaction",
    "kit_vial": null,
    "min_age_months": null,
+   "min_weight": {
+    "exclusive": false,
+    "from": "table: no dose at 2 and 4 kg; row: 'Do not administer if <5 kg'",
+    "kg": 5.0
+   },
    "not_signed_automatically_because": [
     "12-14 kgs: 0.2 mL = 10 mg, below the 12–14 mg the dose per kg gives (17 %)",
     "12-14 kgs: 0.2 mL = 10 mg, below the 12–14 mg the dose per kg gives (17 %) (on EMS-063, same dose)",
@@ -6053,6 +6149,11 @@
    "indication_class": "allergic reaction",
    "kit_vial": null,
    "min_age_months": null,
+   "min_weight": {
+    "exclusive": false,
+    "from": "table: no dose at 2 and 4 kg; row: 'Do not administer if <5 kg'",
+    "kg": 5.0
+   },
    "not_signed_automatically_because": [
     "12-14 kgs: 0.2 mL = 10 mg, below the 12–14 mg the dose per kg gives (17 %)",
     "12-14 kgs: 0.2 mL = 10 mg, below the 12–14 mg the dose per kg gives (17 %) (on EMS-062, same dose)",
@@ -6148,6 +6249,11 @@
    "indication_class": "nausea / vomiting",
    "kit_vial": null,
    "min_age_months": null,
+   "min_weight": {
+    "exclusive": false,
+    "from": "row: 'Do not administer if <5 kg'",
+    "kg": 5.0
+   },
    "not_signed_automatically_because": [
     "12-14 kgs: 0.2 mL = 10 mg, below the 12–14 mg the dose per kg gives (17 %) (on EMS-062, same dose)",
     "12-14 kgs: 0.2 mL = 10 mg, below the 12–14 mg the dose per kg gives (17 %) (on EMS-062, same route)",
@@ -6250,6 +6356,11 @@
    "indication_class": "nausea / vomiting",
    "kit_vial": null,
    "min_age_months": null,
+   "min_weight": {
+    "exclusive": false,
+    "from": "row: 'Do not administer if <5 kg'",
+    "kg": 5.0
+   },
    "not_signed_automatically_because": [
     "12-14 kgs: 0.2 mL = 10 mg, below the 12–14 mg the dose per kg gives (17 %) (on EMS-062, same dose)",
     "12-14 kgs: 0.2 mL = 10 mg, below the 12–14 mg the dose per kg gives (17 %) (on EMS-063, same dose)",
@@ -7438,6 +7549,11 @@
    "indication_class": "anaphylaxis",
    "kit_vial": "none",
    "min_age_months": null,
+   "min_weight": {
+    "exclusive": false,
+    "from": "table: no dose at 500 g, 2, 4 and 6 kg; row: 'Not under 8 kg'",
+    "kg": 8.0
+   },
    "not_signed_automatically_because": [
     "12-14 kgs: 0.1 mL = 0.1 mg, below the 0.12–0.14 mg the dose per kg gives (17 %)",
     "check (a): max '0.3 mg' not in the row as re-read: 'Do not administer if < 8 kg (17 lbs) 0.01 mg/kg 1:1,000 IM Anaphylaxis'",
@@ -10932,6 +11048,11 @@
    "indication_class": "pain / fever",
    "kit_vial": null,
    "min_age_months": null,
+   "min_weight": {
+    "exclusive": false,
+    "from": "table: 'None' from 2 kg to 20-23 kg; first dose at 24-29 kg",
+    "kg": 24.0
+   },
    "not_signed_automatically_because": [
     "12-14 kgs: 0.1 mL = 10 mg, below the 12–14 mg the dose per kg gives (17 %) (on EMS-133, same route)",
     "12-14 kgs: 0.2 mL = 20 mg, below the 24–28 mg the dose per kg gives (17 %) (on EMS-135, same route)",
@@ -11220,6 +11341,11 @@
    "indication_class": "procedural sedation",
    "kit_vial": null,
    "min_age_months": null,
+   "min_weight": {
+    "exclusive": false,
+    "from": "table: 'None' from 2 kg to 10-11 kg; first dose at 12-14 kg",
+    "kg": 12.0
+   },
    "not_signed_automatically_because": [
     "12-14 kgs: 0.4 mL = 40 mg, below the 48–56 mg the dose per kg gives (17 %)",
     "15-16 kgs: 0.8 mL = 80 mg, above the 60–64 mg the dose per kg gives (25 %)",
@@ -12038,6 +12164,282 @@
      "citation": "Clinical Operating Guidelines, Medication Formulary — Magnesium Sulfate 50%, MD 24-15, updated 12.01.2024 — Page 1 of 2 (Magnesium Sulfate 50%) (PDF p.41)",
      "page": 41,
      "quote": "V-Fib or pVtach | 50 mg/kg Max dose: 2 g | Slow IV/IO Push",
+     "retrieved_date": "2026-11-12",
+     "source_class": "EMS",
+     "supports": "dose, max, route",
+     "tier": 1,
+     "url": "local:agency formulary (kept outside the repository)"
+    }
+   ],
+   "version": "1.0.0"
+  },
+  {
+   "aliases": [],
+   "cap": {
+    "max_cumulative": null,
+    "max_single": {
+     "rule": "max 2 g",
+     "units": "g",
+     "value": 2.0
+    }
+   },
+   "cautions": [
+    {
+     "text": "In 100 mL NS over 5 min.",
+     "tier": "serve"
+    },
+    {
+     "text": "Provider level: PL5–PL6.",
+     "tier": "serve"
+    },
+    {
+     "text": "The formulary states no cumulative maximum for this drug and indication.",
+     "tier": "detail"
+    },
+    {
+     "text": "Adverse/side effects, as the formulary lists them (owner ruling 5, 2026-11-12): Hypotension; Cardiac arrest; Respiratory/CNS Depression; Flushing; Sweating; Bradycardia; Drowsiness; Hypothermia; Itching/rash; Arrhythmia; Decreased deep tendon reflexes.",
+     "tier": "detail"
+    }
+   ],
+   "contraindications": [
+    "Hypotension",
+    "Third-degree AV block",
+    "Routine dialysis patients",
+    "Hypocalcemia"
+   ],
+   "date": "2026-11-22",
+   "dilution": null,
+   "disagreement": "The row says over 5 minutes; the card's table (600 gtt/min, 60 gtt set, 100 mL) gives 10 minutes.",
+   "drug": "magnesium sulfate",
+   "ems_id": "EMS-149",
+   "floor": null,
+   "indication": "Wide complex Tachycardia with a pulse",
+   "indication_class": "wide complex tachycardia",
+   "kit_vial": "none",
+   "min_age_months": null,
+   "not_signed_automatically_because": [
+    "Table (p.2) says 'use 60 gtts set, then infuse at 600 gtts/min' (10 mL/min, i.e. 10 minutes for 100 mL); the row says 200 gtt/min with a 10 gtt set (20 mL/min, 5 minutes).",
+    "contradicts its own card: Table (p.2) says 'use 60 gtts set, then infuse at 600 gtts/min' (10 mL/min, i.e. 10 minutes for 100 mL); the row says 200 gtt/min with a 10 gtt set (20 mL/min, 5 minutes).",
+    "contradicts its own card: the card's concentration line (5 mg/mL) contradicts its rows and table (500 mg/mL)"
+   ],
+   "notice": "Research prototype, not for patient care.",
+   "owner_declared": false,
+   "page": 41,
+   "population": "peds",
+   "quote": "Wide complex Tachycardia with a pulse | 50 mg/kg Max dose: 2 g | IV/IO Infusion",
+   "repeat": [],
+   "review": "individually read by owner",
+   "review_note": "owner ruling on the rule-3 entries, 2026-11-22",
+   "route": "IV",
+   "rule": {
+    "max": 50.0,
+    "min": 50.0,
+    "per_kg": true,
+    "units": "mg/kg"
+   },
+   "ruling": "Owner ruling 2026-11-22: use the row's time, over 5 minutes. The table's time is not used.",
+   "serve_cautions": [
+    "In 100 mL NS over 5 min.",
+    "Provider level: PL5–PL6."
+   ],
+   "set": "EMS",
+   "signed_by": "Andrew Azelton",
+   "signer": "clinician",
+   "signoff": true,
+   "source": "Clinical Operating Guidelines, Medication Formulary — Magnesium Sulfate 50%, MD 24-15, updated 12.01.2024 — Page 1 of 2 (Magnesium Sulfate 50%) (PDF p.41)",
+   "source_basis": "dose",
+   "sources": [
+    {
+     "citation": "Clinical Operating Guidelines, Medication Formulary — Magnesium Sulfate 50%, MD 24-15, updated 12.01.2024 — Page 1 of 2 (Magnesium Sulfate 50%) (PDF p.41)",
+     "page": 41,
+     "quote": "Wide complex Tachycardia with a pulse | 50 mg/kg Max dose: 2 g | IV/IO Infusion",
+     "retrieved_date": "2026-11-12",
+     "source_class": "EMS",
+     "supports": "dose, max, route",
+     "tier": 1,
+     "url": "local:agency formulary (kept outside the repository)"
+    }
+   ],
+   "version": "1.0.0"
+  },
+  {
+   "aliases": [],
+   "cap": {
+    "max_cumulative": null,
+    "max_single": {
+     "rule": "max 2 g",
+     "units": "g",
+     "value": 2.0
+    }
+   },
+   "cautions": [
+    {
+     "text": "In 100 mL NS over 5 min.",
+     "tier": "serve"
+    },
+    {
+     "text": "Provider level: PL5–PL6.",
+     "tier": "serve"
+    },
+    {
+     "text": "The formulary states no cumulative maximum for this drug and indication.",
+     "tier": "detail"
+    },
+    {
+     "text": "Adverse/side effects, as the formulary lists them (owner ruling 5, 2026-11-12): Hypotension; Cardiac arrest; Respiratory/CNS Depression; Flushing; Sweating; Bradycardia; Drowsiness; Hypothermia; Itching/rash; Arrhythmia; Decreased deep tendon reflexes.",
+     "tier": "detail"
+    }
+   ],
+   "contraindications": [
+    "Hypotension",
+    "Third-degree AV block",
+    "Routine dialysis patients",
+    "Hypocalcemia"
+   ],
+   "date": "2026-11-22",
+   "dilution": null,
+   "disagreement": "The row says over 5 minutes; the card's table (600 gtt/min, 60 gtt set, 100 mL) gives 10 minutes.",
+   "drug": "magnesium sulfate",
+   "ems_id": "EMS-150",
+   "floor": null,
+   "indication": "Torsades de Pointes",
+   "indication_class": "torsades",
+   "kit_vial": "none",
+   "min_age_months": null,
+   "not_signed_automatically_because": [
+    "Table (p.2) says 'use 60 gtts set, then infuse at 600 gtts/min' (10 mL/min, i.e. 10 minutes for 100 mL); the row says 200 gtt/min with a 10 gtt set (20 mL/min, 5 minutes). (on EMS-149, same dose)",
+    "Table (p.2) says 'use 60 gtts set, then infuse at 600 gtts/min' (10 mL/min, i.e. 10 minutes for 100 mL); the row says 200 gtt/min with a 10 gtt set (20 mL/min, 5 minutes). (on EMS-149, same route)",
+    "check (a): '/kg' not in the row as re-read: 'Max dose: 2 g 5 minutes Torsades de Pointes IV/IO Infusion'",
+    "check (a): dose 50 not in the row as re-read: 'Max dose: 2 g 5 minutes Torsades de Pointes IV/IO Infusion'",
+    "check (a): unit mg/kg not in the row as re-read: 'Max dose: 2 g 5 minutes Torsades de Pointes IV/IO Infusion'",
+    "contradicts its own card: Table (p.2) says 'use 60 gtts set, then infuse at 600 gtts/min' (10 mL/min, i.e. 10 minutes for 100 mL); the row says 200 gtt/min with a 10 gtt set (20 mL/min, 5 minutes). (on EMS-149, same printed dose)",
+    "contradicts its own card: the card's concentration line (5 mg/mL) contradicts its rows and table (500 mg/mL)"
+   ],
+   "notice": "Research prototype, not for patient care.",
+   "owner_declared": false,
+   "page": 41,
+   "population": "peds",
+   "quote": "Torsades de Pointes | 50 mg/kg Max dose: 2 g | IV/IO Infusion",
+   "repeat": [],
+   "review": "individually read by owner",
+   "review_note": "owner ruling on the rule-3 entries, 2026-11-22",
+   "route": "IV",
+   "rule": {
+    "max": 50.0,
+    "min": 50.0,
+    "per_kg": true,
+    "units": "mg/kg"
+   },
+   "ruling": "Owner ruling 2026-11-22: use the row's time, over 5 minutes. The table's time is not used.",
+   "serve_cautions": [
+    "In 100 mL NS over 5 min.",
+    "Provider level: PL5–PL6."
+   ],
+   "set": "EMS",
+   "signed_by": "Andrew Azelton",
+   "signer": "clinician",
+   "signoff": true,
+   "source": "Clinical Operating Guidelines, Medication Formulary — Magnesium Sulfate 50%, MD 24-15, updated 12.01.2024 — Page 1 of 2 (Magnesium Sulfate 50%) (PDF p.41)",
+   "source_basis": "dose",
+   "sources": [
+    {
+     "citation": "Clinical Operating Guidelines, Medication Formulary — Magnesium Sulfate 50%, MD 24-15, updated 12.01.2024 — Page 1 of 2 (Magnesium Sulfate 50%) (PDF p.41)",
+     "page": 41,
+     "quote": "Torsades de Pointes | 50 mg/kg Max dose: 2 g | IV/IO Infusion",
+     "retrieved_date": "2026-11-12",
+     "source_class": "EMS",
+     "supports": "dose, max, route",
+     "tier": 1,
+     "url": "local:agency formulary (kept outside the repository)"
+    }
+   ],
+   "version": "1.0.0"
+  },
+  {
+   "aliases": [],
+   "cap": {
+    "max_cumulative": null,
+    "max_single": {
+     "rule": "max 2 g",
+     "units": "g",
+     "value": 2.0
+    }
+   },
+   "cautions": [
+    {
+     "text": "In 100 mL NS over 5 min.",
+     "tier": "serve"
+    },
+    {
+     "text": "Provider level: PL5–PL6.",
+     "tier": "serve"
+    },
+    {
+     "text": "The formulary states no cumulative maximum for this drug and indication.",
+     "tier": "detail"
+    },
+    {
+     "text": "Adverse/side effects, as the formulary lists them (owner ruling 5, 2026-11-12): Hypotension; Cardiac arrest; Respiratory/CNS Depression; Flushing; Sweating; Bradycardia; Drowsiness; Hypothermia; Itching/rash; Arrhythmia; Decreased deep tendon reflexes.",
+     "tier": "detail"
+    }
+   ],
+   "contraindications": [
+    "Hypotension",
+    "Third-degree AV block",
+    "Routine dialysis patients",
+    "Hypocalcemia"
+   ],
+   "date": "2026-11-22",
+   "dilution": null,
+   "disagreement": "The row says over 5 minutes; the card's table (600 gtt/min, 60 gtt set, 100 mL) gives 10 minutes.",
+   "drug": "magnesium sulfate",
+   "ems_id": "EMS-151",
+   "floor": null,
+   "indication": "Respiratory distress/failure",
+   "indication_class": "respiratory distress",
+   "kit_vial": "none",
+   "min_age_months": null,
+   "not_signed_automatically_because": [
+    "Table (p.2) says 'use 60 gtts set, then infuse at 600 gtts/min' (10 mL/min, i.e. 10 minutes for 100 mL); the row says 200 gtt/min with a 10 gtt set (20 mL/min, 5 minutes). (on EMS-149, same dose)",
+    "Table (p.2) says 'use 60 gtts set, then infuse at 600 gtts/min' (10 mL/min, i.e. 10 minutes for 100 mL); the row says 200 gtt/min with a 10 gtt set (20 mL/min, 5 minutes). (on EMS-149, same route)",
+    "check (a): '/kg' not in the row as re-read: '5 minutes Torsades de Pointes IV/IO Infusion 200 gtts/min with 10 gtts set Respiratory distress/failure'",
+    "check (a): dose 50 not in the row as re-read: '5 minutes Torsades de Pointes IV/IO Infusion 200 gtts/min with 10 gtts set Respiratory distress/failure'",
+    "check (a): max '2 g' not in the row as re-read: '5 minutes Torsades de Pointes IV/IO Infusion 200 gtts/min with 10 gtts set Respiratory distress/failure'",
+    "check (a): unit mg/kg not in the row as re-read: '5 minutes Torsades de Pointes IV/IO Infusion 200 gtts/min with 10 gtts set Respiratory distress/failure'",
+    "contradicts its own card: Table (p.2) says 'use 60 gtts set, then infuse at 600 gtts/min' (10 mL/min, i.e. 10 minutes for 100 mL); the row says 200 gtt/min with a 10 gtt set (20 mL/min, 5 minutes). (on EMS-149, same printed dose)",
+    "contradicts its own card: the card's concentration line (5 mg/mL) contradicts its rows and table (500 mg/mL)"
+   ],
+   "notice": "Research prototype, not for patient care.",
+   "owner_declared": false,
+   "page": 41,
+   "population": "peds",
+   "quote": "Respiratory distress/failure | 50 mg/kg Max dose: 2 g | IV/IO Infusion",
+   "repeat": [],
+   "review": "individually read by owner",
+   "review_note": "owner ruling on the rule-3 entries, 2026-11-22",
+   "route": "IV",
+   "rule": {
+    "max": 50.0,
+    "min": 50.0,
+    "per_kg": true,
+    "units": "mg/kg"
+   },
+   "ruling": "Owner ruling 2026-11-22: use the row's time, over 5 minutes. The table's time is not used.",
+   "serve_cautions": [
+    "In 100 mL NS over 5 min.",
+    "Provider level: PL5–PL6."
+   ],
+   "set": "EMS",
+   "signed_by": "Andrew Azelton",
+   "signer": "clinician",
+   "signoff": true,
+   "source": "Clinical Operating Guidelines, Medication Formulary — Magnesium Sulfate 50%, MD 24-15, updated 12.01.2024 — Page 1 of 2 (Magnesium Sulfate 50%) (PDF p.41)",
+   "source_basis": "dose",
+   "sources": [
+    {
+     "citation": "Clinical Operating Guidelines, Medication Formulary — Magnesium Sulfate 50%, MD 24-15, updated 12.01.2024 — Page 1 of 2 (Magnesium Sulfate 50%) (PDF p.41)",
+     "page": 41,
+     "quote": "Respiratory distress/failure | 50 mg/kg Max dose: 2 g | IV/IO Infusion",
      "retrieved_date": "2026-11-12",
      "source_class": "EMS",
      "supports": "dose, max, route",
@@ -13320,6 +13722,11 @@
    "indication_class": "seizure",
    "kit_vial": null,
    "min_age_months": null,
+   "min_weight": {
+    "exclusive": false,
+    "from": "table: no dose at 2 and 4 kg; row: 'Not under 5 kg'",
+    "kg": 5.0
+   },
    "not_signed_automatically_because": [
     "12-14 kgs: 0.1 ml = 0.5 mg, below the 0.6–0.7 mg the dose per kg gives (17 %) (on EMS-168, same route)",
     "12-14 kgs: 0.2 ml = 1 mg, below the 1.2–1.4 mg the dose per kg gives (17 %)",
@@ -13432,6 +13839,11 @@
    "indication_class": "seizure",
    "kit_vial": null,
    "min_age_months": null,
+   "min_weight": {
+    "exclusive": false,
+    "from": "table: no dose at 2 and 4 kg; row: 'Not under 5 kg'",
+    "kg": 5.0
+   },
    "not_signed_automatically_because": [
     "12-14 kgs: 0.2 ml = 1 mg, below the 1.2–1.4 mg the dose per kg gives (17 %)",
     "12-14 kgs: 0.2 ml = 1 mg, below the 1.2–1.4 mg the dose per kg gives (17 %) (on EMS-165, same dose)",
@@ -13541,6 +13953,11 @@
    "indication_class": "seizure",
    "kit_vial": null,
    "min_age_months": null,
+   "min_weight": {
+    "exclusive": false,
+    "from": "table: no dose at 2 and 4 kg; row: 'Not under 5 kg'",
+    "kg": 5.0
+   },
    "not_signed_automatically_because": [
     "12-14 kgs: 0.2 ml = 1 mg, below the 1.2–1.4 mg the dose per kg gives (17 %)",
     "12-14 kgs: 0.2 ml = 1 mg, below the 1.2–1.4 mg the dose per kg gives (17 %) (on EMS-165, same dose)",
@@ -13646,6 +14063,11 @@
    "indication_class": "procedural sedation",
    "kit_vial": null,
    "min_age_months": null,
+   "min_weight": {
+    "exclusive": false,
+    "from": "table: no dose at 2 and 4 kg; first dose at 6 kg",
+    "kg": 6.0
+   },
    "not_signed_automatically_because": [
     "12-14 kgs: 0.1 ml = 0.5 mg, below the 0.6–0.7 mg the dose per kg gives (17 %)",
     "12-14 kgs: 0.2 ml = 1 mg, below the 1.2–1.4 mg the dose per kg gives (17 %) (on EMS-165, same route)",
@@ -14506,6 +14928,11 @@
    "indication_class": "nausea / vomiting",
    "kit_vial": null,
    "min_age_months": null,
+   "min_weight": {
+    "exclusive": true,
+    "from": "table: no dose at 2 and 4 kg; row: 'Only if >6kg'",
+    "kg": 6.0
+   },
    "not_signed_automatically_because": [
     "The table gives 0.3 mL for the 6 kg band; the row says 'Only if >6kg'.",
     "check (b): 2 kgs: 'None' — no dose printed for this band",
@@ -14595,6 +15022,11 @@
    "indication_class": "nausea / vomiting",
    "kit_vial": null,
    "min_age_months": null,
+   "min_weight": {
+    "exclusive": true,
+    "from": "row: 'Only if >6kg'",
+    "kg": 6.0
+   },
    "not_signed_automatically_because": [
     "The table gives 0.3 mL for the 6 kg band; the row says 'Only if >6kg'. (on EMS-190, same dose)",
     "check (b): 2 kgs: 'None' — no dose printed for this band",
@@ -16905,38 +17337,5 @@
    "watermark": null
   }
  ],
- "unsigned_left_out": [
-  {
-   "drug": "calcium chloride",
-   "ems_id": "EMS-037",
-   "indication": "Calcium channel blocker/beta blocker OD",
-   "population": "peds",
-   "route": "IV",
-   "why": "Pocket says 'Infusion over 10 min'; the card's table (300 gtt/min, 60 gtt set, 100 mL) gives 20 minutes."
-  },
-  {
-   "drug": "magnesium sulfate",
-   "ems_id": "EMS-149",
-   "indication": "Wide complex Tachycardia with a pulse",
-   "population": "peds",
-   "route": "IV",
-   "why": "Pocket says 'In 100 mL NS over 5 min'; the card's table (600 gtt/min, 60 gtt set) gives 10 minutes."
-  },
-  {
-   "drug": "magnesium sulfate",
-   "ems_id": "EMS-150",
-   "indication": "Torsades de Pointes",
-   "population": "peds",
-   "route": "IV",
-   "why": "Pocket says 'In 100 mL NS over 5 min'; the card's table (600 gtt/min, 60 gtt set) gives 10 minutes."
-  },
-  {
-   "drug": "magnesium sulfate",
-   "ems_id": "EMS-151",
-   "indication": "Respiratory distress/failure",
-   "population": "peds",
-   "route": "IV",
-   "why": "Pocket says 'In 100 mL NS over 5 min'; the card's table (600 gtt/min, 60 gtt set) gives 10 minutes."
-  }
- ]
+ "unsigned_left_out": []
 }

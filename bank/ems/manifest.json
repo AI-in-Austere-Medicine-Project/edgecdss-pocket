@@ -4,11 +4,11 @@
  "counts": {
   "bulk_signed": 162,
   "drugs": 29,
-  "entries": 174,
-  "individually_read": 40,
+  "entries": 178,
+  "individually_read": 44,
   "no_signed_dose": 166,
   "signed_silent": 28,
-  "unsigned_left_out": 4,
+  "unsigned_left_out": 0,
   "vials": 22
  },
  "edgecdss_commit": "5842995629de5264ac5f80f138f7f5406cd01e96",
@@ -17,7 +17,7 @@
  "notice": "Research prototype, not for patient care.",
  "set": "EMS",
  "sha256": {
-  "bank.json": "5f27b15212f740379a62e1de7dbd2e06720d92dcb63d250e3fbda0631bbec55a",
+  "bank.json": "e88accb2121eb0dee70cecc97b4f09372b1fd9c7f69f155342134b72d3baf96d",
   "kit.json": "40a3faf7041dac3e7862a954b9436ac6114b310a00bcb23a63b9d8c845660f0d"
  },
  "signature": {

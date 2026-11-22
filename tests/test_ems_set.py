@@ -21,7 +21,7 @@ import shutil
 import pytest
 
 from engine.bank import BULK, READ, REVIEWS, BankRefused, load_bank
-from engine.session import PINNED_VIAL, SIGNED_SILENT, boot, set_name
+from engine.session import NO_DOSE_AT_WEIGHT, PINNED_VIAL, SIGNED_SILENT, boot, set_name
 
 EMS = pathlib.Path(__file__).resolve().parents[1] / "bank" / "ems"
 RAW = json.loads((EMS / "bank.json").read_text())
@@ -35,7 +35,9 @@ RULED_2026_11_12 = {"EMS-001", "EMS-002", "EMS-016", "EMS-018", "EMS-019", "EMS-
                     "EMS-187", "EMS-188", "EMS-192", "EMS-210", "EMS-214", "EMS-216"}
 BATCH_1 = {"EMS-003", "EMS-004", "EMS-005", "EMS-006", "EMS-007", "EMS-008", "EMS-009", "EMS-010", "EMS-011",
            "EMS-012", "EMS-013", "EMS-014", "EMS-015", "EMS-017", "EMS-021", "EMS-022", "EMS-023", "EMS-024"}
-FOR_OWNER = {"EMS-037", "EMS-149", "EMS-150", "EMS-151"}
+# Rule 3's four, ruled by the owner one by one on 2026-11-22: the row's infusion time.
+RULED_RULE_3 = {"EMS-037": "over 10 minutes", "EMS-149": "over 5 minutes", "EMS-150": "over 5 minutes",
+                "EMS-151": "over 5 minutes"}
 NO_STRENGTH = {"calcium chloride", "magnesium sulfate", "pralidoxime", "olanzapine"}
 
 
@@ -51,24 +53,29 @@ def _records():
     return RAW["entries"] + RAW["signed_silent"]
 
 
-def test_every_formulary_entry_is_signed_or_left_for_the_owner():
-    ids = [r["ems_id"] for r in _records()] + [x["ems_id"] for x in RAW["unsigned_left_out"]]
+def test_every_formulary_entry_is_signed():
+    ids = [r["ems_id"] for r in _records()]
     assert len(ids) == len(set(ids)) == 206
-    assert (len(RAW["entries"]), len(RAW["signed_silent"]), len(RAW["unsigned_left_out"])) == (174, 28, 4)
-    assert {x["ems_id"] for x in RAW["unsigned_left_out"]} == FOR_OWNER
-    assert all(x["why"] for x in RAW["unsigned_left_out"])
-    assert set(RAW["unsigned_left_out"][0]) == {"ems_id", "drug", "population", "route", "indication", "why"}  # no dose
+    assert (len(RAW["entries"]), len(RAW["signed_silent"]), len(RAW["unsigned_left_out"])) == (178, 28, 0)
+
+
+def test_the_four_rule_3_entries_use_the_rows_time_and_note_the_tables():
+    entries = {e["ems_id"]: e for e in RAW["entries"]}
+    for eid, time in RULED_RULE_3.items():
+        e = entries[eid]
+        assert e["review"] == READ and e["signed_by"] == "Andrew Azelton" and e["date"] == "2026-11-22"
+        assert time in e["ruling"] and "table" in e["disagreement"] and "not used" in e["ruling"]
 
 
 def test_the_record_never_claims_an_item_was_individually_read_unless_it_was():
     read = {r["ems_id"] for r in _records() if r["review"] == READ}
-    assert read == RULED_2026_11_12 | BATCH_1
+    assert read == RULED_2026_11_12 | BATCH_1 | set(RULED_RULE_3)
     bulk = [r for r in _records() if r["review"] == BULK]
     assert len(bulk) == 162 and BULK == "bulk-signed by owner without item review"
     for r in _records():
         assert r["signoff"] is True and r["signed_by"] == "Andrew Azelton" and r["signer"] == "clinician"
         assert r["date"] == ("2026-11-12" if r["ems_id"] in RULED_2026_11_12 else "2026-11-22")
-    assert MANIFEST["counts"]["individually_read"] == 40 and MANIFEST["counts"]["bulk_signed"] == 162
+    assert MANIFEST["counts"]["individually_read"] == 44 and MANIFEST["counts"]["bulk_signed"] == 162
 
 
 def test_the_bank_refuses_an_ems_entry_that_does_not_say_how_it_was_signed(tmp_path):
@@ -167,7 +174,7 @@ def test_the_ems_bank_is_its_hash_and_loads_as_the_ems_set():
     for name in ("bank.json", "kit.json"):
         assert hashlib.sha256((EMS / name).read_bytes()).hexdigest() == MANIFEST["sha256"][name]
     b = load_bank(EMS, test=False)
-    assert b.kit_id.startswith("ems-formulary") and len(b.entries) == 174
+    assert b.kit_id.startswith("ems-formulary") and len(b.entries) == 178
     assert set_name(b.kit_id) == "EMS set"
 
 
@@ -177,3 +184,55 @@ def _write(d, bank):
     man = json.loads((d / "manifest.json").read_text())
     man["sha256"]["bank.json"] = hashlib.sha256(blob).hexdigest()
     (d / "manifest.json").write_text(json.dumps(man))
+
+
+# Weight floors (owner, 2026-11-22, before merging #29): "Where the formulary's weight
+# table prints 'None', 'No IV dose' or no dose for a weight band, that is a weight floor.
+# Pocket holds for a patient in that band ('No signed dose at this weight') and never
+# gives the per-kg dose there." Rows that state the limit in words are the same kind.
+# kg, and whether the weight itself is held too ("Only if >6 kg").
+FLOORS = {"EMS-004": (10, False), "EMS-062": (5, False), "EMS-063": (5, False), "EMS-064": (5, False),
+          "EMS-065": (5, False), "EMS-086": (8, False), "EMS-131": (24, False), "EMS-134": (12, False),
+          "EMS-165": (5, False), "EMS-166": (5, False), "EMS-167": (5, False), "EMS-168": (6, False),
+          "EMS-190": (6, True), "EMS-191": (6, True)}
+
+
+def test_every_no_dose_band_is_a_weight_floor_on_its_entry():
+    got = {e["ems_id"]: (e["min_weight"]["kg"], e["min_weight"]["exclusive"])
+           for e in RAW["entries"] if e.get("min_weight")}
+    assert got == FLOORS
+    for e in RAW["entries"]:
+        if e.get("min_weight"):
+            assert e["min_weight"]["from"] and e["population"] == "peds"
+
+
+def test_below_the_floor_pocket_holds_and_never_gives_the_per_kg_dose():
+    from engine.contracts import below_weight_floor
+    entries = {e["ems_id"]: e for e in RAW["entries"]}
+    for eid, (kg, exclusive) in FLOORS.items():
+        e = entries[eid]
+        assert below_weight_floor(e, kg - 0.5)
+        assert below_weight_floor(e, kg) is exclusive
+        assert not below_weight_floor(e, kg + 1)
+    assert not any(below_weight_floor(e, 0.5) for i, e in entries.items() if i not in FLOORS)
+
+
+def test_a_child_in_a_no_dose_band_hears_no_signed_dose_at_this_weight():
+    t = _say("ketamine for pain iv twenty kilos")
+    assert (t.kind, t.say) == ("hold", NO_DOSE_AT_WEIGHT) and NO_DOSE_AT_WEIGHT == "No signed dose at this weight."
+    t = _say("ketamine for pain iv thirty kilos")
+    assert t.kind == "readback"
+    for kilos, kind in (("six", "hold"), ("seven", "readback")):
+        assert _say(f"ondansetron for nausea im {kilos} kilos").kind == kind
+
+
+def test_a_weight_floor_that_is_not_a_weight_is_refused(tmp_path):
+    bads = ({"kg": 0, "exclusive": False, "from": "x"}, {"kg": 5, "from": "x"}, {"kg": 5, "exclusive": False})
+    for n, bad in enumerate(bads):
+        d = tmp_path / str(n)
+        shutil.copytree(EMS, d)
+        bank = json.loads((d / "bank.json").read_text())
+        bank["entries"][5]["min_weight"] = bad
+        _write(d, bank)
+        with pytest.raises(BankRefused, match="weight floor"):
+            load_bank(d, test=False)
