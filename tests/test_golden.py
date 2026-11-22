@@ -7,7 +7,9 @@ import pytest
 
 from engine.bank import load_bank
 from engine.contracts import range_text, resolve_dose
-from engine.vials import dose_volume
+from decimal import ROUND_HALF_UP, Decimal
+
+from engine.vials import ONE_MIL_BELOW_ML, dose_volume
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 GOLDEN = json.loads((ROOT / "tests" / "fixtures" / "edgecdss_golden.json").read_text())
@@ -32,6 +34,15 @@ def test_same_dose_and_volume_as_edgecdss(row):
     if row["dose_mg"] is None:
         return
     v = dose_volume(BANK.kit, e, round(r["dose_mg"], 4))
+    if row["diluted"] or (row["volume_ml"] is not None and row["volume_ml"] < ONE_MIL_BELOW_ML):
+        # No dilution in Pocket (owner rule, 2026-11-22): EdgeCDSS's answer here is replaced
+        # by the vial's volume to the nearest 0.01 mL.
+        vial = BANK.kit[e["drug"]][0]["concentration_mg_ml"]
+        true = round(r["dose_mg"], 4) / vial
+        want = float(Decimal(repr(true)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP))
+        assert (v["volume_ml"], v["concentration_mg_ml"], v["diluted"]) == (
+            (want, vial, False) if true >= 0.05 else (None, None, False))
+        return
     assert v["volume_ml"] == row["volume_ml"]
     assert v["concentration_mg_ml"] == row["concentration_mg_ml"]
     assert v["diluted"] == row["diluted"]

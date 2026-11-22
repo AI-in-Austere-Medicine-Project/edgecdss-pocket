@@ -25,7 +25,7 @@
    [
     "confirm",
     "dose",
-    "Ketamine twenty milligrams. Dilute one mil of fifty in nine mils of normal saline. Four mils of the dilution, five per mil."
+    "Ketamine twenty milligrams. Zero point four mils of fifty. Use a one mil syringe."
    ]
   ]
  },
@@ -40,7 +40,7 @@
    [
     "confirm",
     "dose",
-    "Ketamine eight milligrams. Dilute one mil of fifty in nine mils of normal saline. One point six mils of the dilution, five per mil. Signed range zero point one to zero point two milligrams per kilogram."
+    "Ketamine eight milligrams. Zero point one six mils of fifty. Use a one mil syringe. Signed range zero point one to zero point two milligrams per kilogram."
    ]
   ]
  },
@@ -100,7 +100,7 @@
    [
     "confirm",
     "dose",
-    "Ketamine four milligrams. Dilute one mil of fifty in nine mils of normal saline. Zero point eight mils of the dilution, five per mil."
+    "Ketamine four milligrams. Zero point zero eight mils of fifty. Use a one mil syringe."
    ]
   ]
  },
@@ -115,7 +115,7 @@
    [
     "confirm",
     "dose",
-    "Ketamine three milligrams. Dilute one mil of fifty in nine mils of normal saline. Zero point six mils of the dilution, five per mil."
+    "Ketamine three milligrams. Zero point zero six mils of fifty. Use a one mil syringe."
    ]
   ]
  },
@@ -130,7 +130,7 @@
    [
     "confirm",
     "dose",
-    "Ketamine one milligram. Too small to draw from the vial. Dilute one mil of fifty in nine mils of normal saline. No volume."
+    "Ketamine one milligram. Too small to draw. No volume."
    ]
   ]
  },
@@ -1033,7 +1033,7 @@
    [
     "confirm",
     "dose",
-    "Ketamine twenty milligrams. Dilute one mil of fifty in nine mils of normal saline. Four mils of the dilution, five per mil."
+    "Ketamine twenty milligrams. Zero point four mils of fifty. Use a one mil syringe."
    ]
   ]
  },
