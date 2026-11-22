@@ -23,7 +23,8 @@ import subprocess
 
 import pytest
 
-from engine.session import START_UP_LINE, boot, jsonl_log
+from engine.session import boot, jsonl_log
+from tests.test_sets import PFC_START as START_UP_LINE   # names the set (2026-11-22)
 from voice import autostart as au
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]

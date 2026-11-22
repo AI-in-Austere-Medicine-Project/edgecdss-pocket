@@ -50,7 +50,7 @@ def test_each_word_is_said_numbered_as_pocket_says_it():
 
 
 def test_from_restarts_part_way():
-    assert [r[0] for r in say_all.pick(ROWS, start=90)] == [90, 91, 92]
+    assert [r[0] for r in say_all.pick(ROWS, start=92)] == [92, 93, 94]   # + the two set commands
 
 
 def test_a_spoken_spelling_changes_what_is_said_and_never_what_is_shown(monkeypatch):

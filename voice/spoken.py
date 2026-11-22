@@ -14,7 +14,9 @@ from grammar.vocabulary import CONDITIONS, DOSE_UNITS
 SPELLED = {"iv": "i v", "io": "i o", "im": "i m", "po": "p o", "rsi": "r s i",
            "icp": "i c p", "maoi": "m a o i", "txa": "t x a", "in": "i n"}
 # Spelled forms the parser does not already read letter by letter.
-JOINED = {"t x a": "txa", "d d a v p": "ddavp", "r h z e": "rhze"}
+JOINED = {"t x a": "txa", "d d a v p": "ddavp", "r h z e": "rhze",
+          # the sets (owner, 2026-11-22): "E M S set", "P F C set"
+          "e m s": "ems", "p f c": "pfc"}
 SOUNDS_LIKE = pathlib.Path(__file__).resolve().parents[1] / "grammar" / "sounds_like.json"
 _SPELLINGS = None
 

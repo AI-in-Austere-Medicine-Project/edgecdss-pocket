@@ -27,7 +27,7 @@ import pathlib
 import time
 import wave
 
-from engine.session import boot, jsonl_log
+from engine.session import boot, boot_sets, jsonl_log
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 MODEL = ROOT / "models" / "vosk-model-small-en-us-0.15"
@@ -162,11 +162,20 @@ def typed(session, speaker, lines, print=print, interrupted=lambda: False) -> No
         speaker.say(turn.text, interrupted)
 
 
+def _boot(a, log, on_set=None):
+    if a.bank:
+        return boot(a.bank, log=log)
+    from voice.autostart import SETS
+    return boot_sets(SETS, a.set, log=log, on_set=on_set)
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--model", default=str(MODEL))
     ap.add_argument("--piper", default=str(PIPER))
-    ap.add_argument("--bank", default=str(ROOT / "bank"))
+    ap.add_argument("--bank", help="one bank directory only (no set choice)")
+    ap.add_argument("--set", choices=("PFC", "EMS"), default="PFC",
+                    help="the set loaded first; say 'E M S set' or 'P F C set' to change")
     ap.add_argument("--out")
     ap.add_argument("--mode", choices=("hold", "toggle"), default="toggle")
     ap.add_argument("--button", help="input device name to use as push-to-talk")
@@ -179,7 +188,7 @@ def main(argv=None):
     out.mkdir(parents=True, exist_ok=True)
     if a.typed:
         from voice.speak import Speaker
-        session = boot(a.bank, log=jsonl_log(out / "doses.jsonl"))
+        session = _boot(a, jsonl_log(out / "doses.jsonl"))
         speaker = Speaker(a.piper)
         print(f"out: {out}\nspeaker: {speaker.device}", flush=True)
         try:
@@ -193,7 +202,12 @@ def main(argv=None):
     from voice.speak import Speaker
     vosk.SetLogLevel(-1)
 
-    session = boot(a.bank, log=jsonl_log(out / "doses.jsonl"))
+    hearing = None
+
+    def on_set(_key):
+        if hearing is not None:
+            hearing.vocab = session.vocab
+    session = _boot(a, jsonl_log(out / "doses.jsonl"), on_set)
     hearing = Hearing(vosk.Model(a.model), json.loads(GRAMMAR.read_text()), session.vocab)
     headset = None if os.getenv("POCKET_CAPTURE") else listen.bluealsa_headset()
     speaker = Speaker(a.piper, headset=headset)

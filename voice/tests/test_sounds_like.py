@@ -34,7 +34,7 @@ def test_a_spelling_uses_only_words_that_mean_nothing_else_to_the_parser():
     # mean nothing alone (owner, 2026-11-21): "nor can" keeps spelling narcan. The whole
     # command, said in a spelling, would mean something: no spelling holds one.
     from grammar.vocabulary import menu_only_words
-    assert menu_only_words(VOCAB) == {"what", "can", "say", "list"}       # not "i": "i v"
+    assert menu_only_words(VOCAB) == {"what", "can", "say", "list", "ems", "set"}   # not "i": "i v"; "ems set" (2026-11-22)
     meaningful = ((VOCAB.words() - set(FILLERS)) | {w for c in CONTROLS for w in c.split()}) - menu_only_words(VOCAB)
     for name, spellings in SOUNDS["spellings"].items():
         own = set(name.split()) | set(spoken.SPELLED.get(name, "").split())  # "iv" is said "i v"

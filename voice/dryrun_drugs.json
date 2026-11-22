@@ -1,5 +1,5 @@
 {
- "grammar_sha256": "34468d8d0d0a605833f7e04ce82868609799be56e2016c20f8fddb380ddf79c6",
+ "grammar_sha256": "b81965c4d5e74449a4e88be0eb2d90d0a4174801419309ed8f895702c8e477f8",
  "voices": [
   "af_nicole",
   "am_liam",
@@ -1143,7 +1143,7 @@
    "primary": "levetiracetam",
    "asks": [],
    "voice": "am_liam",
-   "heard": "cabral",
+   "heard": "capra",
    "decoder": "spelled",
    "heard_as": [
     "levetiracetam"
@@ -1518,7 +1518,7 @@
    "primary": "naloxone",
    "asks": [],
    "voice": "af_nicole",
-   "heard": "nor kin",
+   "heard": "larkin",
    "decoder": "spelled",
    "heard_as": [
     "naloxone"
@@ -1982,7 +1982,7 @@
    "primary": "propofol",
    "asks": [],
    "voice": "am_liam",
-   "heard": "dipper van",
+   "heard": "deborah van",
    "decoder": "spelled",
    "heard_as": [
     "propofol"
@@ -2034,7 +2034,7 @@
    "primary": "rocuronium",
    "asks": [],
    "voice": "bf_lily",
-   "heard": "rock your roni ems",
+   "heard": "rock your roni him",
    "decoder": "spelled",
    "heard_as": [
     "rocuronium"
@@ -2228,7 +2228,7 @@
    "primary": "succinylcholine",
    "asks": [],
    "voice": "am_liam",
-   "heard": "suggs",
+   "heard": "zack's",
    "decoder": "spelled",
    "heard_as": [
     "succinylcholine"
@@ -2358,7 +2358,7 @@
    "primary": "tranexamic acid",
    "asks": [],
    "voice": "bf_lily",
-   "heard": "trying sammich acid",
+   "heard": "drank sammich acid",
    "decoder": "spelled",
    "heard_as": [
     "tranexamic acid"

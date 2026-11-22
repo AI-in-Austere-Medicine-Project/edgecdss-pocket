@@ -6,7 +6,8 @@ import shutil
 
 import pytest
 
-from engine.session import START_UP_LINE, boot
+from engine.session import boot
+from tests.test_sets import start_up_said
 
 BANK = pathlib.Path(__file__).resolve().parents[1] / "bank"
 
@@ -234,7 +235,7 @@ def test_g1_boot_says_pocket_ready_and_logs_the_set_the_full_version_and_hash():
     assert s.announce.kind == "boot"
     assert s.announce.data["bank_version"] == man["bank_version"]
     assert s.announce.data["hash"] == man["sha256"]["bank.json"][:8]
-    assert s.announce.say == START_UP_LINE
+    assert s.announce.say == start_up_said("P F C set")   # the set named (owner, 2026-11-22)
     assert (records[0]["bank_version"], records[0]["bank_hash"]) == (man["bank_version"],
                                                                     man["sha256"]["bank.json"])
 
