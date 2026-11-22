@@ -202,6 +202,12 @@ def _class_terms(classes) -> dict:
     for cls in classes:
         for part in cls.split(" / "):
             term = part.strip().lower()
+            if re.search(r"[^a-z ]", term):         # said, a term has no punctuation (EMS classes)
+                bits = [b.strip() for b in term.replace("-", " ").split(",")]
+                for b in bits:
+                    if re.fullmatch(r"[a-z]+(?: [a-z]+)+", b):   # two words or more: "crush" alone is not
+                        out[b] = cls
+                continue
             out[term] = cls
             if "aem" in term:                       # hemorrhage, hypoglycemia
                 out[term.replace("aem", "em")] = cls

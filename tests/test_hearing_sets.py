@@ -70,3 +70,13 @@ def test_an_indication_longer_than_a_drug_name_is_read_as_the_indication():
     assert [d.generics for d in p.drugs] == [("calcium chloride",)] and p.classes == [VOCAB.class_terms["calcium channel"]]
     s = boot_sets(SET_DIRS, "EMS")
     assert s.handle("calcium chloride for calcium channel blocker overdose iv twenty kilos").kind == "readback"
+
+
+def test_every_indication_term_can_be_said():
+    """EMS classes carry punctuation ("TCA / phenobarbital overdose, crush",
+    "post-intubation paralysis"); a term with punctuation could never be heard."""
+    import re
+    assert not [t for t in VOCAB.class_terms if re.search(r"[^a-z ]", t)]
+    assert VOCAB.class_terms["phenobarbital overdose"] == "TCA / phenobarbital overdose, crush"
+    assert VOCAB.class_terms["post intubation paralysis"] == "post-intubation paralysis"
+    assert "crush" not in VOCAB.class_terms                  # one word: fentanyl's crush injury
