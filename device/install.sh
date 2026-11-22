@@ -134,6 +134,17 @@ for t in apt-daily.timer apt-daily-upgrade.timer man-db.timer; do
   sudo systemctl disable --now "$t" 2>/dev/null || true
 done
 
+echo "== 4b. Wi-Fi joins at power-up (for upkeep over Tailscale; Pocket itself needs no network)"
+# NetworkManager on this board joins the saved (hidden) network only once a scan has seen
+# it: 47 s, 3 min, or never. The keeper asks it to join every 30 s while Wi-Fi is on and not
+# connected; Wi-Fi turned off on purpose stays off.
+sudo install -m 755 device/pocket-wifi-up /usr/local/sbin/pocket-wifi-up
+sudo install -m 644 device/pocket-wifi-up.service device/pocket-wifi-up.timer /etc/systemd/system/
+sudo systemctl disable --now pocket-test-wifi-on.timer 2>/dev/null || true      # the no-network test's, if left
+sudo rm -f /etc/systemd/system/pocket-test-wifi-on.timer /etc/systemd/system/pocket-test-wifi-on.service
+sudo systemctl daemon-reload
+sudo systemctl enable --now pocket-wifi-up.timer
+
 echo "== 5. pocket.service"
 sed -e "s|@USER@|$USER_NAME|g" -e "s|@HOME@|$HOME_DIR|g" device/pocket.service \
   | sudo tee /etc/systemd/system/pocket.service >/dev/null

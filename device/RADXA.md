@@ -220,6 +220,7 @@ Pocket starts by itself at power-up: no login, no keyboard, no network (owner, 2
 - The mic: the first USB sound card that records, through ALSA's plug at 16 kHz (speex, `/etc/asound.conf`). None: "No microphone found.", again on each press, until one is plugged in; pulled out mid-session: the same.
 - Its files: `~/edgecdss-pocket/bench-out/autostart-<time>-<boot id>/`: `doses.jsonl`, `heard.jsonl`, the WAVs and `autostart.jsonl` (loaded, ready, speaker lost, no mic, each with seconds since power-on). Its log: `journalctl -u pocket -f`.
 - To use the board by hand (`voice.device --typed`), stop it first: `sudo systemctl stop pocket`.
+- Wi-Fi, for upkeep over Tailscale only: `pocket-wifi-up.timer` asks NetworkManager every 30 s, from 20 s after power-up, to join the saved network while Wi-Fi is on and not connected. On its own NetworkManager joined the saved (hidden) network only once a scan had seen it: after 3 min, after 47 s, and in two boots never (14 h and 7 min off the network, 2026-11-21/22). With the keeper: joined 22 s after power-on. Wi-Fi turned off on purpose (`nmcli radio wifi off`) stays off.
 
 **A power cut at any time.** What was done:
 - The dose log is written and fsynced before the dose is spoken; its directory is fsynced when the file is made. A dose that was heard is on the card.

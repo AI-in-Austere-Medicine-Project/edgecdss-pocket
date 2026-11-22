@@ -1,0 +1,11 @@
+#!/bin/sh
+# EdgeCDSS Pocket: join the saved Wi-Fi now if Wi-Fi is on but not connected.
+# NetworkManager on its own waits until a scan has seen the (hidden) network; on this board
+# that took 47 s, 3 min, or never (2026-11-22). Wi-Fi turned off on purpose is left off.
+[ "$(nmcli radio wifi)" = enabled ] || exit 0
+state=$(nmcli -t -f DEVICE,STATE device | sed -n 's/^wlan0://p')
+[ "$state" = disconnected ] || exit 0
+for id in $(nmcli -t -f UUID,TYPE,AUTOCONNECT connection show | awk -F: '$2=="802-11-wireless" && $3=="yes" {print $1}'); do
+  nmcli --wait 25 connection up uuid "$id" ifname wlan0 && exit 0
+done
+exit 0
