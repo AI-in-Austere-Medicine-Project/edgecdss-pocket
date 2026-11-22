@@ -128,31 +128,29 @@ def test_the_declared_adenosine_vial_gives_its_volume():
     assert len(v) == 1 and v[0]["concentration_mg_ml"] == 3.0 and v[0]["owner_declared"] is True
 
 
-def test_a_drug_whose_strength_is_missing_or_contradicted_says_milligrams_only():
-    declared = {x["drug"] for x in KIT["strengths_to_declare"]}
-    assert NO_STRENGTH <= declared and "adenosine" not in declared
-    assert not NO_STRENGTH & {v["drug"] for v in KIT["vials"]}
+def test_a_drug_whose_strength_was_missing_or_contradicted_said_milligrams_only_until_declared():
+    """Rule 4. All eight were declared on 2026-11-22: tests/test_declared_strengths.py."""
+    assert KIT["strengths_to_declare"] == []
     for e in RAW["entries"]:
-        if e["drug"] in NO_STRENGTH:
-            assert e["kit_vial"] == "none"
-    t = _say("calcium chloride for hyperkalemia iv adult", "confirm")
-    assert t.say.startswith(f"Calcium chloride one gram. {PINNED_VIAL}")   # an administration time may follow
+        if e["drug"] in NO_STRENGTH and e["ems_id"] != "EMS-197":           # 197: the auto-injector
+            assert e["kit_vial"] is None, e["ems_id"]
 
 
 def test_a_tablet_or_a_second_strength_never_gives_a_volume():
-    """Rule 4: a volume only where the route uses the card's one printed liquid strength."""
+    """Rule 4: a volume only where the route uses one liquid strength. The one PO entry with
+    a volume is the child's acetaminophen, from the declared oral liquid (2026-11-22)."""
     for e in RAW["entries"]:
         if e["date"] == "2026-11-22" and (e["route"] == "PO" or e["drug"] in {"epinephrine", "norepinephrine"}):
-            assert e["kit_vial"] == "none", e["ems_id"]
-    t = _say("acetaminophen for fever po twenty kilos", "confirm")
+            assert e["kit_vial"] == ("none" if e["ems_id"] != "EMS-003" else None), e["ems_id"]
+    t = _say("acetaminophen for fever po adult", "confirm")
     assert t.say.endswith(PINNED_VIAL)
 
 
-def test_every_unpinned_entry_has_exactly_one_signed_vial():
-    vials = [v["drug"] for v in KIT["vials"]]
+def test_every_unpinned_entry_has_exactly_one_signed_vial_for_its_route():
     for e in RAW["entries"]:
         if e["kit_vial"] is None and e["date"] == "2026-11-22":
-            assert vials.count(e["drug"]) == 1, e["ems_id"]
+            fit = [v for v in KIT["vials"] if v["drug"] == e["drug"] and e["route"] in v.get("routes", [e["route"]])]
+            assert len(fit) == 1, e["ems_id"]
 
 
 def test_naloxone_is_signed_with_its_draft_watermark_noted():

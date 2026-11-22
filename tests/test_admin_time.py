@@ -79,4 +79,4 @@ def test_ems_entries_say_their_time_including_the_owners_four_rulings():
     assert said["EMS-149"] == said["EMS-150"] == said["EMS-151"] == "Over five minutes."
     s = boot(BANK / "ems")
     s.handle("magnesium sulfate for torsades iv twenty kilos")
-    assert s.handle("confirm").say.endswith("Milligrams only, no volume. Over five minutes.")
+    assert s.handle("confirm").say.endswith("Two mils of five hundred. Over five minutes.")   # declared 500 mg/mL

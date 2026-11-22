@@ -31,6 +31,7 @@ NOT_TESTING = "this is a test set; it loads only with POCKET_TEST=1"
 READ = "individually read by owner"
 BULK = "bulk-signed by owner without item review"
 REVIEWS = (READ, BULK)
+VIAL_ROUTES = ("IV", "IM", "IN", "PO", "NEB")
 
 
 def testing() -> bool:
@@ -137,6 +138,10 @@ def _vial_problem(v: dict):
     conc = v.get("concentration_mg_ml")
     if not isinstance(conc, (int, float)) or conc <= 0:
         return "no strength"
+    routes = v.get("routes")
+    if routes is not None and not (isinstance(routes, list) and routes
+                                   and all(r in VIAL_ROUTES for r in routes)):
+        return "routes that are not routes"
     return None
 
 
