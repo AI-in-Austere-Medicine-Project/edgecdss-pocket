@@ -211,3 +211,13 @@ def has_sentinel(value) -> bool:
     if isinstance(value, (list, tuple)):
         return any(has_sentinel(v) for v in value)
     return False
+
+
+def below_weight_floor(entry: dict, weight_kg) -> bool:
+    """True when the entry's weight floor holds this weight: a weight band the formulary
+    gives no dose (owner, 2026-11-22). exclusive: the floor weight itself is held too
+    ("Only if >6 kg"). No floor, or no weight: False."""
+    floor = entry.get("min_weight")
+    if not floor or weight_kg is None:
+        return False
+    return weight_kg <= floor["kg"] if floor["exclusive"] else weight_kg < floor["kg"]

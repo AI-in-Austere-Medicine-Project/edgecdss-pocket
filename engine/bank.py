@@ -113,6 +113,11 @@ def _silent_problem(s: dict):
 def _shape_problem(e: dict):
     if has_sentinel(e):
         return "an unfinished field"
+    floor = e.get("min_weight")
+    if floor is not None and not (
+            isinstance(floor, dict) and isinstance(floor.get("kg"), (int, float)) and floor["kg"] > 0
+            and isinstance(floor.get("exclusive"), bool) and str(floor.get("from") or "").strip()):
+        return "a weight floor that is not a weight"
     if e["population"] not in VALID_POPULATIONS:
         return f"population {e['population']}"
     if not e["sources"] or not str(e["source"]).strip():
