@@ -28,6 +28,7 @@ import pathlib
 import subprocess
 import time
 
+from engine.bank import SET_DIRS
 from engine.session import boot, boot_sets, jsonl_log
 from voice import device as dev
 
@@ -364,7 +365,7 @@ def stamped_log(path, board):
 
 
 # The set chosen on the device (owner, 2026-11-22), remembered across a power cut.
-SETS = {"PFC": ROOT / "bank", "EMS": ROOT / "bank" / "ems"}
+SETS = SET_DIRS
 SET_FILE = pathlib.Path(os.environ.get("POCKET_SET_FILE", pathlib.Path.home() / ".config" / "edgecdss-pocket" / "set"))
 
 

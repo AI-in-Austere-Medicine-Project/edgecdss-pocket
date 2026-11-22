@@ -23,7 +23,7 @@ import wave
 
 import pytest
 
-from engine.bank import load_bank
+from engine.bank import load_bank, load_sets, merge_banks
 from engine.session import Session, boot
 from grammar.parser import parse
 from grammar.vocabulary import build
@@ -31,7 +31,8 @@ from voice import spoken
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 BANK = load_bank(ROOT / "bank")
-VOCAB = build(BANK)
+# The grammar hears both sets (owner, 2026-11-22): "unsigned" means signed in neither.
+VOCAB = build(merge_banks(load_sets().values()))
 GRAMMAR = json.loads((ROOT / "grammar" / "vosk_grammar.json").read_text())
 SOUNDS = json.loads((ROOT / "grammar" / "sounds_like.json").read_text())
 CLIPS = sorted((ROOT / "tests" / "fixtures" / "clips").glob("w1_*.wav"))
@@ -126,7 +127,7 @@ def _unsigned_only_words():
 
 def test_no_word_only_an_unsigned_drug_uses_is_in_the_grammar():
     words = _unsigned_only_words()
-    assert "rifampin" in words and "magnesium" in words
+    assert "rifampin" in words and "magnesium" not in words    # magnesium sulfate: signed in the EMS set
     for g in (GRAMMAR["words"], GRAMMAR["base_words"]):
         assert not words & {w for e in g for w in e.split()}, sorted(words & set(g))[:10]
 

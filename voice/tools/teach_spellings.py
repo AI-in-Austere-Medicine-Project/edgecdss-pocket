@@ -35,7 +35,7 @@ import pathlib
 import re
 import wave
 
-from engine.bank import load_bank
+from engine.bank import load_sets, merge_banks
 from grammar.parser import parse
 from grammar.vocabulary import CONTROLS, FILLERS, build, menu_only_words
 from voice import spoken
@@ -278,7 +278,7 @@ class Ears:
 
 
 def run(model_dir, clips=CLIPS, gate=GATE, apply=False, ears=None, out_dir=None, print=print) -> dict:
-    bank = load_bank(ROOT / "bank")
+    bank = merge_banks(load_sets().values())           # both sets' names (2026-11-22)
     vocab = build(bank)
     if ears is None:
         import vosk
@@ -340,7 +340,7 @@ def _apply(raw, kept, refused, model_dir, print) -> bool:
     g = vg.generate(model_dir)
     GRAMMAR.write_text(json.dumps(g, indent=1, sort_keys=True) + "\n")
     from voice.tools import dryrun_drugs
-    wavs = pathlib.Path.home() / "projects" / "pocket-hearing" / "bench-out" / "dryrun-kokoro"
+    wavs = pathlib.Path.home() / "projects" / "pocket-hearing" / "bench-out" / "dryrun-union"
     if not wavs.exists():
         print(f"dry run not scored: no clips at {wavs}")
         return True
