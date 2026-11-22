@@ -1889,7 +1889,7 @@
    "floor": null,
    "indication": "Fever or Pain",
    "indication_class": "pain / fever",
-   "kit_vial": "none",
+   "kit_vial": null,
    "min_age_months": null,
    "not_signed_automatically_because": [
     "No maximum printed for the pediatric dose; the table stops at 30–36 kg.",
@@ -3309,7 +3309,7 @@
    "floor": null,
    "indication": "Cardiac arrest with HyperK or Calcium Channel blocker OD",
    "indication_class": "cardiac arrest",
-   "kit_vial": "none",
+   "kit_vial": null,
    "min_age_months": null,
    "not_signed_automatically_because": [
     "The 1G / 10mL dose cell is one merged cell across all six adult rows.",
@@ -3389,7 +3389,7 @@
    "floor": null,
    "indication": "Hydrofluoric acid burn",
    "indication_class": "hydrofluoric acid burn",
-   "kit_vial": "none",
+   "kit_vial": null,
    "min_age_months": null,
    "not_signed_automatically_because": [
     "The 1G / 10mL dose cell is one merged cell across all six adult rows. (on EMS-030, same dose)",
@@ -3471,7 +3471,7 @@
    "floor": null,
    "indication": "Hyperkalemia with a pulse",
    "indication_class": "hyperkalaemia",
-   "kit_vial": "none",
+   "kit_vial": null,
    "min_age_months": null,
    "not_signed_automatically_because": [
     "The 1G / 10mL dose cell is one merged cell across all six adult rows. (on EMS-030, same dose)",
@@ -3553,7 +3553,7 @@
    "floor": null,
    "indication": "Calcium channel or beta blocker OD with a pulse",
    "indication_class": "calcium channel / beta blocker overdose",
-   "kit_vial": "none",
+   "kit_vial": null,
    "min_age_months": null,
    "not_signed_automatically_because": [
     "The 1G / 10mL dose cell is one merged cell across all six adult rows. (on EMS-030, same dose)",
@@ -3634,7 +3634,7 @@
    "floor": null,
    "indication": "Blood product administration",
    "indication_class": "blood transfusion",
-   "kit_vial": "none",
+   "kit_vial": null,
    "min_age_months": null,
    "not_signed_automatically_because": [
     "The 1G / 10mL dose cell is one merged cell across all six adult rows. (on EMS-030, same dose)",
@@ -3715,7 +3715,7 @@
    "floor": null,
    "indication": "Magnesium OD",
    "indication_class": "magnesium overdose",
-   "kit_vial": "none",
+   "kit_vial": null,
    "min_age_months": null,
    "not_signed_automatically_because": [
     "The 1G / 10mL dose cell is one merged cell across all six adult rows. (on EMS-030, same dose)",
@@ -3795,7 +3795,7 @@
    "floor": null,
    "indication": "Blood product administration",
    "indication_class": "blood transfusion",
-   "kit_vial": "none",
+   "kit_vial": null,
    "min_age_months": null,
    "not_signed_automatically_because": [
     "No maximum printed.",
@@ -3877,7 +3877,7 @@
    "floor": null,
    "indication": "Calcium channel blocker/beta blocker OD",
    "indication_class": "calcium channel / beta blocker overdose",
-   "kit_vial": "none",
+   "kit_vial": null,
    "min_age_months": null,
    "not_signed_automatically_because": [
     "No maximum printed.",
@@ -11691,7 +11691,7 @@
    "floor": null,
    "indication": "V-Fib or pVtach",
    "indication_class": "cardiac arrest",
-   "kit_vial": "none",
+   "kit_vial": null,
    "min_age_months": null,
    "not_signed_automatically_because": [
     "No repeat or maximum printed. (on EMS-144, same dose)",
@@ -11779,7 +11779,7 @@
    "floor": null,
    "indication": "Wide complex Tachycardia with a pulse",
    "indication_class": "wide complex tachycardia",
-   "kit_vial": "none",
+   "kit_vial": null,
    "min_age_months": null,
    "not_signed_automatically_because": [
     "No repeat or maximum printed.",
@@ -11867,7 +11867,7 @@
    "floor": null,
    "indication": "Torsades de Pointes",
    "indication_class": "torsades",
-   "kit_vial": "none",
+   "kit_vial": null,
    "min_age_months": null,
    "not_signed_automatically_because": [
     "No repeat or maximum printed. (on EMS-144, same dose)",
@@ -11956,7 +11956,7 @@
    "floor": null,
    "indication": "Respiratory distress/failure",
    "indication_class": "respiratory distress",
-   "kit_vial": "none",
+   "kit_vial": null,
    "min_age_months": null,
    "not_signed_automatically_because": [
     "No repeat or maximum printed. (on EMS-144, same dose)",
@@ -12044,7 +12044,7 @@
    "floor": null,
    "indication": "OB Seizures",
    "indication_class": "seizure",
-   "kit_vial": "none",
+   "kit_vial": null,
    "min_age_months": null,
    "not_signed_automatically_because": [
     "No repeat or maximum printed. (on EMS-144, same route)",
@@ -12127,7 +12127,7 @@
    "floor": null,
    "indication": "V-Fib or pVtach",
    "indication_class": "cardiac arrest",
-   "kit_vial": "none",
+   "kit_vial": null,
    "min_age_months": null,
    "not_signed_automatically_because": [
     "Table (p.2) says 'use 60 gtts set, then infuse at 600 gtts/min' (10 mL/min, i.e. 10 minutes for 100 mL); the row says 200 gtt/min with a 10 gtt set (20 mL/min, 5 minutes). (on EMS-149, same dose)",
@@ -12215,7 +12215,7 @@
    "floor": null,
    "indication": "Wide complex Tachycardia with a pulse",
    "indication_class": "wide complex tachycardia",
-   "kit_vial": "none",
+   "kit_vial": null,
    "min_age_months": null,
    "not_signed_automatically_because": [
     "Table (p.2) says 'use 60 gtts set, then infuse at 600 gtts/min' (10 mL/min, i.e. 10 minutes for 100 mL); the row says 200 gtt/min with a 10 gtt set (20 mL/min, 5 minutes).",
@@ -12304,7 +12304,7 @@
    "floor": null,
    "indication": "Torsades de Pointes",
    "indication_class": "torsades",
-   "kit_vial": "none",
+   "kit_vial": null,
    "min_age_months": null,
    "not_signed_automatically_because": [
     "Table (p.2) says 'use 60 gtts set, then infuse at 600 gtts/min' (10 mL/min, i.e. 10 minutes for 100 mL); the row says 200 gtt/min with a 10 gtt set (20 mL/min, 5 minutes). (on EMS-149, same dose)",
@@ -12397,7 +12397,7 @@
    "floor": null,
    "indication": "Respiratory distress/failure",
    "indication_class": "respiratory distress",
-   "kit_vial": "none",
+   "kit_vial": null,
    "min_age_months": null,
    "not_signed_automatically_because": [
     "Table (p.2) says 'use 60 gtts set, then infuse at 600 gtts/min' (10 mL/min, i.e. 10 minutes for 100 mL); the row says 200 gtt/min with a 10 gtt set (20 mL/min, 5 minutes). (on EMS-149, same dose)",
@@ -15190,7 +15190,7 @@
    "floor": null,
    "indication": "Organophosphate/Nerve Agent Poisoning (vial)",
    "indication_class": "poisoning",
-   "kit_vial": "none",
+   "kit_vial": null,
    "min_age_months": null,
    "not_signed_automatically_because": [
     "12 mL is a single IM volume as printed.",
@@ -15273,7 +15273,7 @@
    "floor": null,
    "indication": "Organophosphate/Nerve Agent Poisoning",
    "indication_class": "poisoning",
-   "kit_vial": "none",
+   "kit_vial": null,
    "min_age_months": null,
    "not_signed_automatically_because": [
     "20-23 kgs: 8 mL = 400 mg, above the 300–345 mg the dose per kg gives (16 %)",

@@ -1,47 +1,49 @@
 {
- "kit_id": "ems-formulary-2026-11-22",
- "strengths_to_declare": [
+ "declared_products": [
   {
-   "drug": "acetaminophen",
-   "form": "oral liquid",
-   "why": "not printed; the children's PO table in mL needs one (its volumes fit 160 mg/5 mL)"
-  },
-  {
+   "date": "2026-11-22",
    "drug": "albuterol",
-   "form": "metered-dose inhaler, per puff",
-   "why": "not printed"
+   "product": "metered-dose inhaler",
+   "review": "owner-declared, industry standard, not read from kit",
+   "signed_by": "Andrew Azelton",
+   "signer": "clinician",
+   "strength": "90 mcg per puff",
+   "use": "recorded; the MDI entry stays silent (Pocket cannot say puffs)"
   },
   {
-   "drug": "calcium chloride",
-   "form": "injection",
-   "why": "strength line blank; the table label says 10 mg/mL, the rows 1 g = 10 mL (100 mg/mL)"
-  },
-  {
-   "drug": "diphenhydramine",
-   "form": "tablet",
-   "why": "printed '1 Tablet = 25mL'"
-  },
-  {
-   "drug": "magnesium sulfate",
-   "form": "injection",
-   "why": "strength line 5 mg/mL; the rows (2 g = 4 mL) and table use 500 mg/mL"
-  },
-  {
-   "drug": "nitroglycerin",
-   "form": "paste",
-   "why": "not printed ('1 inch')"
-  },
-  {
+   "date": "2026-11-22",
    "drug": "olanzapine",
-   "form": "tablet",
-   "why": "strength line blank; '10mg = 2 Tabs' implies 5 mg"
+   "product": "tablet",
+   "review": "owner-declared, industry standard, not read from kit",
+   "signed_by": "Andrew Azelton",
+   "signer": "clinician",
+   "strength": "5 mg",
+   "use": "recorded; its entries are SL and stay silent"
   },
   {
-   "drug": "pralidoxime",
-   "form": "injection (vial)",
-   "why": "children's table label 30 mg/mL; its volumes and the header use 50 mg/mL"
+   "date": "2026-11-22",
+   "drug": "diphenhydramine",
+   "note": "Owner: '1 Tablet = 25mL' on the formulary page is a misprint.",
+   "product": "tablet",
+   "review": "owner-declared, industry standard, not read from kit",
+   "signed_by": "Andrew Azelton",
+   "signer": "clinician",
+   "strength": "25 mg",
+   "use": "recorded; tablets say milligrams only"
+  },
+  {
+   "date": "2026-11-22",
+   "drug": "nitroglycerin",
+   "product": "ointment",
+   "review": "owner-declared, industry standard, not read from kit",
+   "signed_by": "Andrew Azelton",
+   "signer": "clinician",
+   "strength": "2%",
+   "use": "recorded; the paste entries are topical and stay silent"
   }
  ],
+ "kit_id": "ems-formulary-2026-11-22",
+ "strengths_to_declare": [],
  "vials": [
   {
    "concentration_mg_ml": 10.0,
@@ -52,9 +54,29 @@
    "mass_mg": 1000.0,
    "review": "individually read by owner",
    "review_note": "signing batch 4 rulings, 2026-11-12",
+   "routes": [
+    "IV"
+   ],
    "signed_by": "Andrew Azelton",
    "signer": "clinician",
    "volume_ml": 100.0
+  },
+  {
+   "concentration_mg_ml": 32.0,
+   "confirm_required": false,
+   "date": "2026-11-22",
+   "drug": "acetaminophen",
+   "label": "160 mg / 5 mL oral liquid",
+   "mass_mg": 160.0,
+   "note": "Not printed on the card; the children's PO table in mL needs it.",
+   "owner_declared": true,
+   "review": "owner-declared, industry standard, not read from kit",
+   "routes": [
+    "PO"
+   ],
+   "signed_by": "Andrew Azelton",
+   "signer": "clinician",
+   "volume_ml": 5.0
   },
   {
    "concentration_mg_ml": 3.0,
@@ -108,6 +130,20 @@
    "signed_by": "Andrew Azelton",
    "signer": "clinician",
    "volume_ml": 1.0
+  },
+  {
+   "concentration_mg_ml": 100.0,
+   "confirm_required": false,
+   "date": "2026-11-22",
+   "drug": "calcium chloride",
+   "label": "1 g / 10 mL",
+   "mass_mg": 1000.0,
+   "note": "Owner: the '10 mg/mL' table label on the formulary page is a misprint.",
+   "owner_declared": true,
+   "review": "owner-declared, industry standard, not read from kit",
+   "signed_by": "Andrew Azelton",
+   "signer": "clinician",
+   "volume_ml": 10.0
   },
   {
    "concentration_mg_ml": 10.0,
@@ -254,6 +290,20 @@
    "volume_ml": 1.0
   },
   {
+   "concentration_mg_ml": 500.0,
+   "confirm_required": false,
+   "date": "2026-11-22",
+   "drug": "magnesium sulfate",
+   "label": "500 mg/mL (vial size not stated)",
+   "mass_mg": 500.0,
+   "note": "Owner: the '5 mg/mL' strength line on the formulary page is a misprint.",
+   "owner_declared": true,
+   "review": "owner-declared, industry standard, not read from kit",
+   "signed_by": "Andrew Azelton",
+   "signer": "clinician",
+   "volume_ml": 1.0
+  },
+  {
    "concentration_mg_ml": 5.0,
    "confirm_required": false,
    "date": "2026-11-12",
@@ -302,6 +352,23 @@
    "mass_mg": 2.0,
    "review": "individually read by owner",
    "review_note": "signing batch 4 rulings, 2026-11-12",
+   "signed_by": "Andrew Azelton",
+   "signer": "clinician",
+   "volume_ml": 1.0
+  },
+  {
+   "concentration_mg_ml": 50.0,
+   "confirm_required": false,
+   "date": "2026-11-22",
+   "drug": "pralidoxime",
+   "label": "50 mg/mL (vial size not stated)",
+   "mass_mg": 50.0,
+   "note": "Owner: the '30 mg/mL' label on the children's table is a misprint. The 600 mg auto-injector is not this vial.",
+   "owner_declared": true,
+   "review": "owner-declared, industry standard, not read from kit",
+   "routes": [
+    "IM"
+   ],
    "signed_by": "Andrew Azelton",
    "signer": "clinician",
    "volume_ml": 1.0
