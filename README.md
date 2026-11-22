@@ -153,6 +153,10 @@ Every answer comes in two forms (owner, 2026-11-19): the spoken form for the voi
 - E1 unsigned or EXAMPLE bank: device announces it and refuses all dose flows.
 - G1 "why" speaks the source for every entry. At start-up Pocket says "Pocket ready." and logs the set's name, the full version and the hash (owner, 2026-11-21).
 
+## The EMS set
+
+`bank/ems/` holds the EMS set: the agency formulary's entries, signed by the owner on 2026-11-22 (dose, short quote and page only; the formulary itself is not in the repository). Each entry says how it was signed: `review` is "individually read by owner" or "bulk-signed by owner without item review", and Pocket refuses an EMS entry that says neither. Entries Pocket cannot say yet (mEq, topical) are in `signed_silent`: signed, never spoken as a dose. A drug whose strength is missing or contradicted on its page says milligrams only, with no volume; `kit.json` lists the strengths still to declare. Try it at the bench with `python3 -m engine bank/ems`. The device runs the PFC set (`bank/`).
+
 ## Test bank (bench only)
 
 A test bank is never a bank for patients. EdgeCDSS writes one only with `export_pocket_bank.py --test`: `bank-ems-test.json`, `kit-ems-test.json` and `manifest-ems-test.json` with `"test": true`. Its entries are unsigned and have status "test". The kit is the signed EMS kit. Pocket loads it only when started with `POCKET_TEST=1` (exactly `1`), and then it loads nothing else. Without that, anything marked test is refused, whatever its file names.

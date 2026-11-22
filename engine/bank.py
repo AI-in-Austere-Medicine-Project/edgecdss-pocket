@@ -26,6 +26,11 @@ SIGNED_NAMES = {"bank": "bank.json", "kit": "kit.json", "manifest": "manifest.js
 TEST_NAMES = {"bank": "bank-ems-test.json", "kit": "kit-ems-test.json",
               "manifest": "manifest-ems-test.json"}
 NOT_TESTING = "this is a test set; it loads only with POCKET_TEST=1"
+# How an EMS entry was signed (owner, 2026-11-22): the record never claims an item was
+# individually read when it was not.
+READ = "individually read by owner"
+BULK = "bulk-signed by owner without item review"
+REVIEWS = (READ, BULK)
 
 
 def testing() -> bool:
@@ -47,10 +52,16 @@ class Bank:
     commit: str
     test: bool = False
     kit_id: str = ""
+    silent: list = dataclasses.field(default_factory=list)
 
     @property
     def signed_drugs(self) -> set:
         return {e["drug"] for e in self.entries}
+
+    @property
+    def silent_drugs(self) -> set:
+        """Signed, but Pocket cannot say any of their doses yet (mEq, topical, ...)."""
+        return {s["drug"] for s in self.silent} - self.signed_drugs
 
 
 def _test_entry_problem(e: dict):
@@ -81,7 +92,22 @@ def entry_problem(e: dict, test: bool = False):
         return f"signer {e['signer']} is not authorised"
     if not str(e["date"]).strip():
         return "no signature date"
+    if e.get("set") == "EMS" and e.get("review") not in REVIEWS:
+        return "it does not say how it was signed"
     return _shape_problem(e)
+
+
+def _silent_problem(s: dict):
+    """A signed entry Pocket does not say: signed like any other, and never a dose."""
+    if s.get("signoff") is not True or str(s.get("signer") or "").strip() not in SIGNOFF_AUTHORS:
+        return "unsigned"
+    if not str(s.get("date") or "").strip():
+        return "no signature date"
+    if s.get("review") not in REVIEWS:
+        return "it does not say how it was signed"
+    if "rule" in s or not s.get("silent_because"):
+        return "a silent entry with a dose"
+    return None
 
 
 def _shape_problem(e: dict):
@@ -169,6 +195,12 @@ def load_bank(directory, test=None) -> Bank:
         if set(name) - {"drug", "aliases"}:
             raise BankRefused(f"unsigned {name.get('drug')} carries more than its name")
 
+    silent = bank.get("signed_silent") or []
+    for sl in silent:
+        why = _silent_problem(sl)
+        if why:
+            raise BankRefused(f"{sl.get('drug')} {sl.get('route')}: {why}")
+
     vials = {}
     for v in kit.get("vials") or []:
         why = _vial_problem(v)
@@ -178,4 +210,4 @@ def load_bank(directory, test=None) -> Bank:
 
     return Bank(entries=entries, kit=vials, no_signed_dose=bank.get("no_signed_dose") or [],
                 version=version, hash=sums[names["bank"]], commit=commit, test=test,
-                kit_id=str(manifest.get("kit_id") or ""))
+                kit_id=str(manifest.get("kit_id") or ""), silent=silent)
