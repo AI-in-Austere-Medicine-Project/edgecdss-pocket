@@ -60,3 +60,13 @@ def test_the_dry_run_covers_both_sets_and_hears_no_drug_as_another():
     assert {r["drug"] for r in d["rows"]} == VOCAB.signed
     assert (d["names"], d["clips"]) == (112, 336)
     assert d["heard"] >= 320 and d["heard_as_another_drug"] == 0
+
+
+def test_an_indication_longer_than_a_drug_name_is_read_as_the_indication():
+    """The EMS set brings "calcium channel" (blocker overdose) as an indication; "calcium" is
+    a drug name. The longer reading wins, so the indication can be asked for."""
+    from grammar.parser import parse
+    p = parse("calcium chloride for calcium channel blocker overdose", VOCAB)
+    assert [d.generics for d in p.drugs] == [("calcium chloride",)] and p.classes == [VOCAB.class_terms["calcium channel"]]
+    s = boot_sets(SET_DIRS, "EMS")
+    assert s.handle("calcium chloride for calcium channel blocker overdose iv twenty kilos").kind == "readback"

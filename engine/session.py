@@ -785,7 +785,10 @@ class Session:
             if not cands:
                 return self._hold(f"No signed {req.route} dose of {name}{for_cls}.")
         if req.labels:
-            cands = [e for e in cands if set(req.labels) <= label_tokens(e["indication"])]
+            printed = [e for e in cands if set(req.labels) <= label_tokens(e["indication"])]
+            # none: the class's words too ("calcium channel blocker overdose", label "... OD")
+            cands = printed or [e for e in cands if set(req.labels) <= label_tokens(e["indication"])
+                                | label_tokens(e["indication_class"])]
             if not cands:
                 return self._hold(f"No signed dose of {name} for that.")
 

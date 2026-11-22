@@ -209,6 +209,11 @@ def parse(text: str, vocab: Vocabulary) -> Parsed:
             i += n
             continue
         term, n = _match(toks, i, vocab.drug_terms)
+        cls, cn = _match(toks, i, vocab.class_terms, 4)
+        if cls and cn > n:        # "calcium channel" (an indication) over "calcium" (a drug name)
+            p.classes.append(vocab.class_terms[cls])
+            i += cn
+            continue
         if term:
             p.drugs.append(DrugMatch(term, vocab.drug_terms[term]))
             i += n
