@@ -136,7 +136,7 @@ def test_a_drug_whose_strength_is_missing_or_contradicted_says_milligrams_only()
         if e["drug"] in NO_STRENGTH:
             assert e["kit_vial"] == "none"
     t = _say("calcium chloride for hyperkalemia iv adult", "confirm")
-    assert t.say == f"Calcium chloride one gram. {PINNED_VIAL}"
+    assert t.say.startswith(f"Calcium chloride one gram. {PINNED_VIAL}")   # an administration time may follow
 
 
 def test_a_tablet_or_a_second_strength_never_gives_a_volume():
