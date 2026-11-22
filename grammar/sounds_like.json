@@ -56,6 +56,107 @@
  "control_words_dropped_note": "2026-11-16: spellings holding a confirm or cancel word (the confirm step's words mean something to the parser now); 2026-11-20: spellings holding \"next\" or \"back\" (the step reader's words); 2026-11-21: spellings holding \"home\", \"drugs\", \"procedures\" or \"help\" (the home menu's one-word commands). Spellings holding \"what\", \"can\", \"i\", \"say\" or \"list\" are kept: alone those words mean nothing to the parser, only the whole command does",
  "model": "vosk-model-small-en-us-0.15",
  "model_am_sha256": "75370a0137f9daf8f469dedd7daa4513ae7a621f03240c6e512e2b50b656a7b6",
+ "new_names_noise_dropped": {
+  "albuterol": [
+   "albuterol else"
+  ],
+  "bicarbonate": [
+   "bicarbonate aids"
+  ],
+  "cardizem": [
+   "gardai them"
+  ],
+  "glucagon": [
+   "glucagon it"
+  ],
+  "inapsine": [
+   "him ap sign"
+  ],
+  "lidocaine": [
+   "lydia kane her"
+  ],
+  "lignocaine": [
+   "like now keynes it"
+  ],
+  "ventolin": [
+   "then telling her",
+   "venter lynn her"
+  ]
+ },
+ "new_names_noise_dropped_note": "2026-11-22: a new name's spelling that is the name plus a stray word, or holds 'her', 'it', 'else', 'aids', 'them', 'him' or 'she', left out: such words joined the home menu's commands ('list drugs her').",
+ "new_names_too_unlike_dropped": {
+  "adenocard": [
+   "add an all codes",
+   "add an arcade",
+   "at an all codes"
+  ],
+  "adenosine": [
+   "adding all sign"
+  ],
+  "asa": [
+   "as that",
+   "jose",
+   "saf",
+   "sat",
+   "sigh",
+   "this side",
+   "was that"
+  ],
+  "buprenorphine": [
+   "barbara nor feign",
+   "barbara nor seen",
+   "that printer finn"
+  ],
+  "cordarone": [
+   "quarter owns"
+  ],
+  "dexamethasone": [
+   "dixon mathis own"
+  ],
+  "diltiazem": [
+   "bill shiism",
+   "dale she owes him",
+   "deal she him",
+   "deal shiism",
+   "dlc lcs esm",
+   "they'll see esm"
+  ],
+  "inapsine": [
+   "enough sign"
+  ],
+  "lignocaine": [
+   "league nah kane"
+  ],
+  "motrin": [
+   "margarine"
+  ],
+  "nitro": [
+   "nigel"
+  ],
+  "protopam": [
+   "drone obey him"
+  ],
+  "salbutamol": [
+   "sound you tomorrow"
+  ],
+  "subutex": [
+   "saab you decks",
+   "sabi attacks",
+   "some you takes",
+   "xabi decks"
+  ],
+  "zofran": [
+   "he's offering",
+   "there's often",
+   "za are friendly",
+   "saffron",
+   "zaffron"
+  ],
+  "zyprexa": [
+   "zebra so"
+  ]
+ },
+ "new_names_too_unlike_dropped_note": "2026-11-22: spellings made for the EMS set's names (twelve Kokoro voices) kept only at the teach step's likeness to the name (0.45); 'asa' kept none (said as letters; for the teach page). A one-word spelling kept only at 0.8 (the teach step's rule).",
  "no_spelling": [
   "antivenom"
  ],
@@ -92,6 +193,12 @@
   "adrenaline": [
    "adrenalin"
   ],
+  "atropen": [
+   "at robin"
+  ],
+  "atrovent": [
+   "at robin"
+  ],
   "noradrenaline": [
    "adrenalin"
   ]
@@ -110,11 +217,37 @@
    "as details as stein",
    "asset elsa stein"
   ],
+  "acetylsalicylic acid": [
+   "acetone silly cilic acid",
+   "acid till philly cilic acid",
+   "acid till silly cilic acid",
+   "acid till solely cilic acid",
+   "ah sutil silly cilic acid",
+   "ah sutil silly silly acid",
+   "as until salicylic acid",
+   "as until solely cilic acid"
+  ],
+  "adenocard": [
+   "add an all cards",
+   "add enough code",
+   "adding all cards",
+   "adding dunno code"
+  ],
+  "adenosine": [
+   "add ah sign",
+   "add an ah sign",
+   "add an all sign",
+   "add an are signed",
+   "add another sign"
+  ],
   "albendazole": [
    "albin dazzle",
    "album dazzle",
    "album dazzled",
    "alvin dazzle"
+  ],
+  "albuterol": [
+   "how buda roles"
   ],
   "alteplase": [
    "also plays",
@@ -139,17 +272,20 @@
    "amiel",
    "ammo",
    "emil",
+   "i'm you",
    "me out",
    "sammy oh",
    "samuels"
   ],
   "amiodarone": [
+   "am ja du own",
    "am ja du rhone",
    "am yard around",
    "am yard or own",
    "am yard own",
    "am yoda roads",
    "amie order own",
+   "amie order owned",
    "amie order owns",
    "amie out around",
    "amy order own",
@@ -195,6 +331,9 @@
   "artesunate": [
    "lord is sunny"
   ],
+  "aspirin": [
+   "last spring"
+  ],
   "ativan": [
    "add even",
    "add event",
@@ -220,7 +359,6 @@
    "andrew been",
    "astral been",
    "astro been",
-   "at robin",
    "natural been",
    "that been",
    "that robin",
@@ -240,6 +378,13 @@
    "that's true pines",
    "your pine"
   ],
+  "atrovent": [
+   "add troy event",
+   "astro vent",
+   "at troy event",
+   "natural event",
+   "that's relevant"
+  ],
   "azithromycin": [
    "as if remixing",
    "as if through my son",
@@ -249,6 +394,9 @@
    "as it throw my sin",
    "as they throw my sin",
    "as they throw my son"
+  ],
+  "benadryl": [
+   "bennett drilled"
   ],
   "bicarb": [
    "they call me",
@@ -265,6 +413,13 @@
    "pupil they cane",
    "pupil they keynes",
    "pupils they came"
+  ],
+  "buprenorphine": [
+   "barbara nor fiends",
+   "but nor feign",
+   "but or fiends",
+   "but perino themes",
+   "but printer phase"
   ],
   "butorphanol": [
    "beautiful fan old",
@@ -404,6 +559,14 @@
    "linda my sin",
    "linda my son"
   ],
+  "cordarone": [
+   "code around",
+   "code or own",
+   "code your own",
+   "could your own",
+   "court around",
+   "or own"
+  ],
   "cortef": [
    "cause if",
    "code us",
@@ -425,12 +588,15 @@
    "scion knock it",
    "scion orchid",
    "sigh an arcade",
+   "sigh knock it",
    "sire knock it",
    "so you knock it",
+   "so you know good",
    "so you know it",
    "so you know kids",
    "so you know kit",
-   "so you're not good"
+   "so you're not good",
+   "zion i'll good"
   ],
   "daptomycin": [
    "chapter my sin",
@@ -452,6 +618,12 @@
    "does not pressing",
    "doesn't oppressing",
    "there's more pressing"
+  ],
+  "dexamethasone": [
+   "dec samantha song",
+   "dec samantha sown",
+   "dec samantha zone",
+   "dixon methods zone"
   ],
   "dexmedetomidine": [
    "decks mid dad i'm redeemed",
@@ -534,6 +706,7 @@
    "drop her dolls",
    "drop or dial",
    "drop prideaux",
+   "drop puddles",
    "drop redial",
    "drop riddle",
    "drop riddled",
@@ -694,6 +867,16 @@
    "glug",
    "luck"
   ],
+  "glucagen": [
+   "glue could gin",
+   "glue could join",
+   "glue kitchen",
+   "glue kitchener",
+   "luca gin",
+   "luca jan",
+   "luca jen",
+   "luke agenda"
+  ],
   "gluconate": [
    "glue can aid",
    "glue can aides",
@@ -712,12 +895,14 @@
    "hydro asean"
   ],
   "hydroxocobalamin": [
+   "heidrick saga bellman",
    "heidrick saw cabello mean",
    "heidrick soccer ballymoney",
    "heidrick soccer bellamy",
    "heidrick soccer bellman",
    "heidrick soccer belman",
-   "heidrick soccer him"
+   "heidrick soccer him",
+   "heidrick soccer i'm"
   ],
   "hydroxyzine": [
    "hi drug scene",
@@ -749,6 +934,9 @@
    "and vein",
    "enough vein"
   ],
+  "inapsine": [
+   "ap sign"
+  ],
   "intraosseous": [
    "inter ossies",
    "inter rcs",
@@ -760,6 +948,8 @@
   "ipratropium": [
    "if retro pm",
    "ip retro pm",
+   "it potro pm",
+   "it potro pm me",
    "it retro pm",
    "yep retro pm"
   ],
@@ -883,6 +1073,19 @@
    "love aft",
    "love oft"
   ],
+  "lidocaine": [
+   "linda cane",
+   "lit again",
+   "little came",
+   "lydia kane"
+  ],
+  "lignocaine": [
+   "league knocking",
+   "like knocking",
+   "like na came",
+   "like not kane",
+   "like now kane"
+  ],
   "linezolid": [
    "lines allege",
    "lines elite",
@@ -903,6 +1106,10 @@
    "laurie spam",
    "laurie spammed",
    "lorries bam"
+  ],
+  "mag sulfate": [
+   "mag sophie",
+   "mags so fade"
   ],
   "mannitol": [
    "man at all",
@@ -1043,6 +1250,10 @@
    "more fia",
    "most yeah"
   ],
+  "motrin": [
+   "ma trends",
+   "mark trinity"
+  ],
   "moxifloxacin": [
    "mark's if locks isn't",
    "marks if locks isn't",
@@ -1109,6 +1320,9 @@
    "nicole defined",
    "niko define"
   ],
+  "nitro": [
+   "night trove"
+  ],
   "noradrenaline": [
    "nor adrenalin",
    "nor noradrenalin",
@@ -1142,6 +1356,9 @@
    "dr ya died",
    "oak tree ah died",
    "oct riyadh i'd"
+  ],
+  "olanzapine": [
+   "oh land supine"
   ],
   "omeprazole": [
    "don't press all",
@@ -1256,9 +1473,13 @@
   "pralidoxime": [
    "bradley dog same",
    "bradley dogs i'm",
+   "braley dogs i'm",
+   "braley dogs same",
+   "crowley dark simony",
    "probably dark same",
    "probably doc same",
    "probably dogs i'm",
+   "probably same",
    "product same",
    "products i'm",
    "products same",
@@ -1323,6 +1544,17 @@
    "program mean",
    "proto mean",
    "rhoda mean"
+  ],
+  "protopam": [
+   "frodo bam",
+   "frodo permitted",
+   "prado pam's"
+  ],
+  "proventil": [
+   "brew vento",
+   "prevent all",
+   "prevent until",
+   "prevent vento"
   ],
   "push dose epi": [
    "bush ddos abby",
@@ -1423,6 +1655,23 @@
    "roku vague cane",
    "roku vague keynes"
   ],
+  "salbutamol": [
+   "saab you tamar",
+   "sal beat em all",
+   "sal butte emma",
+   "salbi tamil",
+   "sally beauty mile",
+   "selby demo",
+   "selby tamil",
+   "selby tempo",
+   "sell beat em all"
+  ],
+  "sodium bicarb": [
+   "sodium because",
+   "sodium because be",
+   "sodium big arm",
+   "sodium big be"
+  ],
   "solu": [
    "psalm",
    "sabu",
@@ -1431,6 +1680,13 @@
    "so early",
    "solo",
    "surly"
+  ],
+  "subutex": [
+   "saab you tax",
+   "some you tax",
+   "sub you decks",
+   "sub you tax",
+   "you tax"
   ],
   "succinylcholine": [
    "sexennio colleen",
@@ -1639,6 +1895,9 @@
    "they're cute roni him",
    "vac your roni him"
   ],
+  "ventolin": [
+   "venter lynn"
+  ],
   "versed": [
    "first",
    "verse",
@@ -1661,14 +1920,23 @@
    "zeiler can",
    "zeiler cane",
    "zeiler kane",
+   "zile again",
    "zilla can",
    "zilla kane",
    "zoya cane",
-   "zoya kane"
+   "zoya kane",
+   "zoya located"
+  ],
+  "zofran": [
+   "is often",
+   "za friend"
   ],
   "zosyn": [
    "those sin",
    "those then"
+  ],
+  "zyprexa": [
+   "zipper axa"
   ]
  },
  "teach_added": {
@@ -1764,7 +2032,7 @@
    "the locks on": "holds 'on', which means something else to the parser"
   },
   "norepinephrine": {
-   "nor up enough from": "too unlike the name (0.41)",
+   "nor up enough from": "holds 'from', which means something else to the parser",
    "nora ephron": "heard once, not for a missed clip of the owner's"
   },
   "propofol": {

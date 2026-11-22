@@ -16,18 +16,19 @@ import pathlib
 import time
 
 from engine import words
-from engine.bank import load_bank
+from engine.bank import load_bank, load_sets, merge_banks
 from grammar.vocabulary import CONTROLS, PROCEDURE_TITLES, build
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 
 
-def items(bank_dir=ROOT / "bank") -> list:
-    """[(n, group, written, spoken)], numbered from 1."""
-    bank = load_bank(bank_dir)
+def items(bank_dir=None) -> list:
+    """[(n, group, written, spoken)], numbered from 1. Both sets' drugs (owner, 2026-11-22),
+    signed-but-silent ones included, or one bank's with bank_dir."""
+    bank = load_bank(bank_dir) if bank_dir else merge_banks(load_sets().values())
     vocab = build(bank)
     rows = []
-    signed = sorted(bank.signed_drugs, key=words.say_name)
+    signed = sorted(bank.signed_drugs | bank.silent_drugs, key=words.say_name)
     for d in signed:
         rows.append(("drug", d, words.say_name(d)))
     others = sorted(t for t, g in vocab.signed_terms().items()
@@ -40,7 +41,7 @@ def items(bank_dir=ROOT / "bank") -> list:
         rows.append(("procedure", title, title))
     rows.append(("procedure", "RSI", "R S I"))
     for c in CONTROLS:
-        rows.append(("command", c, c))
+        rows.append(("command", c, {"ems set": "E M S set", "pfc set": "P F C set"}.get(c, c)))
     return [(i, *r) for i, r in enumerate(rows, 1)]
 
 

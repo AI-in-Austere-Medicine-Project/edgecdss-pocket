@@ -191,7 +191,7 @@ def test_apply_writes_the_spellings_and_keeps_nothing_if_the_dry_run_gets_worse(
     from voice.tools import dryrun_drugs
     monkeypatch.setattr(vg, "generate", lambda model: {"words": ["new"]})
     monkeypatch.setattr(pathlib.Path, "home", lambda: tmp_path)
-    (tmp_path / "projects" / "pocket-hearing" / "bench-out" / "dryrun-kokoro").mkdir(parents=True)
+    (tmp_path / "projects" / "pocket-hearing" / "bench-out" / "dryrun-union").mkdir(parents=True)
     result = {"heard": 177, "heard_as_another_drug": 0}
 
     def score(model, w):
