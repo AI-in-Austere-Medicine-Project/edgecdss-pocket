@@ -16,10 +16,12 @@ MAX_BOLUS_ML = 60.0
 DILUTE_BELOW_ML = 0.5  # K3, owner 2026-10-28
 
 
-def resolve(kit: dict, drug: str) -> tuple:
+def resolve(kit: dict, drug: str, route: Optional[str] = None) -> tuple:
     """(status, concentration). Pocket's grammar has no vial question, so two signed
-    vials, or confirm_required, stay unresolved: milligrams only."""
-    vials = kit.get(drug) or []
+    vials, or confirm_required, stay unresolved: milligrams only. A vial that names its
+    routes serves only those (acetaminophen's IV bag and oral liquid, 2026-11-22)."""
+    vials = [v for v in kit.get(drug) or []
+             if route is None or v.get("routes") is None or route in v["routes"]]
     if not vials:
         return NONE_DECLARED, None
     if len(vials) == 1 and not vials[0].get("confirm_required"):
@@ -46,9 +48,9 @@ def drawable(volume_ml_value: float) -> tuple:
     return True, ""
 
 
-def volume_ml(kit: dict, drug: str, dose_mg: float) -> tuple:
+def volume_ml(kit: dict, drug: str, dose_mg: float, route: Optional[str] = None) -> tuple:
     """(volume_ml, concentration) or (None, None)."""
-    status, conc = resolve(kit, drug)
+    status, conc = resolve(kit, drug, route)
     if status != RESOLVED or not conc:
         return None, None
     true_vol = dose_mg / conc
@@ -67,10 +69,10 @@ def _dilution_for(dilution: Optional[dict], conc: Optional[float]) -> Optional[d
 def dose_volume(kit: dict, entry: dict, dose_mg: float) -> dict:
     """{status, volume_ml, concentration_mg_ml, diluted, recipe, refusal}."""
     drug, dilution = entry.get("drug"), entry.get("dilution")
-    status, resolved = resolve(kit, drug)
+    status, resolved = resolve(kit, drug, entry.get("route"))
     out = {"status": status, "volume_ml": None, "concentration_mg_ml": None,
            "diluted": False, "recipe": None, "refusal": None}
-    vol, conc = volume_ml(kit, drug, dose_mg)
+    vol, conc = volume_ml(kit, drug, dose_mg, entry.get("route"))
     if vol is None:
         if status == RESOLVED:
             _ok, out["refusal"] = drawable(dose_mg / resolved)
