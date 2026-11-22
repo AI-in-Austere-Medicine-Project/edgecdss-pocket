@@ -11,15 +11,15 @@ Roadmap: see [ROADMAP.md](ROADMAP.md) for the build order and where help is welc
 <p align="center"><img src="docs/pocket-board.jpg" alt="EdgeCDSS Pocket: Radxa Zero 3W with Shokz bone-conduction headset" width="320"></p>
 A wearable that gives a signed drug dose in millilitres by voice. No language model, no network, no screen.
 
-Say "ketamine for moderate pain, IV, eighty kilos." It says "Ketamine, moderate to severe pain analgesia, eye vee, eighty kilos. Confirm?" Say "confirm." It says "Ketamine twenty milligrams. Dilute one mil of fifty in nine mils of normal saline. Four mils of the dilution, five per mil." It logs the time.
+Say "ketamine for moderate pain, IV, eighty kilos." It says "Ketamine, moderate to severe pain analgesia, eye vee, eighty kilos. Confirm?" Say "confirm." It says "Ketamine twenty milligrams. Zero point four mils of fifty. Use a one mil syringe." It logs the time.
 
-That is the signed 0.25 mg/kg. At the kit's 50 mg/mL vial it would be 0.4 mL, under the 0.5 mL that can be drawn reliably, so the volume comes from the signed dilution instead: 1 mL of the vial in 9 mL of normal saline, 5 mg/mL. The device says how to make it before it says how much to draw.
+That is the signed 0.25 mg/kg: 0.4 mL of the kit's 50 mg/mL vial. Pocket never dilutes (owner rule, 2026-11-22): a volume under 0.5 mL is said to the nearest 0.01 mL with "Use a one mil syringe.", and under 0.05 mL it is too small to draw.
 
 Part of the [AI in Austere Medicine Project](https://github.com/AI-in-Austere-Medicine-Project). 
 
 ## The three rules
 
-1. **Nothing on the device can say a number that was not signed.** Every dose, cap, dilution and vial strength comes from the exported signed bank. There is no model and no free-text path.
+1. **Nothing on the device can say a number that was not signed.** Every dose, cap and vial strength comes from the exported signed bank. There is no model and no free-text path.
 2. **Read-back before any dose.** The device repeats drug, indication, route and weight and acts only on "confirm."
 3. **Every confirmed dose is logged with a time.** The log leaves the device only by deliberate export.
 
@@ -53,7 +53,7 @@ The Pi Zero 2 W runs Pocket, but below the memory floor. The Radxa ZERO 3W is re
 |---|---|
 | OS | Raspberry Pi OS Lite 64-bit, boots to the service |
 | Speech in | Vosk small English model with a **grammar** generated from the bank (drug names and aliases, indications, routes, numbers, control words). Nothing outside the grammar is recognised. |
-| Engine | Python, ported from EdgeCDSS's pre-gate: signed lookup by drug, indication, route, population; caps; kit vial and signed dilution to mL; the weight and which-indication questions. Same tests. |
+| Engine | Python, ported from EdgeCDSS's pre-gate: signed lookup by drug, indication, route, population; caps; kit vial to mL (no dilution); the weight and which-indication questions. Same tests. |
 | Speech out | Piper small English voice with the EdgeCDSS spoken templates (numbers and units written out) |
 | Content | `bank.json` exported from EdgeCDSS with every entry's source, page, quote, signer and date; `kit.json` with the declared vial strengths. The device refuses to start on an unsigned or EXAMPLE bank. |
 | Log | Append-only JSON lines; export over USB on the bench |
@@ -87,7 +87,7 @@ For someone who has never used Pocket (owner, 2026-11-21). None of it ever speak
 - "New patient" clears weight and age and says so.
 - A phrase with drug + indication (+ route, + weight) goes to the engine. A missing weight gets "Weight?"; a missing indication for a multi-indication drug gets "Which indication: pain or agitation?"; a name close to two drugs (ketamine / ketorolac) always asks.
 - A stated condition that a signed contraindication names holds the dose: no read-back, no dose. "Succinylcholine, RSI, eighty kilos, burns" → "Held. Succinylcholine is contraindicated with burns. Rocuronium is the signed alternative." The alternative is another signed drug for the same indication that this patient's conditions do not hold. A contraindication the signed text itself qualifies ("relative", "unless", "except") is spoken after the dose instead.
-- Read-back, then "confirm" → dose in mg and mL from the kit vial or signed dilution. Dose first, then only the cautions that name a condition the medic stated. Logged.
+- Read-back, then "confirm" → dose in mg and mL from the kit vial (under 0.5 mL: "Use a one mil syringe."). Dose first, then only the cautions that name a condition the medic stated. Logged.
 - "Why" speaks the source (quotes word for word), then every caution and contraindication. When no volume was given, a spoken caution leaves out what states a volume ("10 mL", "0.1 mL/kg"); concentrations ("1 mg/mL", "1:1,000") stay. The signed text in `bank.json` is unchanged.
 - A stated vial that is the kit's signed vial ("fifty milligrams per mil" for ketamine) gives the volume; any other stated vial gives milligrams only. The words are compared with the signed vial's; nothing is computed from them.
 - Unsigned drug: "No signed dose for magnesium." Nothing else.

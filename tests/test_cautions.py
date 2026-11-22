@@ -251,10 +251,11 @@ def test_quotes_under_why_are_word_for_word():
 
 
 def test_with_a_volume_the_signed_caution_is_spoken_whole(s):
-    # Ketamine IV analgesia: 4 mL of the dilution, so the dilution line keeps its mL.
+    # Ketamine IV analgesia: 0.4 mL of the vial (no dilution in Pocket, owner rule
+    # 2026-11-22), so the signed lines keep their mL.
     s.handle("ketamine for moderate pain iv eighty kilos")
     dose = s.handle("confirm")
-    assert dose.data["record"]["volume_ml"] == 4.0
+    assert dose.data["record"]["volume_ml"] == 0.4
     e = entry("ketamine", "IV", "adult", "pain")
     assert s.handle("why").after[0] == "Caution: " + words.say_routes(e["serve_cautions"][0])
     assert "mL" in e["serve_cautions"][0]

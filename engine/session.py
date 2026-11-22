@@ -80,6 +80,8 @@ UNVERIFIED = "Unverified."
 # entry names (owner, 2026-11-14). null (the vial question stays) and no kit_vial
 # (PFC) work the volume out as before.
 PINNED_VIAL = "Milligrams only, no volume."
+# No dilution in Pocket (owner rule, 2026-11-22): under 0.5 mL, the nearest 0.01 mL and this.
+ONE_MIL_SYRINGE = "Use a one mil syringe."
 # Signed by the owner, but Pocket cannot say the dose yet (mEq, topical): rule 6, 2026-11-22.
 SIGNED_SILENT = "{name} is signed, but Pocket cannot say its dose yet."
 # A weight band the formulary gives no dose is a weight floor (owner, 2026-11-22).
@@ -988,26 +990,17 @@ def _vial_phrasings(v: dict) -> set:
 def _volume_words(vol: dict, withheld: bool) -> str:
     if withheld:
         return "Stated vial not used, no volume."   # K1: not the signed vial
-    if vol["diluted"]:
-        return (f"{_recipe(vol['recipe'])} {words.sentence(words.mils(vol['volume_ml']))} "
-                f"of the dilution, {words.num(vol['concentration_mg_ml'])} per mil.")
     if vol["volume_ml"] is not None:
-        return (f"{words.sentence(words.mils(vol['volume_ml']))} of "
+        said = (f"{words.sentence(words.mils(vol['volume_ml']))} of "
                 f"{words.num(vol['concentration_mg_ml'])}.")
+        return f"{said} {ONE_MIL_SYRINGE}" if vol["volume_ml"] < vials.ONE_MIL_BELOW_ML else said
     if vol["refusal"] == vials.TOO_SMALL:
-        if vol["recipe"]:
-            return f"Too small to draw from the vial. {_recipe(vol['recipe'])} No volume."
         return "Too small to draw. No volume."
     if vol["refusal"] == vials.TOO_LARGE:
         return "Over sixty mils, an infusion. No volume."
     if vol["status"] == vials.NEEDS_CONFIRMATION:
         return "More than one signed vial, no volume."
     return NO_SIGNED_VIAL
-
-
-def _recipe(d: dict) -> str:
-    return (f"Dilute {words.mils(d['drug_ml'])} of {words.num(d['from_concentration_mg_ml'])} "
-            f"in {words.mils(d['diluent_ml'])} of {d['diluent']}.")
 
 
 def boot_sets(dirs: dict, chosen: str = "PFC", log: Optional[Callable] = None,
