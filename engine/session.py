@@ -207,6 +207,32 @@ def holding_conditions(e: dict, conditions) -> list:
             if any(re.search(CONDITION_PATTERNS[c], line, re.I) for line in lines)]
 
 
+# The administration time, said with the dose (owner, 2026-11-22). "Slow push" is not one.
+_ADMIN_TIME = re.compile(r"(?i)\bover\s+(\d+(?:\.\d+)?)(?:\s*[-–]\s*(\d+(?:\.\d+)?))?\s*"
+                         r"(min(?:ute)?s?|sec(?:ond)?s?|h(?:ou)?rs?|hr)\b")
+_TIME_UNITS = {"m": ("minute", "minutes"), "s": ("second", "seconds"), "h": ("hour", "hours")}
+
+
+def admin_time(e: dict):
+    """"Over ten minutes." from the first served caution that states a time ("or" between
+    alternatives in it); for an EMS entry, else from its printed row's route cell. None
+    when no time is stated."""
+    texts = list(e.get("serve_cautions") or [])
+    if e.get("set") == "EMS" and e.get("quote"):
+        texts.append(e["quote"].split(" | ")[-1])
+    for text in texts:
+        said = []
+        for m in _ADMIN_TIME.finditer(text):
+            lo, hi, unit = m.group(1), m.group(2), _TIME_UNITS[m.group(3)[0].lower()]
+            how = (f"{words.num(float(lo))} to {words.num(float(hi))} {unit[1]}" if hi
+                   else f"{words.num(float(lo))} {unit[0] if float(lo) == 1 else unit[1]}")
+            if how not in said:
+                said.append(how)
+        if said:
+            return words.sentence(" or ".join(f"over {h}" for h in said)) + "."
+    return None
+
+
 def caution_lines(e: dict, volume: bool, conditions=None) -> list:
     """Contraindications, then cautions, as spoken lines. With `conditions`, only the
     lines that name one of them; without, every line ("why")."""
@@ -839,6 +865,9 @@ class Session:
             vol = vials.dose_volume(self.bank.kit, entry, round(r["dose_mg"], 4))
             withheld = pinned or not self._stated_vial_is_signed(entry["drug"])
             parts.append(PINNED_VIAL if pinned else _volume_words(vol, withheld))
+            timed = admin_time(entry)
+            if timed:
+                parts.append(timed)
             if rule["min"] != rule["max"]:
                 parts.append(f"{'Test range' if self.bank.test else 'Signed range'} {words.span(rule['min'], rule['max'], rule['units'])}.")
             say = " ".join(parts)
