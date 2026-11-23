@@ -98,7 +98,7 @@ For someone who has never used Pocket (owner, 2026-11-21). None of it ever speak
 
 ## Procedure steps
 
-Signed steps are read one at a time (owner, 2026-11-20). They come from `bank/ems/procedures.json`: the steps signed by name from the RSI packet (JTS CPG ID39 p.28), text unchanged, with each dose linked to an EMS entry or held (owner, 2026-11-23: "Change no doses. Steps with no EMS entry hold."). Only the child's ketamine (P3, EMS-135, 2 mg/kg) is linked; at the other dose steps Pocket reads the step, then says "No signed dose at this step for ...":
+Signed steps are read one at a time (owner, 2026-11-20). They come from `bank/ems/procedures.json`: the steps signed by name from the RSI packet (JTS CPG ID39 p.28), text unchanged, with each dose linked to an EMS entry or held (owner, 2026-11-23: "Change no doses. Steps with no EMS entry hold."). Steps 6 and 6b were amended by the owner on 2026-11-23 to the formulary's fixed doses: the step names the drug without a per-kg number, and the dose said is ketamine 200 mg IV/IO (EMS-130) and rocuronium 100 mg IV/IO (EMS-201), both individually read. Rocuronium is the only paralytic; succinylcholine is not offered. The original JTS wording is kept in each step's record. At a dose step with no linked entry, Pocket reads the step, then says "No signed dose at this step for ...":
 - **"RSI"** reads the RSI steps.
   - The weight is asked once, at the start. Access is never asked.
   - An adult gets steps 1–10. A child gets P1 after step 1, P2 before the induction step, and P3 and P4 in place of 6 and 6b.

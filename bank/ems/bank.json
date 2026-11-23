@@ -10969,7 +10969,8 @@
    "population": "adult",
    "quote": "Rapid Sequence Induction | 200mg 2mL | IV/IO",
    "repeat": [],
-   "review": "bulk-signed by owner without item review",
+   "review": "individually read by owner",
+   "review_note": "RSI 6 and 6b packet, individually read by owner, 2026-11-23",
    "route": "IV",
    "rule": {
     "max": 200.0,
@@ -15458,7 +15459,8 @@
    "population": "adult",
    "quote": "Rapid Sequence Induction | 100mg 10mL | IV/IO",
    "repeat": [],
-   "review": "bulk-signed by owner without item review",
+   "review": "individually read by owner",
+   "review_note": "RSI 6 and 6b packet, individually read by owner, 2026-11-23",
    "route": "IV",
    "rule": {
     "max": 100.0,

@@ -38,6 +38,8 @@ BATCH_1 = {"EMS-003", "EMS-004", "EMS-005", "EMS-006", "EMS-007", "EMS-008", "EM
 # Rule 3's four, ruled by the owner one by one on 2026-11-22: the row's infusion time.
 RULED_RULE_3 = {"EMS-037": "over 10 minutes", "EMS-149": "over 5 minutes", "EMS-150": "over 5 minutes",
                 "EMS-151": "over 5 minutes"}
+# RSI steps 6 and 6b, read one by one from a two-item packet (owner, 2026-11-23).
+READ_LATER = {"EMS-130", "EMS-201"}
 NO_STRENGTH = {"calcium chloride", "magnesium sulfate", "pralidoxime", "olanzapine"}
 
 
@@ -69,13 +71,13 @@ def test_the_four_rule_3_entries_use_the_rows_time_and_note_the_tables():
 
 def test_the_record_never_claims_an_item_was_individually_read_unless_it_was():
     read = {r["ems_id"] for r in _records() if r["review"] == READ}
-    assert read == RULED_2026_11_12 | BATCH_1 | set(RULED_RULE_3)
+    assert read == RULED_2026_11_12 | BATCH_1 | set(RULED_RULE_3) | READ_LATER
     bulk = [r for r in _records() if r["review"] == BULK]
-    assert len(bulk) == 162 and BULK == "bulk-signed by owner without item review"
+    assert len(bulk) == 160 and BULK == "bulk-signed by owner without item review"
     for r in _records():
         assert r["signoff"] is True and r["signed_by"] == "Andrew Azelton" and r["signer"] == "clinician"
         assert r["date"] == ("2026-11-12" if r["ems_id"] in RULED_2026_11_12 else "2026-11-22")
-    assert MANIFEST["counts"]["individually_read"] == 44 and MANIFEST["counts"]["bulk_signed"] == 162
+    assert MANIFEST["counts"]["individually_read"] == 46 and MANIFEST["counts"]["bulk_signed"] == 160
 
 
 def test_the_bank_refuses_an_ems_entry_that_does_not_say_how_it_was_signed(tmp_path):
