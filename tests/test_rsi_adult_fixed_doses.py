@@ -50,7 +50,7 @@ def test_both_steps_are_marked_amended_by_owner_and_keep_the_jts_wording():
         assert s["amended"]["by"] == "owner" and s["amended"]["date"] == "2026-11-23"
         assert s["original_text"] == signed["text"]
         assert s["original_signed"].startswith("amended: unsigned drugs")
-        assert [d["was"] for d in s["original_doses"]] == [d["was"] for d in signed["doses"]]
+        assert [d["was"] for d in s["original_doses"]] == signed["doses"]
     assert "2 mg/kg" in _step(RAW, "6")["original_text"]
     assert "Succinylcholine: 1.5 mg/kg" in _step(RAW, "6b")["original_text"]
     assert any(a["date"] == "2026-11-23" and "6 and 6b" in a["what"] for a in RAW["amended"])
