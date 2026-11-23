@@ -1,0 +1,3064 @@
+{
+ "grammar_sha256": "76a8ae14da07e3571563a1d957fc45e861e4fa591e80dac03e2ea61239c5d011",
+ "voices": [
+  "af_nicole",
+  "am_liam",
+  "bf_lily"
+ ],
+ "words": 41,
+ "clips": 123,
+ "heard": 111,
+ "rows": [
+  {
+   "word": "iv",
+   "kind": "route",
+   "voice": "af_nicole",
+   "heard": "i v",
+   "want": {
+    "routes": [
+     "IV"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [
+     "IV"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "iv",
+   "kind": "route",
+   "voice": "am_liam",
+   "heard": "i the",
+   "want": {
+    "routes": [
+     "IV"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [
+     "IV"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "iv",
+   "kind": "route",
+   "voice": "bf_lily",
+   "heard": "i the",
+   "want": {
+    "routes": [
+     "IV"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [
+     "IV"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "io",
+   "kind": "route",
+   "voice": "af_nicole",
+   "heard": "i io",
+   "want": {
+    "routes": [
+     "IO"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": false
+  },
+  {
+   "word": "io",
+   "kind": "route",
+   "voice": "am_liam",
+   "heard": "io",
+   "want": {
+    "routes": [
+     "IO"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [
+     "IO"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "io",
+   "kind": "route",
+   "voice": "bf_lily",
+   "heard": "io",
+   "want": {
+    "routes": [
+     "IO"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [
+     "IO"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "im",
+   "kind": "route",
+   "voice": "af_nicole",
+   "heard": "i m",
+   "want": {
+    "routes": [
+     "IM"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [
+     "IM"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "im",
+   "kind": "route",
+   "voice": "am_liam",
+   "heard": "i'm",
+   "want": {
+    "routes": [
+     "IM"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": false
+  },
+  {
+   "word": "im",
+   "kind": "route",
+   "voice": "bf_lily",
+   "heard": "i m",
+   "want": {
+    "routes": [
+     "IM"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [
+     "IM"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "in",
+   "kind": "route",
+   "voice": "af_nicole",
+   "heard": "i and",
+   "want": {
+    "routes": [
+     "IN"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": false
+  },
+  {
+   "word": "in",
+   "kind": "route",
+   "voice": "am_liam",
+   "heard": "i then",
+   "want": {
+    "routes": [
+     "IN"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": false
+  },
+  {
+   "word": "in",
+   "kind": "route",
+   "voice": "bf_lily",
+   "heard": "i n",
+   "want": {
+    "routes": [
+     "IN"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [
+     "IN"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "po",
+   "kind": "route",
+   "voice": "af_nicole",
+   "heard": "p o",
+   "want": {
+    "routes": [
+     "PO"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [
+     "PO"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "po",
+   "kind": "route",
+   "voice": "am_liam",
+   "heard": "p though",
+   "want": {
+    "routes": [
+     "PO"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [
+     "PO"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "po",
+   "kind": "route",
+   "voice": "bf_lily",
+   "heard": "t oh",
+   "want": {
+    "routes": [
+     "PO"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": false
+  },
+  {
+   "word": "line",
+   "kind": "route",
+   "voice": "af_nicole",
+   "heard": "line",
+   "want": {
+    "routes": [
+     "IV"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [
+     "IV"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "line",
+   "kind": "route",
+   "voice": "am_liam",
+   "heard": "line",
+   "want": {
+    "routes": [
+     "IV"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [
+     "IV"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "line",
+   "kind": "route",
+   "voice": "bf_lily",
+   "heard": "line",
+   "want": {
+    "routes": [
+     "IV"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [
+     "IV"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "neb",
+   "kind": "route",
+   "voice": "af_nicole",
+   "heard": "neb",
+   "want": {
+    "routes": [
+     "NEB"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [
+     "NEB"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "neb",
+   "kind": "route",
+   "voice": "am_liam",
+   "heard": "neb",
+   "want": {
+    "routes": [
+     "NEB"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [
+     "NEB"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "neb",
+   "kind": "route",
+   "voice": "bf_lily",
+   "heard": "neb",
+   "want": {
+    "routes": [
+     "NEB"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [
+     "NEB"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "intravenous",
+   "kind": "route",
+   "voice": "af_nicole",
+   "heard": "intravenous",
+   "want": {
+    "routes": [
+     "IV"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [
+     "IV"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "intravenous",
+   "kind": "route",
+   "voice": "am_liam",
+   "heard": "intravenous",
+   "want": {
+    "routes": [
+     "IV"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [
+     "IV"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "intravenous",
+   "kind": "route",
+   "voice": "bf_lily",
+   "heard": "intravenous",
+   "want": {
+    "routes": [
+     "IV"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [
+     "IV"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "in the vein",
+   "kind": "route",
+   "voice": "af_nicole",
+   "heard": "and the vein",
+   "want": {
+    "routes": [
+     "IV"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [
+     "IV"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "in the vein",
+   "kind": "route",
+   "voice": "am_liam",
+   "heard": "and the vein",
+   "want": {
+    "routes": [
+     "IV"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [
+     "IV"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "in the vein",
+   "kind": "route",
+   "voice": "bf_lily",
+   "heard": "and the vein",
+   "want": {
+    "routes": [
+     "IV"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [
+     "IV"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "intramuscular",
+   "kind": "route",
+   "voice": "af_nicole",
+   "heard": "intramuscular",
+   "want": {
+    "routes": [
+     "IM"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [
+     "IM"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "intramuscular",
+   "kind": "route",
+   "voice": "am_liam",
+   "heard": "intramuscular",
+   "want": {
+    "routes": [
+     "IM"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [
+     "IM"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "intramuscular",
+   "kind": "route",
+   "voice": "bf_lily",
+   "heard": "intramuscular",
+   "want": {
+    "routes": [
+     "IM"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [
+     "IM"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "intraosseous",
+   "kind": "route",
+   "voice": "af_nicole",
+   "heard": "intra rcs",
+   "want": {
+    "routes": [
+     "IO"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [
+     "IO"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "intraosseous",
+   "kind": "route",
+   "voice": "am_liam",
+   "heard": "intro rcs",
+   "want": {
+    "routes": [
+     "IO"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [
+     "IO"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "intraosseous",
+   "kind": "route",
+   "voice": "bf_lily",
+   "heard": "intra rcs",
+   "want": {
+    "routes": [
+     "IO"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [
+     "IO"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "by mouth",
+   "kind": "route",
+   "voice": "af_nicole",
+   "heard": "by mouth",
+   "want": {
+    "routes": [
+     "PO"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [
+     "PO"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "by mouth",
+   "kind": "route",
+   "voice": "am_liam",
+   "heard": "by mouth",
+   "want": {
+    "routes": [
+     "PO"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [
+     "PO"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "by mouth",
+   "kind": "route",
+   "voice": "bf_lily",
+   "heard": "by mouth",
+   "want": {
+    "routes": [
+     "PO"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [
+     "PO"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "oral",
+   "kind": "route",
+   "voice": "af_nicole",
+   "heard": "oral",
+   "want": {
+    "routes": [
+     "PO"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [
+     "PO"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "oral",
+   "kind": "route",
+   "voice": "am_liam",
+   "heard": "oral",
+   "want": {
+    "routes": [
+     "PO"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [
+     "PO"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "oral",
+   "kind": "route",
+   "voice": "bf_lily",
+   "heard": "oral",
+   "want": {
+    "routes": [
+     "PO"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [
+     "PO"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "intranasal",
+   "kind": "route",
+   "voice": "af_nicole",
+   "heard": "intranasal",
+   "want": {
+    "routes": [
+     "IN"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [
+     "IN"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "intranasal",
+   "kind": "route",
+   "voice": "am_liam",
+   "heard": "intranasal",
+   "want": {
+    "routes": [
+     "IN"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [
+     "IN"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "intranasal",
+   "kind": "route",
+   "voice": "bf_lily",
+   "heard": "intranasal",
+   "want": {
+    "routes": [
+     "IN"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [
+     "IN"
+    ],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "rsi",
+   "kind": "procedure",
+   "voice": "af_nicole",
+   "heard": "r s i",
+   "want": {
+    "routes": [],
+    "controls": [],
+    "procedures": [],
+    "classes": [
+     "RSI"
+    ],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [],
+    "procedures": [],
+    "classes": [
+     "RSI"
+    ],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "rsi",
+   "kind": "procedure",
+   "voice": "am_liam",
+   "heard": "r s i",
+   "want": {
+    "routes": [],
+    "controls": [],
+    "procedures": [],
+    "classes": [
+     "RSI"
+    ],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [],
+    "procedures": [],
+    "classes": [
+     "RSI"
+    ],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "rsi",
+   "kind": "procedure",
+   "voice": "bf_lily",
+   "heard": "r s i",
+   "want": {
+    "routes": [],
+    "controls": [],
+    "procedures": [],
+    "classes": [
+     "RSI"
+    ],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [],
+    "procedures": [],
+    "classes": [
+     "RSI"
+    ],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "failed airway",
+   "kind": "procedure",
+   "voice": "af_nicole",
+   "heard": "failed airway",
+   "want": {
+    "routes": [],
+    "controls": [],
+    "procedures": [
+     "failed airway"
+    ],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [],
+    "procedures": [
+     "failed airway"
+    ],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "failed airway",
+   "kind": "procedure",
+   "voice": "am_liam",
+   "heard": "failed airway",
+   "want": {
+    "routes": [],
+    "controls": [],
+    "procedures": [
+     "failed airway"
+    ],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [],
+    "procedures": [
+     "failed airway"
+    ],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "failed airway",
+   "kind": "procedure",
+   "voice": "bf_lily",
+   "heard": "failed airway",
+   "want": {
+    "routes": [],
+    "controls": [],
+    "procedures": [
+     "failed airway"
+    ],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [],
+    "procedures": [
+     "failed airway"
+    ],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "rapid sequence intubation",
+   "kind": "procedure",
+   "voice": "af_nicole",
+   "heard": "rapid sequence intubation",
+   "want": {
+    "routes": [],
+    "controls": [],
+    "procedures": [
+     "rsi"
+    ],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [],
+    "procedures": [
+     "rsi"
+    ],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "rapid sequence intubation",
+   "kind": "procedure",
+   "voice": "am_liam",
+   "heard": "rapid sequence intubation",
+   "want": {
+    "routes": [],
+    "controls": [],
+    "procedures": [
+     "rsi"
+    ],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [],
+    "procedures": [
+     "rsi"
+    ],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "rapid sequence intubation",
+   "kind": "procedure",
+   "voice": "bf_lily",
+   "heard": "rapid sequence intubation",
+   "want": {
+    "routes": [],
+    "controls": [],
+    "procedures": [
+     "rsi"
+    ],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [],
+    "procedures": [
+     "rsi"
+    ],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "new patient",
+   "kind": "command",
+   "voice": "af_nicole",
+   "heard": "patient",
+   "want": {
+    "routes": [],
+    "controls": [
+     "new patient"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": false
+  },
+  {
+   "word": "new patient",
+   "kind": "command",
+   "voice": "am_liam",
+   "heard": "new patient",
+   "want": {
+    "routes": [],
+    "controls": [
+     "new patient"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "new patient"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "new patient",
+   "kind": "command",
+   "voice": "bf_lily",
+   "heard": "new patient",
+   "want": {
+    "routes": [],
+    "controls": [
+     "new patient"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "new patient"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "confirm",
+   "kind": "command",
+   "voice": "af_nicole",
+   "heard": "confirm",
+   "want": {
+    "routes": [],
+    "controls": [
+     "confirm"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "confirm"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "confirm",
+   "kind": "command",
+   "voice": "am_liam",
+   "heard": "confirm",
+   "want": {
+    "routes": [],
+    "controls": [
+     "confirm"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "confirm"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "confirm",
+   "kind": "command",
+   "voice": "bf_lily",
+   "heard": "confirm",
+   "want": {
+    "routes": [],
+    "controls": [
+     "confirm"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "confirm"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "yes",
+   "kind": "command",
+   "voice": "af_nicole",
+   "heard": "yes",
+   "want": {
+    "routes": [],
+    "controls": [
+     "yes"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "yes"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "yes",
+   "kind": "command",
+   "voice": "am_liam",
+   "heard": "yes",
+   "want": {
+    "routes": [],
+    "controls": [
+     "yes"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "yes"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "yes",
+   "kind": "command",
+   "voice": "bf_lily",
+   "heard": "yes",
+   "want": {
+    "routes": [],
+    "controls": [
+     "yes"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "yes"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "correct",
+   "kind": "command",
+   "voice": "af_nicole",
+   "heard": "correct",
+   "want": {
+    "routes": [],
+    "controls": [
+     "correct"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "correct"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "correct",
+   "kind": "command",
+   "voice": "am_liam",
+   "heard": "correct",
+   "want": {
+    "routes": [],
+    "controls": [
+     "correct"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "correct"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "correct",
+   "kind": "command",
+   "voice": "bf_lily",
+   "heard": "correct",
+   "want": {
+    "routes": [],
+    "controls": [
+     "correct"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "correct"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "affirmative",
+   "kind": "command",
+   "voice": "af_nicole",
+   "heard": "affirmative",
+   "want": {
+    "routes": [],
+    "controls": [
+     "affirmative"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "affirmative"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "affirmative",
+   "kind": "command",
+   "voice": "am_liam",
+   "heard": "affirmative",
+   "want": {
+    "routes": [],
+    "controls": [
+     "affirmative"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "affirmative"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "affirmative",
+   "kind": "command",
+   "voice": "bf_lily",
+   "heard": "affirmative",
+   "want": {
+    "routes": [],
+    "controls": [
+     "affirmative"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "affirmative"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "cancel",
+   "kind": "command",
+   "voice": "af_nicole",
+   "heard": "cancel",
+   "want": {
+    "routes": [],
+    "controls": [
+     "cancel"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "cancel"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "cancel",
+   "kind": "command",
+   "voice": "am_liam",
+   "heard": "cancel",
+   "want": {
+    "routes": [],
+    "controls": [
+     "cancel"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "cancel"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "cancel",
+   "kind": "command",
+   "voice": "bf_lily",
+   "heard": "cancel",
+   "want": {
+    "routes": [],
+    "controls": [
+     "cancel"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "cancel"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "no",
+   "kind": "command",
+   "voice": "af_nicole",
+   "heard": "know",
+   "want": {
+    "routes": [],
+    "controls": [
+     "no"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": false
+  },
+  {
+   "word": "no",
+   "kind": "command",
+   "voice": "am_liam",
+   "heard": "know",
+   "want": {
+    "routes": [],
+    "controls": [
+     "no"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": false
+  },
+  {
+   "word": "no",
+   "kind": "command",
+   "voice": "bf_lily",
+   "heard": "know",
+   "want": {
+    "routes": [],
+    "controls": [
+     "no"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": false
+  },
+  {
+   "word": "negative",
+   "kind": "command",
+   "voice": "af_nicole",
+   "heard": "negative",
+   "want": {
+    "routes": [],
+    "controls": [
+     "negative"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "negative"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "negative",
+   "kind": "command",
+   "voice": "am_liam",
+   "heard": "negative",
+   "want": {
+    "routes": [],
+    "controls": [
+     "negative"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "negative"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "negative",
+   "kind": "command",
+   "voice": "bf_lily",
+   "heard": "negative",
+   "want": {
+    "routes": [],
+    "controls": [
+     "negative"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "negative"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "stop",
+   "kind": "command",
+   "voice": "af_nicole",
+   "heard": "stop",
+   "want": {
+    "routes": [],
+    "controls": [
+     "stop"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "stop"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "stop",
+   "kind": "command",
+   "voice": "am_liam",
+   "heard": "stop",
+   "want": {
+    "routes": [],
+    "controls": [
+     "stop"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "stop"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "stop",
+   "kind": "command",
+   "voice": "bf_lily",
+   "heard": "stop",
+   "want": {
+    "routes": [],
+    "controls": [
+     "stop"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "stop"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "wrong",
+   "kind": "command",
+   "voice": "af_nicole",
+   "heard": "wrong",
+   "want": {
+    "routes": [],
+    "controls": [
+     "wrong"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "wrong"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "wrong",
+   "kind": "command",
+   "voice": "am_liam",
+   "heard": "wrong",
+   "want": {
+    "routes": [],
+    "controls": [
+     "wrong"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "wrong"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "wrong",
+   "kind": "command",
+   "voice": "bf_lily",
+   "heard": "wrong",
+   "want": {
+    "routes": [],
+    "controls": [
+     "wrong"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "wrong"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "repeat",
+   "kind": "command",
+   "voice": "af_nicole",
+   "heard": "repeat",
+   "want": {
+    "routes": [],
+    "controls": [
+     "repeat"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "repeat"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "repeat",
+   "kind": "command",
+   "voice": "am_liam",
+   "heard": "repeat",
+   "want": {
+    "routes": [],
+    "controls": [
+     "repeat"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "repeat"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "repeat",
+   "kind": "command",
+   "voice": "bf_lily",
+   "heard": "repeat",
+   "want": {
+    "routes": [],
+    "controls": [
+     "repeat"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "repeat"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "next",
+   "kind": "command",
+   "voice": "af_nicole",
+   "heard": "next",
+   "want": {
+    "routes": [],
+    "controls": [
+     "next"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "next"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "next",
+   "kind": "command",
+   "voice": "am_liam",
+   "heard": "next",
+   "want": {
+    "routes": [],
+    "controls": [
+     "next"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "next"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "next",
+   "kind": "command",
+   "voice": "bf_lily",
+   "heard": "next",
+   "want": {
+    "routes": [],
+    "controls": [
+     "next"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "next"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "back",
+   "kind": "command",
+   "voice": "af_nicole",
+   "heard": "back",
+   "want": {
+    "routes": [],
+    "controls": [
+     "back"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "back"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "back",
+   "kind": "command",
+   "voice": "am_liam",
+   "heard": "back",
+   "want": {
+    "routes": [],
+    "controls": [
+     "back"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "back"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "back",
+   "kind": "command",
+   "voice": "bf_lily",
+   "heard": "back",
+   "want": {
+    "routes": [],
+    "controls": [
+     "back"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "back"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "start over",
+   "kind": "command",
+   "voice": "af_nicole",
+   "heard": "start over",
+   "want": {
+    "routes": [],
+    "controls": [
+     "start over"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "start over"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "start over",
+   "kind": "command",
+   "voice": "am_liam",
+   "heard": "start over",
+   "want": {
+    "routes": [],
+    "controls": [
+     "start over"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "start over"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "start over",
+   "kind": "command",
+   "voice": "bf_lily",
+   "heard": "start over",
+   "want": {
+    "routes": [],
+    "controls": [
+     "start over"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "start over"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "why",
+   "kind": "command",
+   "voice": "af_nicole",
+   "heard": "why",
+   "want": {
+    "routes": [],
+    "controls": [
+     "why"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "why"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "why",
+   "kind": "command",
+   "voice": "am_liam",
+   "heard": "why",
+   "want": {
+    "routes": [],
+    "controls": [
+     "why"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "why"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "why",
+   "kind": "command",
+   "voice": "bf_lily",
+   "heard": "why",
+   "want": {
+    "routes": [],
+    "controls": [
+     "why"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "why"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "log",
+   "kind": "command",
+   "voice": "af_nicole",
+   "heard": "log",
+   "want": {
+    "routes": [],
+    "controls": [
+     "log"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "log"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "log",
+   "kind": "command",
+   "voice": "am_liam",
+   "heard": "log",
+   "want": {
+    "routes": [],
+    "controls": [
+     "log"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "log"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "log",
+   "kind": "command",
+   "voice": "bf_lily",
+   "heard": "log",
+   "want": {
+    "routes": [],
+    "controls": [
+     "log"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "log"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "battery",
+   "kind": "command",
+   "voice": "af_nicole",
+   "heard": "battery",
+   "want": {
+    "routes": [],
+    "controls": [
+     "battery"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "battery"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "battery",
+   "kind": "command",
+   "voice": "am_liam",
+   "heard": "battery",
+   "want": {
+    "routes": [],
+    "controls": [
+     "battery"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "battery"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "battery",
+   "kind": "command",
+   "voice": "bf_lily",
+   "heard": "battery",
+   "want": {
+    "routes": [],
+    "controls": [
+     "battery"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "battery"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "home",
+   "kind": "command",
+   "voice": "af_nicole",
+   "heard": "home",
+   "want": {
+    "routes": [],
+    "controls": [
+     "home"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "home"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "home",
+   "kind": "command",
+   "voice": "am_liam",
+   "heard": "zone",
+   "want": {
+    "routes": [],
+    "controls": [
+     "home"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": false
+  },
+  {
+   "word": "home",
+   "kind": "command",
+   "voice": "bf_lily",
+   "heard": "home",
+   "want": {
+    "routes": [],
+    "controls": [
+     "home"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "home"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "drugs",
+   "kind": "command",
+   "voice": "af_nicole",
+   "heard": "drugs",
+   "want": {
+    "routes": [],
+    "controls": [
+     "drugs"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "drugs"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "drugs",
+   "kind": "command",
+   "voice": "am_liam",
+   "heard": "drugs",
+   "want": {
+    "routes": [],
+    "controls": [
+     "drugs"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "drugs"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "drugs",
+   "kind": "command",
+   "voice": "bf_lily",
+   "heard": "drugs it",
+   "want": {
+    "routes": [],
+    "controls": [
+     "drugs"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": false
+  },
+  {
+   "word": "list drugs",
+   "kind": "command",
+   "voice": "af_nicole",
+   "heard": "list drugs",
+   "want": {
+    "routes": [],
+    "controls": [
+     "list drugs"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "list drugs"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "list drugs",
+   "kind": "command",
+   "voice": "am_liam",
+   "heard": "list drugs",
+   "want": {
+    "routes": [],
+    "controls": [
+     "list drugs"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "list drugs"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "list drugs",
+   "kind": "command",
+   "voice": "bf_lily",
+   "heard": "list drugs her",
+   "want": {
+    "routes": [],
+    "controls": [
+     "list drugs"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": false
+  },
+  {
+   "word": "procedures",
+   "kind": "command",
+   "voice": "af_nicole",
+   "heard": "procedures",
+   "want": {
+    "routes": [],
+    "controls": [
+     "procedures"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "procedures"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "procedures",
+   "kind": "command",
+   "voice": "am_liam",
+   "heard": "procedures",
+   "want": {
+    "routes": [],
+    "controls": [
+     "procedures"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "procedures"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "procedures",
+   "kind": "command",
+   "voice": "bf_lily",
+   "heard": "procedures",
+   "want": {
+    "routes": [],
+    "controls": [
+     "procedures"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "procedures"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "list procedures",
+   "kind": "command",
+   "voice": "af_nicole",
+   "heard": "list procedures",
+   "want": {
+    "routes": [],
+    "controls": [
+     "list procedures"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "list procedures"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "list procedures",
+   "kind": "command",
+   "voice": "am_liam",
+   "heard": "list procedures",
+   "want": {
+    "routes": [],
+    "controls": [
+     "list procedures"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "list procedures"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "list procedures",
+   "kind": "command",
+   "voice": "bf_lily",
+   "heard": "list procedures",
+   "want": {
+    "routes": [],
+    "controls": [
+     "list procedures"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "list procedures"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "help",
+   "kind": "command",
+   "voice": "af_nicole",
+   "heard": "help",
+   "want": {
+    "routes": [],
+    "controls": [
+     "help"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "help"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "help",
+   "kind": "command",
+   "voice": "am_liam",
+   "heard": "help",
+   "want": {
+    "routes": [],
+    "controls": [
+     "help"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "help"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "help",
+   "kind": "command",
+   "voice": "bf_lily",
+   "heard": "help",
+   "want": {
+    "routes": [],
+    "controls": [
+     "help"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "help"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "what can i say",
+   "kind": "command",
+   "voice": "af_nicole",
+   "heard": "what can i say",
+   "want": {
+    "routes": [],
+    "controls": [
+     "what can i say"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "what can i say"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "what can i say",
+   "kind": "command",
+   "voice": "am_liam",
+   "heard": "what can i say",
+   "want": {
+    "routes": [],
+    "controls": [
+     "what can i say"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "what can i say"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  },
+  {
+   "word": "what can i say",
+   "kind": "command",
+   "voice": "bf_lily",
+   "heard": "what can i say",
+   "want": {
+    "routes": [],
+    "controls": [
+     "what can i say"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "got": {
+    "routes": [],
+    "controls": [
+     "what can i say"
+    ],
+    "procedures": [],
+    "classes": [],
+    "drugs": []
+   },
+   "ok": true
+  }
+ ]
+}
