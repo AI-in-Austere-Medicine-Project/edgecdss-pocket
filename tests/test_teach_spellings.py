@@ -14,20 +14,20 @@ import wave
 
 import pytest
 
-from engine.bank import load_bank
+from engine.bank import PFC_RETIRED, load_bank
 from grammar.parser import parse
 from grammar.vocabulary import build
 from voice import spoken
 from voice.tools import teach_spellings as ts
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-VOCAB = build(load_bank(ROOT / "bank"))
+VOCAB = build(load_bank(PFC_RETIRED, retired_ok=True))
 SOUNDS = json.loads((ROOT / "grammar" / "sounds_like.json").read_text())
 GRAMMAR = json.loads((ROOT / "grammar" / "vosk_grammar.json").read_text())
 CURRENT = {s: t for t, ss in SOUNDS["spellings"].items() for s in ss}
 
 
-BANK = load_bank(ROOT / "bank")
+BANK = load_bank(PFC_RETIRED, retired_ok=True)
 
 
 def rules():
@@ -156,21 +156,21 @@ class Ears:
 def test_the_gate_is_scored_before_and_after_and_a_misleading_spelling_is_dropped(tmp_path, monkeypatch):
     clips, gate = tmp_path / "clips", tmp_path / "gate"
     gate.mkdir()
-    for i, name in enumerate(["lorazepam", "atropine"], 1):
+    for i, name in enumerate(["midazolam", "atropine"], 1):
         _wav(gate / f"{i:03d}.wav")
-    (gate / "results.jsonl").write_text('{"typed": "lorazepam"}\n{"typed": "atropine"}\n')
-    take(clips, "speaker-1", "lorazepam", 1, "lore as pan cool", audio=True)
-    take(clips, "speaker-1", "lorazepam", 2, "lore as pan cool", audio=True)
-    take(clips, "speaker-4", "propofol", 1, "add troy pin cool")
-    take(clips, "speaker-4", "propofol", 2, "add troy pin cool")
-    ears = Ears({"gate/001.wav": "lore as pan cool", "gate/002.wav": "add troy pin cool",
-                 "drug-lorazepam/take1.wav": "lore as pan cool", "drug-lorazepam/take2.wav": "lorazepam"})
+    (gate / "results.jsonl").write_text('{"typed": "midazolam"}\n{"typed": "atropine"}\n')
+    take(clips, "speaker-1", "midazolam", 1, "mid as all am cool", audio=True)
+    take(clips, "speaker-1", "midazolam", 2, "mid as all am cool", audio=True)
+    take(clips, "speaker-4", "atrovent", 1, "add troy pin cool")
+    take(clips, "speaker-4", "atrovent", 2, "add troy pin cool")
+    ears = Ears({"gate/001.wav": "mid as all am cool", "gate/002.wav": "add troy pin cool",
+                 "drug-midazolam/take1.wav": "mid as all am cool", "drug-midazolam/take2.wav": "midazolam"})
     monkeypatch.setattr(ts, "SOUNDS_LIKE", ROOT / "grammar" / "sounds_like.json")
     r = ts.run(None, clips, gate, ears=ears, out_dir=tmp_path / "out", print=lambda *a: None)
-    assert r["before"]["gate"]["heard"] == 0 and r["after"]["gate"]["heard"] == 1      # lorazepam, rescued
-    assert r["added"] == {"lorazepam": ["lore as pan cool"]}
-    # "add troy pin cool", taught for propofol, would make the atropine gate clip propofol
-    assert r["refused"]["propofol"]["add troy pin cool"] == "made a clip heard as another drug"
+    assert r["before"]["gate"]["heard"] == 0 and r["after"]["gate"]["heard"] == 1      # midazolam, rescued
+    assert r["added"] == {"midazolam": ["mid as all am cool"]}
+    # "add troy pin cool", taught for atrovent, would make the atropine gate clip ipratropium
+    assert r["refused"]["atrovent"]["add troy pin cool"] == "made a clip heard as another drug"
     assert r["after"]["gate"]["another_drug"] == []
     assert r["teach"]["speaker-1"]["with_audio"] == 2
     assert json.loads((tmp_path / "out" / "report.json").read_text())["added"] == r["added"]

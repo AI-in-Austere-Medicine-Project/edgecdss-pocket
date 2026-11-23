@@ -16,21 +16,22 @@ import time
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+from engine.bank import PFC_RETIRED  # noqa: E402
 from engine.session import boot  # noqa: E402
 
 rounds = int(sys.argv[1]) if len(sys.argv) > 1 else 200
 corpus = json.loads((ROOT / "tests" / "replay_corpus.json").read_text())
 
 t = time.perf_counter()
-boot(ROOT / "bank")
+boot(PFC_RETIRED, retired_ok=True)
 cold_ms = (time.perf_counter() - t) * 1000
 
 boots, phrase_us = [], []
 for _ in range(rounds // 10 or 1):
     t = time.perf_counter()
-    boot(ROOT / "bank")
+    boot(PFC_RETIRED, retired_ok=True)
     boots.append((time.perf_counter() - t) * 1000)
-session = boot(ROOT / "bank")
+session = boot(PFC_RETIRED, retired_ok=True)
 for _ in range(rounds):
     for case in corpus:
         session.patient, session.req = type(session.patient)(), type(session.req)()

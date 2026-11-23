@@ -30,12 +30,12 @@ echo "== grammar"
 # (415 MB) is avoided.
 "$PY" - "models/$MODEL" <<'PYEOF'
 import json, pathlib, sys
-from engine.bank import load_bank
+from engine.bank import BANK_DIR, load_bank
 from voice.grammar import model_id
 g = json.loads(pathlib.Path("grammar/vosk_grammar.json").read_text())
 m = model_id(sys.argv[1])
 assert g["model_am_sha256"] == m["model_am_sha256"], "grammar/vosk_grammar.json is for another model"
-assert g["bank_hash"] == load_bank("bank").hash, "grammar/vosk_grammar.json is for another bank"
+assert g["bank_hash"] == load_bank(BANK_DIR).hash, "grammar/vosk_grammar.json is for another bank"
 print(f"grammar ok: {len(g['words'])} entries, model {m['model']}, bank {g['bank_hash'][:8]}")
 PYEOF
 

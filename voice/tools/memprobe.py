@@ -61,7 +61,7 @@ def main():
     stage("python")
     sys.path.insert(0, str(ROOT))
     from engine.session import boot
-    session = boot(ROOT / "bank")
+    session = boot()
     session.handle("ketamine for analgesia eighty kilos")
     stage("engine")
 

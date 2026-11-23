@@ -19,10 +19,8 @@ CANCEL_WORDS = ("cancel", "no", "negative", "stop", "wrong")
 CONTROL_OF = {**{w: "confirm" for w in CONFIRM_WORDS}, **{w: "cancel" for w in CANCEL_WORDS}}  # noqa: E501
 # The home menu, help and command lists (owner, 2026-11-21): names and instructions only,
 # never a dose. "list drugs" is "drugs", "list procedures" is "procedures".
-# Choosing the set (owner, 2026-11-22): its name, letter by letter, then "set".
-SET_CONTROLS = {"ems set": "EMS", "pfc set": "PFC"}
 MENU_CONTROLS = ("home", "drugs", "list drugs", "procedures", "list procedures", "help",
-                 "what can i say", *SET_CONTROLS)
+                 "what can i say")
 MENU_OF = {"list drugs": "drugs", "list procedures": "procedures"}
 CONTROLS = ("new patient", *CONFIRM_WORDS, *CANCEL_WORDS, "repeat", "next", "back", "start over",
             "why", "log", "battery", *MENU_CONTROLS)
@@ -109,8 +107,8 @@ STOPWORDS = frozenset("and the for with without not dose doses patient incl no o
 MIN_STEM = 3
 # How medics say signed drugs where the bank has no such alias yet (owner, phase 2).
 # Pocket-side spoken names only; listed in docs/UPSTREAM.md for EdgeCDSS to sign.
-MEDIC_NAMES = {"ancef": "cefazolin", "cal gluc": "calcium gluconate",
-               # the EMS set's drugs by the names medics use (owner, 2026-11-22: "every EMS
+# One drug list, the EMS set (owner, 2026-11-23): "ancef" and "cal gluc" left with the PFC set.
+MEDIC_NAMES = {# the EMS set's drugs by the names medics use (owner, 2026-11-22: "every EMS
                # drug name and its common names"); a name joins only when its drug is signed
                "adenocard": "adenosine", "ventolin": "albuterol", "proventil": "albuterol",
                "salbutamol": "albuterol", "cordarone": "amiodarone", "amio": "amiodarone",

@@ -30,15 +30,14 @@ import pytest
 from engine import words
 from engine.bank import load_bank
 from engine.procedures import load_procedures
-from engine.session import (HELP_SPOKEN, HELP_WRITTEN, HOME_LINE, START_UP_LINE, TEST_NOTICE, Session, boot,
-                            start_up_line)
-from tests.test_sets import PFC_START
+from engine.session import (HELP_SPOKEN, HELP_WRITTEN, HOME_LINE, START_UP_LINE, TEST_NOTICE, Session, boot)
 from grammar.parser import NUMBERS, parse
 from grammar.vocabulary import (CONTROLS, MENU_CONTROLS, PROCEDURE_TERMS, ROUTES, CONDITIONS, build)
+from engine.bank import BANK_DIR, PFC_RETIRED  # the retired PFC set: fixture data (2026-11-23)
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-BANK = ROOT / "bank"
-SIGNED = load_bank(BANK)
+BANK = PFC_RETIRED
+SIGNED = load_bank(BANK, retired_ok=True)
 PROCEDURES = load_procedures(BANK, SIGNED)
 VOCAB = build(SIGNED)
 GRAMMAR = json.loads((ROOT / "grammar" / "vosk_grammar.json").read_text())
@@ -56,7 +55,7 @@ class Clock:
 
 
 def _session(log=None):
-    """As boot(BANK) gives it, with the bank loaded once (the suite stays fast)."""
+    """As boot(BANK, retired_ok=True) gives it, with the bank loaded once (the suite stays fast)."""
     return Session(SIGNED, clock=Clock(), log=log, procedures=PROCEDURES)
 
 
@@ -90,13 +89,12 @@ STATES = {"idle": _session, "read-back": _in_readback, "procedure": _in_procedur
 def test_1_start_up_says_pocket_ready_and_logs_the_set_version_and_hash():
     man = json.loads((BANK / "manifest.json").read_text())
     records = []
-    s = boot(BANK, clock=Clock(), log=records.append)
+    s = boot(BANK, retired_ok=True, clock=Clock(), log=records.append)
     assert START_UP_LINE == ("Pocket ready. Research prototype, not for patient care. "
                              "Say drugs, procedures, or help.")
     assert s.announce.kind == "boot"
-    assert s.announce.written_text == start_up_line("PFC set")       # the set named (owner, 2026-11-22)
-    assert s.announce.text == PFC_START
-    for not_said in ("PFC", "version", "one point four", man["sha256"]["bank.json"][:8]):   # the set is said, as letters
+    assert s.announce.text == s.announce.written_text == START_UP_LINE   # names no set (owner, 2026-11-23)
+    for not_said in ("PFC", "EMS", "set", "version", "one point four", man["sha256"]["bank.json"][:8]):
         assert not_said not in s.announce.text
     assert records[0]["event"] == "boot" and records[0]["set"] == "PFC set"
     assert records[0]["bank_version"] == man["bank_version"]
@@ -125,7 +123,7 @@ def test_2_home_keeps_the_patient():
 
 
 def _signed_drug_names():
-    return sorted({VOCAB.listed_name(d) for d in load_bank(BANK).signed_drugs})
+    return sorted({VOCAB.listed_name(d) for d in load_bank(BANK, retired_ok=True).signed_drugs})
 
 
 @pytest.mark.parametrize("said", ["drugs", "list drugs"])
@@ -134,14 +132,16 @@ def test_2_drugs_reads_the_signed_drug_names_then_how_to_begin(said):
     names = _signed_drug_names()
     assert t.kind == "menu"
     assert t.written_text == f"Signed drugs: {', '.join(names)}. Say a drug name to begin."
-    assert len(names) == len(load_bank(BANK).signed_drugs) == 25
+    assert len(names) == len(load_bank(BANK, retired_ok=True).signed_drugs) == 25
 
 
 def test_2_every_listed_drug_name_is_heard_as_that_drug():
-    bank = load_bank(BANK)
+    """The grammar is the one drug list's, the EMS set (owner, 2026-11-23)."""
+    bank = load_bank(BANK_DIR)
+    vocab = build(bank)
     for drug in bank.signed_drugs:
-        name = VOCAB.listed_name(drug)
-        p = parse(name, VOCAB)
+        name = vocab.listed_name(drug)
+        p = parse(name, vocab)
         assert [m.generics for m in p.drugs] == [(drug,)], (drug, name)
         # The model hears it: each word is in the grammar, or the name has a spelling there
         # (moxifloxacin is not in the model's own word list, and is heard by its spellings).
@@ -151,7 +151,7 @@ def test_2_every_listed_drug_name_is_heard_as_that_drug():
 
 
 def test_2_no_unsigned_drug_is_listed():
-    bank = load_bank(BANK)
+    bank = load_bank(BANK, retired_ok=True)
     unsigned = {e["drug"] for e in bank.entries} - set(bank.signed_drugs)
     text = _session().handle("drugs").written_text.lower()
     for drug in unsigned:
@@ -333,7 +333,7 @@ def test_5_each_new_phrase_is_heard_as_itself_never_as_a_drug_or_a_dose_word(hea
     assert set(p.controls) <= {phrase}, heard
     if clip.stem in KNOWN_MISSES:                      # a miss: "Not recognised.", nothing else
         assert heard == KNOWN_MISSES[clip.stem], heard
-        assert boot(BANK).handle(text, spoken=True).say == "Not recognised."
+        assert boot(BANK, retired_ok=True).handle(text, spoken=True).say == "Not recognised."
     else:
         assert p.controls == [phrase], heard
 
@@ -373,4 +373,4 @@ def test_7_a_test_bank_says_its_notice_before_pocket_ready(tmp_path):
         s = boot(make_test_bank(tmp_path))
     finally:
         del os.environ["POCKET_TEST"]
-    assert s.announce.text.startswith(f"{TEST_NOTICE} Pocket ready. ") and s.announce.text.endswith(START_UP_LINE[len('Pocket ready. '):])
+    assert s.announce.text == f"{TEST_NOTICE} {START_UP_LINE}"

@@ -11,6 +11,7 @@ from engine import words
 from engine.session import Session, boot
 from test_reachable import BANK, ROOT, key, request
 from grammar.vocabulary import label_tokens, build
+from engine.bank import PFC_RETIRED  # the retired PFC set: fixture data (2026-11-23)
 
 VOCAB = build(BANK)
 BARE = re.compile(r"(?<![A-Za-z])(IV|IM|IO|IN|PO|NEB)(?![A-Za-z])")
@@ -44,7 +45,7 @@ def test_say_routes(text, said):
 
 @pytest.mark.parametrize("e", BANK.entries, ids=key)
 def test_every_signed_entry_spoken_without_bare_routes(e):
-    s = boot(ROOT / "bank")
+    s = boot(PFC_RETIRED, retired_ok=True)
     turn = s.handle(request(e))
     for _ in range(4):
         _no_bare(turn)
@@ -80,7 +81,7 @@ def test_confusable_route_question_said_as_routes():
 
 
 def test_signed_text_and_log_keep_the_letters():
-    bank = json.loads((ROOT / "bank" / "bank.json").read_text())
+    bank = json.loads((PFC_RETIRED / "bank.json").read_text())
     assert any("IV/IO" in c for e in bank["entries"] for c in e["serve_cautions"])
     s = Session(BANK)
     s.handle("morphine for pain iv eighty kilos")

@@ -11,6 +11,6 @@ def test_the_readme_example_is_what_the_engine_says():
     readme = (ROOT / "README.md").read_text()
     pairs = re.findall(r'Say "([^"]+)" It says "([^"]+)"', readme)
     assert len(pairs) >= 2
-    s = boot(ROOT / "bank")
+    s = boot()                              # the one drug list, the EMS set (2026-11-23)
     for phrase, said in pairs:
         assert s.handle(phrase).say == said, phrase

@@ -32,10 +32,11 @@ from engine.session import boot
 from grammar.parser import parse
 from grammar.vocabulary import CANCEL_WORDS, CONFIRM_WORDS, build
 from engine.bank import load_bank
+from engine.bank import PFC_RETIRED  # the retired PFC set: fixture data (2026-11-23)
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-BANK = ROOT / "bank"
-VOCAB = build(load_bank(BANK))
+BANK = PFC_RETIRED
+VOCAB = build(load_bank(BANK, retired_ok=True))
 GRAMMAR = json.loads((ROOT / "grammar" / "vosk_grammar.json").read_text())
 CLIPS = sorted((ROOT / "tests" / "fixtures" / "clips" / "confirm").glob("*.wav"))
 WORD_CLIPS = [c for c in CLIPS if c.stem.split("__")[1] in ("confirm", "yes", "correct", "affirmative",
@@ -55,7 +56,7 @@ class Clock:
 
 def _session():
     clock = Clock()
-    return boot(BANK, clock=clock), clock
+    return boot(BANK, retired_ok=True, clock=clock), clock
 
 
 def _at_readback():

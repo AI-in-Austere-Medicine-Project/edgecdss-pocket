@@ -35,7 +35,7 @@ import pathlib
 import re
 import wave
 
-from engine.bank import load_sets, merge_banks
+from engine.bank import BANK_DIR, load_bank
 from grammar.parser import parse
 from grammar.vocabulary import CONTROLS, FILLERS, build, menu_only_words
 from voice import spoken
@@ -278,7 +278,7 @@ class Ears:
 
 
 def run(model_dir, clips=CLIPS, gate=GATE, apply=False, ears=None, out_dir=None, print=print) -> dict:
-    bank = merge_banks(load_sets().values())           # both sets' names (2026-11-22)
+    bank = load_bank(BANK_DIR)           # the EMS set's names (one drug list, 2026-11-23)
     vocab = build(bank)
     if ears is None:
         import vosk

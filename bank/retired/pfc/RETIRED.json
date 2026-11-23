@@ -1,0 +1,9 @@
+{
+ "set": "PFC",
+ "date": "2026-11-23",
+ "by": "owner",
+ "decision": "Pocket carries one drug list, the EMS set only. Retire the PFC bank: keep the file in the repo, unloaded and marked retired with the date. Do not delete signed work.",
+ "was": "bank/ (bank.json, kit.json, manifest.json, procedures.json), unchanged: the manifest's hashes still match",
+ "loaded_by": "nothing on the device; engine/bank.load_bank refuses it unless retired_ok=True (tests use its signed entries as fixtures)",
+ "procedures": "the signed RSI and failed airway steps now load from bank/ems/procedures.json, step text unchanged, each dose linked to an EMS entry or held"
+}

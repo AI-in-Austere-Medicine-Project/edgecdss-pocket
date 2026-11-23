@@ -92,11 +92,11 @@ fi
 [ -f "$ONNX.json" ] || curl -sSL -o "$ONNX.json" "$PIPER_URL/$PIPER_VOICE.onnx.json"
 "$VENV/bin/python" - "models/$VOSK_MODEL" <<'PYEOF'
 import json, pathlib, sys
-from engine.bank import load_bank
+from engine.bank import BANK_DIR, load_bank
 from voice.grammar import model_id
 g = json.loads(pathlib.Path("grammar/vosk_grammar.json").read_text())
 assert g["model_am_sha256"] == model_id(sys.argv[1])["model_am_sha256"], "grammar is for another model"
-assert g["bank_hash"] == load_bank("bank").hash, "grammar is for another bank"
+assert g["bank_hash"] == load_bank(BANK_DIR).hash, "grammar is for another bank"
 print("grammar ok for this model and bank")
 PYEOF
 

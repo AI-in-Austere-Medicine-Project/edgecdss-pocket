@@ -23,16 +23,16 @@ import wave
 
 import pytest
 
-from engine.bank import load_bank, load_sets, merge_banks
+from engine.bank import BANK_DIR, PFC_RETIRED, load_bank
 from engine.session import Session, boot
 from grammar.parser import parse
 from grammar.vocabulary import build
 from voice import spoken
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-BANK = load_bank(ROOT / "bank")
-# The grammar hears both sets (owner, 2026-11-22): "unsigned" means signed in neither.
-VOCAB = build(merge_banks(load_sets().values()))
+BANK = load_bank(PFC_RETIRED, retired_ok=True)
+# The grammar hears the one drug list, the EMS set (owner, 2026-11-23).
+VOCAB = build(load_bank(BANK_DIR))
 GRAMMAR = json.loads((ROOT / "grammar" / "vosk_grammar.json").read_text())
 SOUNDS = json.loads((ROOT / "grammar" / "sounds_like.json").read_text())
 CLIPS = sorted((ROOT / "tests" / "fixtures" / "clips").glob("w1_*.wav"))
@@ -149,14 +149,16 @@ def test_an_unsigned_name_heard_is_not_recognised():
 
 def test_typed_an_unsigned_drug_still_holds_by_name():
     """The grammar change is for hearing; typed text is read as before (README C2)."""
-    assert boot(ROOT / "bank").handle("magnesium").text == "No signed dose for magnesium."
+    assert boot(PFC_RETIRED, retired_ok=True).handle("magnesium").text == "No signed dose for magnesium."
 
 
 # ── 3. cefazolin ────────────────────────────────────────────────────────────
 
 def test_cefazolin_is_spelled_as_the_owners_clip_is_heard():
+    """Cefazolin was signed only in the PFC set, retired 2026-11-23: its spelling is kept for
+    the record and is not in the grammar, so the name cannot be heard."""
     assert "suffers own" in SOUNDS["spellings"]["cefazolin"]
-    assert "suffers own" in GRAMMAR["words"]
+    assert "suffers own" not in GRAMMAR["words"]
     assert spoken.normalise("suffers own") == "cefazolin"
 
 
@@ -178,7 +180,7 @@ def test_hearing_either_drug_of_a_pair_asks_x_or_y_first(pair):
     a, b = sorted(pair)
     ask = f"{a.capitalize()} or {b}?"
     for said in pair:
-        s = boot(ROOT / "bank")
+        s = boot(PFC_RETIRED, retired_ok=True)
         turn = s.handle(f"{said} eighty kilos", spoken=True)
         assert turn.kind == "ask" and turn.say == ask, (said, turn.text)
         answer = s.handle(said, spoken=True)
@@ -186,7 +188,7 @@ def test_hearing_either_drug_of_a_pair_asks_x_or_y_first(pair):
 
 
 def test_the_pair_is_asked_before_the_read_back():
-    s = boot(ROOT / "bank")
+    s = boot(PFC_RETIRED, retired_ok=True)
     turns = [s.handle(p, spoken=True) for p in
              ("epinephrine for anaphylaxis intramuscular eighty kilos", "epinephrine")]
     assert turns[0].say == "Epinephrine or norepinephrine?"
@@ -196,7 +198,7 @@ def test_the_pair_is_asked_before_the_read_back():
 
 def test_a_letter_spelled_im_or_in_asks_im_or_in_first():
     for said in ("i m", "im", "i n", "in"):
-        s = boot(ROOT / "bank")
+        s = boot(PFC_RETIRED, retired_ok=True)
         turn = s.handle(f"fentanyl for pain {said} eighty kilos", spoken=True)
         assert turn.say == "Eye em or intranasal?", (said, turn.text)
         answer = s.handle("intranasal", spoken=True)
@@ -204,23 +206,23 @@ def test_a_letter_spelled_im_or_in_asks_im_or_in_first():
 
 
 def test_the_route_answer_may_be_the_letters_again():
-    s = boot(ROOT / "bank")
+    s = boot(PFC_RETIRED, retired_ok=True)
     s.handle("fentanyl for pain i n eighty kilos", spoken=True)
     assert s.handle("i n", spoken=True).say == "Fentanyl, pain, intranasal, eighty kilos. Confirm?"
 
 
 def test_the_whole_route_words_do_not_ask():
     for said, route in (("intramuscular", "eye em"), ("intranasal", "intranasal")):
-        s = boot(ROOT / "bank")
+        s = boot(PFC_RETIRED, retired_ok=True)
         turn = s.handle(f"ketamine for agitation {said} eighty kilos" if route == "eye em"
                         else f"fentanyl for pain {said} eighty kilos", spoken=True)
         assert turn.kind == "readback" and f", {route}," in turn.say, turn.text
 
 
 def test_typed_text_cannot_be_misheard_so_it_does_not_ask():
-    s = boot(ROOT / "bank")
+    s = boot(PFC_RETIRED, retired_ok=True)
     assert s.handle("fentanyl for pain in eighty kilos").kind == "readback"
-    s = boot(ROOT / "bank")
+    s = boot(PFC_RETIRED, retired_ok=True)
     assert s.handle("epinephrine for anaphylaxis im eighty kilos").kind == "readback"
 
 
@@ -278,9 +280,11 @@ OWNER_SPELLINGS = {"ertapenem": ["attempt then", "or attempt then"],
 
 @pytest.mark.parametrize("drug,said", [(d, s) for d, ss in OWNER_SPELLINGS.items() for s in ss])
 def test_the_owners_gate_misses_are_spelled_and_parse_as_that_drug_alone(drug, said):
+    """All three were signed only in the PFC set, retired 2026-11-23: the spellings stay for
+    the record, out of the grammar; with the retired bank they still parse as that drug."""
     assert said in SOUNDS["spellings"][drug]
-    assert said in GRAMMAR["words"]
-    p = parse(spoken.normalise(said), VOCAB)
+    assert said not in GRAMMAR["words"]
+    p = parse(spoken.normalise(said), build(BANK))
     assert [g for d in p.drugs for g in d.generics] == [drug]
     assert not (p.unknown or p.controls or p.routes or p.weight or p.age or p.bare_number)
 

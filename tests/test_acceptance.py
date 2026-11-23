@@ -6,15 +6,15 @@ import shutil
 
 import pytest
 
-from engine.session import boot
-from tests.test_sets import start_up_said
+from engine.session import START_UP_LINE, boot
+from engine.bank import PFC_RETIRED, RETIRED_FILE  # the retired PFC set: fixture data (2026-11-23)
 
-BANK = pathlib.Path(__file__).resolve().parents[1] / "bank"
+BANK = PFC_RETIRED
 
 
 @pytest.fixture
 def s():
-    return boot(BANK)
+    return boot(BANK, retired_ok=True)
 
 
 def play(session, *phrases):
@@ -80,7 +80,7 @@ def test_b1_the_engines_own_dose_is_given(s):
                                     "zero point five micrograms"])
 def test_b1_the_spoken_number_is_never_computed_on(spoken):
     """Same dose, same volume, whatever was said."""
-    _, _, dose = _b1(boot(BANK), spoken)
+    _, _, dose = _b1(boot(BANK, retired_ok=True), spoken)
     assert dose.say == "Ketamine one hundred and sixty milligrams. Three point two mils of five hundred per ten."
 
 
@@ -172,7 +172,7 @@ def test_c2_nothing_follows_the_hold(s):
 def _tampered(tmp_path, edit, rehash=True):
     import hashlib
     d = tmp_path / "bank"
-    shutil.copytree(BANK, d)
+    shutil.copytree(BANK, d, ignore=shutil.ignore_patterns(RETIRED_FILE))   # a scratch copy, not retired
     bank = json.loads((d / "bank.json").read_text())
     edit(bank)
     (d / "bank.json").write_text(json.dumps(bank))
@@ -231,11 +231,11 @@ def test_g1_boot_says_pocket_ready_and_logs_the_set_the_full_version_and_hash():
     version and hash go to the log, not the speaker."""
     man = json.loads((BANK / "manifest.json").read_text())
     records = []
-    s = boot(BANK, log=records.append)
+    s = boot(BANK, retired_ok=True, log=records.append)
     assert s.announce.kind == "boot"
     assert s.announce.data["bank_version"] == man["bank_version"]
     assert s.announce.data["hash"] == man["sha256"]["bank.json"][:8]
-    assert s.announce.say == start_up_said("P F C set")   # the set named (owner, 2026-11-22)
+    assert s.announce.say == START_UP_LINE                # names no set (owner, 2026-11-23: one drug list)
     assert (records[0]["bank_version"], records[0]["bank_hash"]) == (man["bank_version"],
                                                                     man["sha256"]["bank.json"])
 

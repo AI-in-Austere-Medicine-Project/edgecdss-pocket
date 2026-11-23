@@ -1,5 +1,5 @@
 {
- "command_spellings_note": "2026-11-22: the set commands (owner: 'E M S set', 'P F C set'), as the grammar hears them in five Kokoro voices (af_heart, af_sarah, am_adam, am_michael, bm_george); af_nicole, am_liam and bf_lily held out. Spellings holding 'm' (a word the parser reads) left out.",
+ "command_spellings_note": "2026-11-22: the set commands (owner: 'E M S set', 'P F C set'), as the grammar hears them in five Kokoro voices (af_heart, af_sarah, am_adam, am_michael, bm_george); af_nicole, am_liam and bf_lily held out. Spellings holding 'm' (a word the parser reads) left out. Removed 2026-11-23: one drug list, the EMS set, so no set commands (owner).",
  "control_words_dropped": {
   "amiodarone": [
    "am yada wrong",
@@ -714,13 +714,6 @@
    "drought poodle",
    "drought prideaux"
   ],
-  "ems set": [
-   "am as set",
-   "am said",
-   "am set",
-   "ems said",
-   "yum as set"
-  ],
   "enoxaparin": [
    "inox up or een",
    "inox up or him",
@@ -1404,11 +1397,6 @@
    "here said i'm all",
    "perry said i'm old",
    "pierce that i'm all"
-  ],
-  "pfc set": [
-   "pfc saf",
-   "pfc said",
-   "pfc sat"
   ],
   "phenobarbital": [
    "fenerbahce beatles",

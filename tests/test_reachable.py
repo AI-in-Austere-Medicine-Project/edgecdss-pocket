@@ -5,13 +5,13 @@ import pathlib
 
 import pytest
 
-from engine.bank import load_bank
+from engine.bank import PFC_RETIRED, load_bank
 from engine.contracts import age_band, resolve_dose
 from engine.session import boot
 from grammar.vocabulary import build, label_tokens
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-BANK = load_bank(ROOT / "bank")
+BANK = load_bank(PFC_RETIRED, retired_ok=True)
 VOCAB = build(BANK)
 
 
@@ -32,7 +32,7 @@ def request(e):
 
 def walk(e):
     """The phrases a medic would say for this entry, or None if the flow stalls."""
-    s = boot(ROOT / "bank")
+    s = boot(PFC_RETIRED, retired_ok=True)
     turn = s.handle(request(e))
     for _ in range(4):
         if turn.kind == "readback":

@@ -11,8 +11,9 @@ import pytest
 
 from engine import vials as V
 from engine.session import ONE_MIL_SYRINGE, boot
+from engine.bank import PFC_RETIRED  # the retired PFC set: fixture data (2026-11-23)
 
-BANK = pathlib.Path(__file__).resolve().parents[1] / "bank"
+BANK = PFC_RETIRED
 KIT = {"x": [{"concentration_mg_ml": 10.0}]}
 DILUTION = {"from_concentration_mg_ml": 10.0, "concentration_mg_ml": 1.0, "drug_ml": 1.0,
             "diluent_ml": 9.0, "diluent": "normal saline"}
@@ -41,17 +42,17 @@ def test_from_half_a_mil_up_the_rounding_is_unchanged():
 
 def test_pocket_adds_use_a_one_mil_syringe_under_half_a_mil():
     assert ONE_MIL_SYRINGE == "Use a one mil syringe."
-    s = boot(BANK)
+    s = boot(BANK, retired_ok=True)
     s.handle("ketamine for pain iv twenty kilos")          # 0.2 mg/kg x 20 kg = 4 mg of 50 mg/mL
     said = s.handle("confirm").say
     assert "Zero point zero eight mils of five hundred per ten. Use a one mil syringe." in said   # as the label reads
     assert "Dilute" not in said and "dilution" not in said
-    s = boot(BANK)
+    s = boot(BANK, retired_ok=True)
     s.handle("ketamine for pain iv four kilos")             # 0.016 mL: too small, no recipe
     assert s.handle("confirm").say == "Ketamine zero point eight milligrams. Too small to draw. No volume."
 
 
 def test_a_volume_from_half_a_mil_says_no_syringe():
-    s = boot(BANK)
+    s = boot(BANK, retired_ok=True)
     s.handle("ketamine for agitation iv eighty kilos")
     assert ONE_MIL_SYRINGE not in s.handle("confirm").say

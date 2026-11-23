@@ -5,14 +5,14 @@ import pathlib
 
 import pytest
 
-from engine.bank import load_bank
+from engine.bank import PFC_RETIRED, load_bank
 from engine.contracts import range_text, resolve_dose
 from engine.contracts import signed_max_mg
 from engine.vials import dose_volume, round_volume
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 GOLDEN = json.loads((ROOT / "tests" / "fixtures" / "edgecdss_golden.json").read_text())
-BANK = load_bank(ROOT / "bank")
+BANK = load_bank(PFC_RETIRED, retired_ok=True)
 ENTRY = {(e["drug"], e["indication"], e["route"], e["population"]): e for e in BANK.entries}
 
 

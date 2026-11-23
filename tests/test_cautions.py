@@ -18,13 +18,13 @@ import re
 import pytest
 
 from engine import words
-from engine.bank import load_bank
+from engine.bank import PFC_RETIRED, load_bank
 from engine.session import boot
 from grammar.vocabulary import CONDITIONS, CONDITION_PATTERNS, build, label_tokens
 from tests.test_reachable import key, request
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-BANK = load_bank(ROOT / "bank")
+BANK = load_bank(PFC_RETIRED, retired_ok=True)
 VOCAB = build(BANK)
 # A stated volume: "10 mL", "0.1 mL/kg", "100 cc". Not a concentration: "1 mg/mL".
 VOLUME = re.compile(r"(?i)(?<![a-z/])(ml|cc)(?![a-z])")
@@ -38,7 +38,7 @@ def entry(drug, route, population, cls):
 
 @pytest.fixture
 def s():
-    return boot(ROOT / "bank")
+    return boot(PFC_RETIRED, retired_ok=True)
 
 
 # ── 1. Spoken only when it names a stated condition ─────────────────────────
@@ -168,7 +168,7 @@ def test_every_hold_names_only_signed_alternatives():
 
 
 def _walk_to(e, said):
-    s = boot(ROOT / "bank")
+    s = boot(PFC_RETIRED, retired_ok=True)
     turn = s.handle(f"{request(e)} {said}")
     for _ in range(4):
         if turn.kind != "ask" or not turn.say.startswith("Which one"):
@@ -202,7 +202,7 @@ def test_a_condition_is_heard_whole(s):
 # ── 2. No spoken mL unless a volume was computed ───────────────────────────
 
 def _dose_and_why(e, conditions=""):
-    s = boot(ROOT / "bank")
+    s = boot(PFC_RETIRED, retired_ok=True)
     if conditions:
         s.handle(conditions)
     turn = s.handle(request(e))
@@ -270,7 +270,7 @@ def test_without_a_volume_only_the_sentences_with_a_volume_drop(s):
 
 
 def test_the_signed_text_in_the_bank_is_unchanged():
-    raw = json.loads((ROOT / "bank" / "bank.json").read_text())
+    raw = json.loads((PFC_RETIRED / "bank.json").read_text())
     for e in BANK.entries:
         _dose_and_why(e)
     assert [e["serve_cautions"] for e in raw["entries"]] == [e["serve_cautions"] for e in BANK.entries]

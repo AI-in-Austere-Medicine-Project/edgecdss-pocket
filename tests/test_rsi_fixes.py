@@ -19,10 +19,11 @@ from engine.session import TEST_NOTICE, boot
 from grammar.parser import parse
 from grammar.vocabulary import build
 from engine.bank import load_bank
+from engine.bank import PFC_RETIRED, RETIRED_FILE  # the retired PFC set: fixture data (2026-11-23)
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-BANK = ROOT / "bank"
-VOCAB = build(load_bank(BANK))
+BANK = PFC_RETIRED
+VOCAB = build(load_bank(BANK, retired_ok=True))
 
 FA1 = "Unable to Intubate: Can You Mask Ventilate? Improve position, video laryngoscope, gum elastic bougie change blade/operator."
 FA2 = "More than ≈ 3 attempts at intubation may abolish your ability to mask ventilate due to edema caused by laryngoscopy."
@@ -62,7 +63,7 @@ def test_typed_numbers_read_exactly_as_their_words():
 
 @pytest.mark.parametrize("weight", ["80kg", "80 kg"])
 def test_rsi_takes_a_typed_weight_at_the_weight_question(weight):
-    s = boot(BANK)
+    s = boot(BANK, retired_ok=True)
     assert s.handle("rsi").written == "Weight?"
     turn = s.handle(weight)
     assert turn.kind == "step"
@@ -70,16 +71,16 @@ def test_rsi_takes_a_typed_weight_at_the_weight_question(weight):
 
 
 def test_rsi_with_a_typed_weight_in_one_phrase_and_a_child_by_typed_age():
-    s = boot(BANK)
+    s = boot(BANK, retired_ok=True)
     assert s.handle("rsi 80kg").written.startswith("Rapid sequence intubation, adult, eighty kilos.")
-    s = boot(BANK)
+    s = boot(BANK, retired_ok=True)
     turn = s.handle("rsi child 4 years 23kg")
     assert turn.written.startswith("Rapid sequence intubation, child, four years, twenty-three kilos.")
 
 
 def test_a_typed_amount_stays_words_and_the_engine_gives_its_own_dose():
     """B1 holds for typed numbers: a stated amount is read back as said, never computed on."""
-    s = boot(BANK)
+    s = boot(BANK, retired_ok=True)
     readback = s.handle("ketamine 500 mg for agitation iv 80kg")
     assert readback.kind == "readback"
     assert "You said five hundred mg." in readback.written
@@ -88,7 +89,7 @@ def test_a_typed_amount_stays_words_and_the_engine_gives_its_own_dose():
 
 
 def test_a_typed_number_alone_still_asks_the_unit():
-    s = boot(BANK)
+    s = boot(BANK, retired_ok=True)
     s.handle("rsi")
     assert s.handle("80").written == "Kilos or pounds?"
 
@@ -103,7 +104,7 @@ def _at_step_6(s):
 
 
 def test_repeat_after_a_cancelled_read_back_rereads_the_step():
-    s = boot(BANK)
+    s = boot(BANK, retired_ok=True)
     step = _at_step_6(s)
     assert s.handle("ketamine").kind == "readback"
     assert s.handle("no").written == "Cancelled."
@@ -112,7 +113,7 @@ def test_repeat_after_a_cancelled_read_back_rereads_the_step():
 
 
 def test_repeat_after_a_dose_at_a_step_rereads_the_step():
-    s = boot(BANK)
+    s = boot(BANK, retired_ok=True)
     step = _at_step_6(s)
     s.handle("ketamine")
     assert s.handle("confirm").kind == "dose"
@@ -120,7 +121,7 @@ def test_repeat_after_a_dose_at_a_step_rereads_the_step():
 
 
 def test_repeat_after_why_rereads_the_step_not_the_source():
-    s = boot(BANK)
+    s = boot(BANK, retired_ok=True)
     step = _at_step_6(s)
     s.handle("ketamine")
     s.handle("confirm")
@@ -129,14 +130,14 @@ def test_repeat_after_why_rereads_the_step_not_the_source():
 
 
 def test_repeat_while_a_read_back_waits_is_still_the_read_back():
-    s = boot(BANK)
+    s = boot(BANK, retired_ok=True)
     _at_step_6(s)
     readback = s.handle("ketamine")
     assert s.handle("repeat").written == readback.written
 
 
 def test_repeat_with_no_steps_running_is_still_the_last_message():
-    s = boot(BANK)
+    s = boot(BANK, retired_ok=True)
     s.handle("ketamine for agitation iv eighty kilos")
     s.handle("confirm")
     why = s.handle("why")
@@ -146,7 +147,7 @@ def test_repeat_with_no_steps_running_is_still_the_last_message():
 # ── 3. start over ───────────────────────────────────────────────────────────
 
 def test_start_over_goes_back_to_step_one_and_keeps_the_weight():
-    s = boot(BANK)
+    s = boot(BANK, retired_ok=True)
     first = s.handle("rsi eighty kilos")
     for _ in range(4):
         s.handle("next")
@@ -156,7 +157,7 @@ def test_start_over_goes_back_to_step_one_and_keeps_the_weight():
 
 
 def test_start_over_after_a_cancelled_read_back_drops_the_request():
-    s = boot(BANK)
+    s = boot(BANK, retired_ok=True)
     _at_step_6(s)
     s.handle("ketamine")
     s.handle("no")
@@ -166,18 +167,18 @@ def test_start_over_after_a_cancelled_read_back_drops_the_request():
 
 
 def test_start_over_with_no_steps_running():
-    assert boot(BANK).handle("start over").written == "No steps running."
+    assert boot(BANK, retired_ok=True).handle("start over").written == "No steps running."
 
 
 def test_start_over_while_a_read_back_waits_is_a_miss():
-    s = boot(BANK)
+    s = boot(BANK, retired_ok=True)
     _at_step_6(s)
     s.handle("ketamine")
     assert s.handle("start over").written == "Say confirm or cancel."
 
 
 def test_start_over_restarts_failed_airway_after_its_answer():
-    s = boot(BANK)
+    s = boot(BANK, retired_ok=True)
     first = s.handle("failed airway")
     s.handle("next"), s.handle("next"), s.handle("no")
     assert s.handle("start over").written == first.written
@@ -191,7 +192,7 @@ def test_start_and_over_are_in_the_grammar():
 # ── 4. failed airway: the question, then its branch ─────────────────────────
 
 def _to_question(start="failed airway"):
-    s = boot(BANK)
+    s = boot(BANK, retired_ok=True)
     one = s.handle(start)
     two = s.handle("next")
     ask = s.handle("next")
@@ -260,7 +261,7 @@ def test_the_question_is_signed_text_and_the_branches_are_the_signed_steps():
 
 def _edited(tmp_path, edit):
     d = tmp_path / "bank"
-    shutil.copytree(BANK, d)
+    shutil.copytree(BANK, d, ignore=shutil.ignore_patterns(RETIRED_FILE))   # a scratch copy, not retired
     raw = json.loads((d / "procedures.json").read_text())
     edit(next(p for p in raw["procedures"] if p["name"] == "failed airway"))
     (d / "procedures.json").write_text(json.dumps(raw))
@@ -286,19 +287,20 @@ def test_the_question_is_said_and_written_alike():
 
 # ── 5. the start-up line ────────────────────────────────────────────────────
 
-def test_the_start_up_line_names_the_set_and_no_version():
-    """Superseded twice: the home menu's start-up line (owner, 2026-11-21), then the set
-    named in it (owner, 2026-11-22: tests/test_sets.py). The version is logged, never spoken."""
-    s = boot(BANK)
+def test_the_start_up_line_names_no_set_and_no_version():
+    """Superseded by the home menu's start-up line (owner, 2026-11-21: tests/test_home_menu.py);
+    the set named in it (2026-11-22) was removed with the one drug list (owner, 2026-11-23).
+    The set name and version are still logged, never spoken."""
+    s = boot(BANK, retired_ok=True)
     assert s.announce.kind == "boot"
-    assert "PFC set" in s.announce.written and "P F C set" in s.announce.say
-    assert "version" not in s.announce.say
+    assert s.announce.written == s.announce.say
+    assert "PFC set" not in s.announce.say and "version" not in s.announce.say
 
 
 def test_the_full_version_and_hash_go_to_the_log():
     man = json.loads((BANK / "manifest.json").read_text())
     records = []
-    s = boot(BANK, log=records.append, now=lambda: "2026-11-21T12:00:00Z")
+    s = boot(BANK, retired_ok=True, log=records.append, now=lambda: "2026-11-21T12:00:00Z")
     assert records == [{"event": "boot", "time": "2026-11-21T12:00:00Z", "set": "PFC set",
                         "bank_version": man["bank_version"], "bank_hash": man["sha256"]["bank.json"],
                         "kit_id": man["kit_id"], "test": False}]

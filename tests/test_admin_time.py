@@ -14,8 +14,9 @@ import pathlib
 import pytest
 
 from engine.session import admin_time, boot
+from engine.bank import BANK_DIR, PFC_RETIRED  # the retired PFC set: fixture data (2026-11-23)
 
-BANK = pathlib.Path(__file__).resolve().parents[1] / "bank"
+BANK = PFC_RETIRED
 PFC = json.loads((BANK / "bank.json").read_text())["entries"]
 
 
@@ -62,21 +63,21 @@ def test_every_signed_pfc_entry_that_states_a_time_says_it():
 
 
 def test_the_time_follows_the_dose_and_volume():
-    s = boot(BANK)
+    s = boot(BANK, retired_ok=True)
     s.handle("tranexamic acid for haemorrhage iv adult")
     assert s.handle("confirm").say == "Tranexamic acid two grams. Twenty mils of one thousand per ten. Over ten minutes."
-    s = boot(BANK)
+    s = boot(BANK, retired_ok=True)
     s.handle("ceftriaxone for sepsis iv adult")
     assert s.handle("confirm").say == ("Ceftriaxone two grams. No signed vial, no volume. "
                                        "Over ten minutes or over thirty minutes.")
 
 
 def test_ems_entries_say_their_time_including_the_owners_four_rulings():
-    ems = json.loads((BANK / "ems" / "bank.json").read_text())["entries"]
+    ems = json.loads((BANK_DIR / "bank.json").read_text())["entries"]
     assert len([e for e in ems if admin_time(e)]) == 28
     said = {e["ems_id"]: admin_time(e) for e in ems}
     assert said["EMS-037"] == "Over ten minutes."
     assert said["EMS-149"] == said["EMS-150"] == said["EMS-151"] == "Over five minutes."
-    s = boot(BANK / "ems")
+    s = boot(BANK_DIR)
     s.handle("magnesium sulfate for torsades iv twenty kilos")
     assert s.handle("confirm").say.endswith("Two mils of five hundred per mil. Over five minutes.")   # declared 500 mg/mL
