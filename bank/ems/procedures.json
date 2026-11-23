@@ -32,6 +32,11 @@
   {
    "date": "2026-11-23",
    "by": "owner",
+   "what": "RSI holds whole for a child: \"No signed RSI steps for a child.\" No step of the child order (1, P1, 2-5, P2-P4, 7-10) is read. No step text changed."
+   },
+   {
+    "date": "2026-11-23",
+    "by": "owner",
    "what": "RSI steps 6 and 6b use the formulary's fixed doses: ketamine EMS-130 (200 mg IV/IO) and rocuronium EMS-201 (100 mg IV/IO), both individually read. The per-kg numbers are removed from the step text; succinylcholine is not offered. The original JTS wording and dose references are kept in each step (original_text, original_signed, original_doses)."
   }
  ],
@@ -72,6 +77,12 @@
      "9",
      "10"
     ]
+   },
+   "child_held": {
+    "say": "No signed RSI steps for a child.",
+    "by": "owner",
+    "date": "2026-11-23",
+    "why": "The formulary prints NONE for a child paralytic (rocuronium, p.57; succinylcholine is not in it) and has no atropine pre-dose for RSI, so no partial procedure is read. The child order and its steps stay for the record."
    },
    "steps": [
     {
