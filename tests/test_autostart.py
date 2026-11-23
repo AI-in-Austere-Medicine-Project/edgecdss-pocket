@@ -23,12 +23,12 @@ import subprocess
 
 import pytest
 
-from engine.session import boot, jsonl_log
-from tests.test_sets import PFC_START as START_UP_LINE   # names the set (2026-11-22)
+from engine.session import START_UP_LINE, boot, jsonl_log
 from voice import autostart as au
+from engine.bank import PFC_RETIRED  # the retired PFC set: fixture data (2026-11-23)
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-BANK = ROOT / "bank"
+BANK = PFC_RETIRED
 JBL = "2C:FD:B4:DD:BD:A5"
 MIC = ["arecord", "-q", "-D", "plughw:CARD=Microphone,DEV=0"]
 
@@ -164,7 +164,7 @@ def make(tmp_path, board=None, heard=(), log=None):
     def make_mic(cmd):
         mics.append(Mic(cmd))
         return mics[-1]
-    session = boot(BANK, log=log)
+    session = boot(BANK, retired_ok=True, log=log)
     p = au.Pocket(board, session, Hearing(heard), speaker, tmp_path, make_mic=make_mic,
                   clock=clock, sleep=sleep, say_log=lambda *a, **k: None)
     return p, board, speaker, clock, sleeps, mics

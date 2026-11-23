@@ -1,13 +1,13 @@
 {
- "grammar_sha256": "f553d9b14c631945849b489a622a7686bd1d5453e06c42986ccc3da48027a6d0",
+ "grammar_sha256": "6cff08c1c16de1ff4819cf250681bca41a53d44a1c9fd844b529c0705897dfae",
  "voices": [
   "af_nicole",
   "am_liam",
   "bf_lily"
  ],
- "names": 112,
- "clips": 336,
- "heard": 320,
+ "names": 86,
+ "clips": 258,
+ "heard": 246,
  "heard_as_another_drug": 0,
  "rows": [
   {
@@ -235,12 +235,12 @@
    "primary": "albuterol",
    "asks": [],
    "voice": "bf_lily",
-   "heard": "how buda roles",
-   "decoder": "spelled",
+   "heard": "albuterol als",
+   "decoder": "base",
    "heard_as": [
     "albuterol"
    ],
-   "turn": "Adult? Say adult, or give the age or the weight."
+   "turn": "No signed dose of albuterol for that."
   },
   {
    "drug": "albuterol",
@@ -419,10 +419,8 @@
    "voice": "am_liam",
    "heard": "cord or own",
    "decoder": "spelled",
-   "heard_as": [
-    "amiodarone"
-   ],
-   "turn": "No signed dose of amiodarone for that."
+   "heard_as": [],
+   "turn": "Not recognised."
   },
   {
    "drug": "amiodarone",
@@ -471,45 +469,6 @@
    "decoder": "spelled",
    "heard_as": [
     "amiodarone"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "artesunate",
-   "name": "artesunate",
-   "primary": "artesunate",
-   "asks": [],
-   "voice": "af_nicole",
-   "heard": "artesunate",
-   "decoder": "spelled",
-   "heard_as": [
-    "artesunate"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "artesunate",
-   "name": "artesunate",
-   "primary": "artesunate",
-   "asks": [],
-   "voice": "am_liam",
-   "heard": "artesunate",
-   "decoder": "spelled",
-   "heard_as": [
-    "artesunate"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "artesunate",
-   "name": "artesunate",
-   "primary": "artesunate",
-   "asks": [],
-   "voice": "bf_lily",
-   "heard": "artesunate",
-   "decoder": "spelled",
-   "heard_as": [
-    "artesunate"
    ],
    "turn": "Weight?"
   },
@@ -596,7 +555,7 @@
    "asks": [],
    "voice": "af_nicole",
    "heard": "asa",
-   "decoder": "base",
+   "decoder": "spelled",
    "heard_as": [
     "aspirin"
    ],
@@ -608,7 +567,7 @@
    "primary": "aspirin",
    "asks": [],
    "voice": "am_liam",
-   "heard": "list them",
+   "heard": "list then",
    "decoder": "spelled",
    "heard_as": [],
    "turn": "Not recognised."
@@ -622,7 +581,7 @@
    "heard": "rsi",
    "decoder": "base",
    "heard_as": [],
-   "turn": "No signed steps for rapid sequence intubation."
+   "turn": "Weight?"
   },
   {
    "drug": "atropine",
@@ -789,7 +748,7 @@
    "heard_as": [
     "calcium chloride"
    ],
-   "turn": "Adult? Say adult, or give the age or the weight."
+   "turn": "Weight?"
   },
   {
    "drug": "calcium chloride",
@@ -802,7 +761,7 @@
    "heard_as": [
     "calcium chloride"
    ],
-   "turn": "Adult? Say adult, or give the age or the weight."
+   "turn": "Weight?"
   },
   {
    "drug": "calcium chloride",
@@ -814,240 +773,6 @@
    "decoder": "spelled",
    "heard_as": [
     "calcium chloride"
-   ],
-   "turn": "Adult? Say adult, or give the age or the weight."
-  },
-  {
-   "drug": "calcium gluconate",
-   "name": "calcium gluconate",
-   "primary": "calcium gluconate",
-   "asks": [],
-   "voice": "af_nicole",
-   "heard": "calcium glue can aid",
-   "decoder": "spelled",
-   "heard_as": [
-    "calcium gluconate"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "calcium gluconate",
-   "name": "calcium gluconate",
-   "primary": "calcium gluconate",
-   "asks": [],
-   "voice": "am_liam",
-   "heard": "calcium glue can aids",
-   "decoder": "spelled",
-   "heard_as": [
-    "calcium gluconate"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "calcium gluconate",
-   "name": "calcium gluconate",
-   "primary": "calcium gluconate",
-   "asks": [],
-   "voice": "bf_lily",
-   "heard": "calcium glue can aids",
-   "decoder": "spelled",
-   "heard_as": [
-    "calcium gluconate"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "calcium gluconate",
-   "name": "cal gluc",
-   "primary": "calcium gluconate",
-   "asks": [],
-   "voice": "af_nicole",
-   "heard": "cal gluck",
-   "decoder": "spelled",
-   "heard_as": [
-    "calcium gluconate"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "calcium gluconate",
-   "name": "cal gluc",
-   "primary": "calcium gluconate",
-   "asks": [],
-   "voice": "am_liam",
-   "heard": "tell glug",
-   "decoder": "spelled",
-   "heard_as": [
-    "calcium gluconate"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "calcium gluconate",
-   "name": "cal gluc",
-   "primary": "calcium gluconate",
-   "asks": [],
-   "voice": "bf_lily",
-   "heard": "cal glug",
-   "decoder": "spelled",
-   "heard_as": [
-    "calcium gluconate"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "cefazolin",
-   "name": "cefazolin",
-   "primary": "cefazolin",
-   "asks": [],
-   "voice": "af_nicole",
-   "heard": "zephyrs allen",
-   "decoder": "spelled",
-   "heard_as": [
-    "cefazolin"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "cefazolin",
-   "name": "cefazolin",
-   "primary": "cefazolin",
-   "asks": [],
-   "voice": "am_liam",
-   "heard": "zephyrs allen",
-   "decoder": "spelled",
-   "heard_as": [
-    "cefazolin"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "cefazolin",
-   "name": "cefazolin",
-   "primary": "cefazolin",
-   "asks": [],
-   "voice": "bf_lily",
-   "heard": "zephyr zilin",
-   "decoder": "spelled",
-   "heard_as": [
-    "cefazolin"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "cefazolin",
-   "name": "ancef",
-   "primary": "cefazolin",
-   "asks": [],
-   "voice": "af_nicole",
-   "heard": "an saf",
-   "decoder": "spelled",
-   "heard_as": [
-    "cefazolin"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "cefazolin",
-   "name": "ancef",
-   "primary": "cefazolin",
-   "asks": [],
-   "voice": "am_liam",
-   "heard": "an safe",
-   "decoder": "spelled",
-   "heard_as": [
-    "cefazolin"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "cefazolin",
-   "name": "ancef",
-   "primary": "cefazolin",
-   "asks": [],
-   "voice": "bf_lily",
-   "heard": "an safe",
-   "decoder": "spelled",
-   "heard_as": [
-    "cefazolin"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "ceftriaxone",
-   "name": "ceftriaxone",
-   "primary": "ceftriaxone",
-   "asks": [],
-   "voice": "af_nicole",
-   "heard": "soft reacts own",
-   "decoder": "spelled",
-   "heard_as": [
-    "ceftriaxone"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "ceftriaxone",
-   "name": "ceftriaxone",
-   "primary": "ceftriaxone",
-   "asks": [],
-   "voice": "am_liam",
-   "heard": "sept reacts own",
-   "decoder": "spelled",
-   "heard_as": [
-    "ceftriaxone"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "ceftriaxone",
-   "name": "ceftriaxone",
-   "primary": "ceftriaxone",
-   "asks": [],
-   "voice": "bf_lily",
-   "heard": "soft reacts own",
-   "decoder": "spelled",
-   "heard_as": [
-    "ceftriaxone"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "ceftriaxone",
-   "name": "rocephin",
-   "primary": "ceftriaxone",
-   "asks": [],
-   "voice": "af_nicole",
-   "heard": "rose finn",
-   "decoder": "spelled",
-   "heard_as": [
-    "ceftriaxone"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "ceftriaxone",
-   "name": "rocephin",
-   "primary": "ceftriaxone",
-   "asks": [],
-   "voice": "am_liam",
-   "heard": "rose finn",
-   "decoder": "spelled",
-   "heard_as": [
-    "ceftriaxone"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "ceftriaxone",
-   "name": "rocephin",
-   "primary": "ceftriaxone",
-   "asks": [],
-   "voice": "bf_lily",
-   "heard": "rose finn",
-   "decoder": "spelled",
-   "heard_as": [
-    "ceftriaxone"
    ],
    "turn": "Weight?"
   },
@@ -1253,7 +978,7 @@
    "asks": [],
    "voice": "af_nicole",
    "heard": "cardizem",
-   "decoder": "base",
+   "decoder": "spelled",
    "heard_as": [
     "diltiazem"
    ],
@@ -1687,41 +1412,6 @@
    "turn": "Epinephrine or norepinephrine?"
   },
   {
-   "drug": "ertapenem",
-   "name": "ertapenem",
-   "primary": "ertapenem",
-   "asks": [],
-   "voice": "af_nicole",
-   "heard": "hurry up numb",
-   "decoder": "spelled",
-   "heard_as": [
-    "ertapenem"
-   ],
-   "turn": "Adult? Say adult, or give the age or the weight."
-  },
-  {
-   "drug": "ertapenem",
-   "name": "ertapenem",
-   "primary": "ertapenem",
-   "asks": [],
-   "voice": "am_liam",
-   "heard": "thirty up numb",
-   "decoder": "spelled",
-   "heard_as": [],
-   "turn": "Not recognised."
-  },
-  {
-   "drug": "ertapenem",
-   "name": "ertapenem",
-   "primary": "ertapenem",
-   "asks": [],
-   "voice": "bf_lily",
-   "heard": "eight known",
-   "decoder": "base",
-   "heard_as": [],
-   "turn": "Kilos or pounds?"
-  },
-  {
    "drug": "fentanyl",
    "name": "fentanyl",
    "primary": "fentanyl",
@@ -1779,7 +1469,7 @@
    "primary": "fentanyl",
    "asks": [],
    "voice": "am_liam",
-   "heard": "fender",
+   "heard": "fant",
    "decoder": "spelled",
    "heard_as": [
     "fentanyl"
@@ -2277,84 +1967,6 @@
    "turn": "Weight?"
   },
   {
-   "drug": "levetiracetam",
-   "name": "levetiracetam",
-   "primary": "levetiracetam",
-   "asks": [],
-   "voice": "af_nicole",
-   "heard": "levitt tourists adam",
-   "decoder": "spelled",
-   "heard_as": [
-    "levetiracetam"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "levetiracetam",
-   "name": "levetiracetam",
-   "primary": "levetiracetam",
-   "asks": [],
-   "voice": "am_liam",
-   "heard": "levitt tourists adam",
-   "decoder": "spelled",
-   "heard_as": [
-    "levetiracetam"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "levetiracetam",
-   "name": "levetiracetam",
-   "primary": "levetiracetam",
-   "asks": [],
-   "voice": "bf_lily",
-   "heard": "levitt tourists adam",
-   "decoder": "spelled",
-   "heard_as": [
-    "levetiracetam"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "levetiracetam",
-   "name": "keppra",
-   "primary": "levetiracetam",
-   "asks": [],
-   "voice": "af_nicole",
-   "heard": "capra",
-   "decoder": "spelled",
-   "heard_as": [
-    "levetiracetam"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "levetiracetam",
-   "name": "keppra",
-   "primary": "levetiracetam",
-   "asks": [],
-   "voice": "am_liam",
-   "heard": "cabral",
-   "decoder": "spelled",
-   "heard_as": [
-    "levetiracetam"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "levetiracetam",
-   "name": "keppra",
-   "primary": "levetiracetam",
-   "asks": [],
-   "voice": "bf_lily",
-   "heard": "capra",
-   "decoder": "spelled",
-   "heard_as": [
-    "levetiracetam"
-   ],
-   "turn": "Weight?"
-  },
-  {
    "drug": "lidocaine",
    "name": "lidocaine",
    "primary": "lidocaine",
@@ -2468,84 +2080,6 @@
    "decoder": "spelled",
    "heard_as": [
     "lidocaine"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "lorazepam",
-   "name": "lorazepam",
-   "primary": "lorazepam",
-   "asks": [],
-   "voice": "af_nicole",
-   "heard": "laurie spam",
-   "decoder": "spelled",
-   "heard_as": [
-    "lorazepam"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "lorazepam",
-   "name": "lorazepam",
-   "primary": "lorazepam",
-   "asks": [],
-   "voice": "am_liam",
-   "heard": "lorries bam",
-   "decoder": "spelled",
-   "heard_as": [
-    "lorazepam"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "lorazepam",
-   "name": "lorazepam",
-   "primary": "lorazepam",
-   "asks": [],
-   "voice": "bf_lily",
-   "heard": "laurie spam",
-   "decoder": "spelled",
-   "heard_as": [
-    "lorazepam"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "lorazepam",
-   "name": "ativan",
-   "primary": "lorazepam",
-   "asks": [],
-   "voice": "af_nicole",
-   "heard": "out event",
-   "decoder": "spelled",
-   "heard_as": [
-    "lorazepam"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "lorazepam",
-   "name": "ativan",
-   "primary": "lorazepam",
-   "asks": [],
-   "voice": "am_liam",
-   "heard": "out event",
-   "decoder": "spelled",
-   "heard_as": [
-    "lorazepam"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "lorazepam",
-   "name": "ativan",
-   "primary": "lorazepam",
-   "asks": [],
-   "voice": "bf_lily",
-   "heard": "out event",
-   "decoder": "spelled",
-   "heard_as": [
-    "lorazepam"
    ],
    "turn": "Weight?"
   },
@@ -2862,121 +2396,6 @@
    "turn": "Weight?"
   },
   {
-   "drug": "morphine",
-   "name": "morphine",
-   "primary": "morphine",
-   "asks": [],
-   "voice": "af_nicole",
-   "heard": "morphine",
-   "decoder": "spelled",
-   "heard_as": [
-    "morphine"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "morphine",
-   "name": "morphine",
-   "primary": "morphine",
-   "asks": [],
-   "voice": "am_liam",
-   "heard": "morphine",
-   "decoder": "spelled",
-   "heard_as": [
-    "morphine"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "morphine",
-   "name": "morphine",
-   "primary": "morphine",
-   "asks": [],
-   "voice": "bf_lily",
-   "heard": "morphine",
-   "decoder": "spelled",
-   "heard_as": [
-    "morphine"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "morphine",
-   "name": "morphia",
-   "primary": "morphine",
-   "asks": [],
-   "voice": "af_nicole",
-   "heard": "more fia",
-   "decoder": "spelled",
-   "heard_as": [
-    "morphine"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "morphine",
-   "name": "morphia",
-   "primary": "morphine",
-   "asks": [],
-   "voice": "am_liam",
-   "heard": "more fia",
-   "decoder": "spelled",
-   "heard_as": [
-    "morphine"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "morphine",
-   "name": "morphia",
-   "primary": "morphine",
-   "asks": [],
-   "voice": "bf_lily",
-   "heard": "more fia",
-   "decoder": "spelled",
-   "heard_as": [
-    "morphine"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "moxifloxacin",
-   "name": "moxifloxacin",
-   "primary": "moxifloxacin",
-   "asks": [],
-   "voice": "af_nicole",
-   "heard": "marx if locks isn't",
-   "decoder": "spelled",
-   "heard_as": [
-    "moxifloxacin"
-   ],
-   "turn": "Adult? Say adult, or give the age or the weight."
-  },
-  {
-   "drug": "moxifloxacin",
-   "name": "moxifloxacin",
-   "primary": "moxifloxacin",
-   "asks": [],
-   "voice": "am_liam",
-   "heard": "marx if locks isn't",
-   "decoder": "spelled",
-   "heard_as": [
-    "moxifloxacin"
-   ],
-   "turn": "Adult? Say adult, or give the age or the weight."
-  },
-  {
-   "drug": "moxifloxacin",
-   "name": "moxifloxacin",
-   "primary": "moxifloxacin",
-   "asks": [],
-   "voice": "bf_lily",
-   "heard": "marx if locks him sin",
-   "decoder": "spelled",
-   "heard_as": [],
-   "turn": "Not recognised."
-  },
-  {
    "drug": "naloxone",
    "name": "naloxone",
    "primary": "naloxone",
@@ -3034,7 +2453,7 @@
    "primary": "naloxone",
    "asks": [],
    "voice": "am_liam",
-   "heard": "nora kin",
+   "heard": "nor kin",
    "decoder": "spelled",
    "heard_as": [
     "naloxone"
@@ -3217,10 +2636,13 @@
     "norepinephrine"
    ],
    "voice": "bf_lily",
-   "heard": "level",
+   "heard": "lever",
    "decoder": "spelled",
-   "heard_as": [],
-   "turn": "Not recognised."
+   "heard_as": [
+    "levofloxacin",
+    "norepinephrine"
+   ],
+   "turn": "Levofloxacin or norepinephrine?"
   },
   {
    "drug": "norepinephrine",
@@ -3547,121 +2969,6 @@
    "turn": "Weight?"
   },
   {
-   "drug": "phytomenadione",
-   "name": "phytomenadione",
-   "primary": "phytomenadione",
-   "asks": [],
-   "voice": "af_nicole",
-   "heard": "fight omni die any",
-   "decoder": "spelled",
-   "heard_as": [],
-   "turn": "Not recognised."
-  },
-  {
-   "drug": "phytomenadione",
-   "name": "phytomenadione",
-   "primary": "phytomenadione",
-   "asks": [],
-   "voice": "am_liam",
-   "heard": "fido may die any",
-   "decoder": "spelled",
-   "heard_as": [
-    "phytomenadione"
-   ],
-   "turn": "Adult? Say adult, or give the age or the weight."
-  },
-  {
-   "drug": "phytomenadione",
-   "name": "phytomenadione",
-   "primary": "phytomenadione",
-   "asks": [],
-   "voice": "bf_lily",
-   "heard": "fido may die any",
-   "decoder": "spelled",
-   "heard_as": [
-    "phytomenadione"
-   ],
-   "turn": "Adult? Say adult, or give the age or the weight."
-  },
-  {
-   "drug": "phytomenadione",
-   "name": "phytonadione",
-   "primary": "phytomenadione",
-   "asks": [],
-   "voice": "af_nicole",
-   "heard": "fighter may die any",
-   "decoder": "spelled",
-   "heard_as": [
-    "phytomenadione"
-   ],
-   "turn": "Adult? Say adult, or give the age or the weight."
-  },
-  {
-   "drug": "phytomenadione",
-   "name": "phytonadione",
-   "primary": "phytomenadione",
-   "asks": [],
-   "voice": "am_liam",
-   "heard": "fighter may die any",
-   "decoder": "spelled",
-   "heard_as": [
-    "phytomenadione"
-   ],
-   "turn": "Adult? Say adult, or give the age or the weight."
-  },
-  {
-   "drug": "phytomenadione",
-   "name": "phytonadione",
-   "primary": "phytomenadione",
-   "asks": [],
-   "voice": "bf_lily",
-   "heard": "fighter may die any",
-   "decoder": "spelled",
-   "heard_as": [
-    "phytomenadione"
-   ],
-   "turn": "Adult? Say adult, or give the age or the weight."
-  },
-  {
-   "drug": "phytomenadione",
-   "name": "vitamin k",
-   "primary": "phytomenadione",
-   "asks": [],
-   "voice": "af_nicole",
-   "heard": "vitamin k",
-   "decoder": "spelled",
-   "heard_as": [
-    "phytomenadione"
-   ],
-   "turn": "Adult? Say adult, or give the age or the weight."
-  },
-  {
-   "drug": "phytomenadione",
-   "name": "vitamin k",
-   "primary": "phytomenadione",
-   "asks": [],
-   "voice": "am_liam",
-   "heard": "vitamin k",
-   "decoder": "spelled",
-   "heard_as": [
-    "phytomenadione"
-   ],
-   "turn": "Adult? Say adult, or give the age or the weight."
-  },
-  {
-   "drug": "phytomenadione",
-   "name": "vitamin k",
-   "primary": "phytomenadione",
-   "asks": [],
-   "voice": "bf_lily",
-   "heard": "vitamin k",
-   "decoder": "spelled",
-   "heard_as": [
-    "phytomenadione"
-   ],
-   "turn": "Adult? Say adult, or give the age or the weight."
-  },
-  {
    "drug": "pralidoxime",
    "name": "pralidoxime",
    "primary": "pralidoxime",
@@ -3738,84 +3045,6 @@
    "turn": "Weight?"
   },
   {
-   "drug": "propofol",
-   "name": "propofol",
-   "primary": "propofol",
-   "asks": [],
-   "voice": "af_nicole",
-   "heard": "prepare fall",
-   "decoder": "spelled",
-   "heard_as": [
-    "propofol"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "propofol",
-   "name": "propofol",
-   "primary": "propofol",
-   "asks": [],
-   "voice": "am_liam",
-   "heard": "propofol",
-   "decoder": "spelled",
-   "heard_as": [
-    "propofol"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "propofol",
-   "name": "propofol",
-   "primary": "propofol",
-   "asks": [],
-   "voice": "bf_lily",
-   "heard": "prepare files",
-   "decoder": "spelled",
-   "heard_as": [
-    "propofol"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "propofol",
-   "name": "diprivan",
-   "primary": "propofol",
-   "asks": [],
-   "voice": "af_nicole",
-   "heard": "dipper van",
-   "decoder": "spelled",
-   "heard_as": [
-    "propofol"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "propofol",
-   "name": "diprivan",
-   "primary": "propofol",
-   "asks": [],
-   "voice": "am_liam",
-   "heard": "deborah van",
-   "decoder": "spelled",
-   "heard_as": [
-    "propofol"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "propofol",
-   "name": "diprivan",
-   "primary": "propofol",
-   "asks": [],
-   "voice": "bf_lily",
-   "heard": "diprivan",
-   "decoder": "spelled",
-   "heard_as": [
-    "propofol"
-   ],
-   "turn": "Weight?"
-  },
-  {
    "drug": "rocuronium",
    "name": "rocuronium",
    "primary": "rocuronium",
@@ -3826,7 +3055,7 @@
    "heard_as": [
     "rocuronium"
    ],
-   "turn": "Weight?"
+   "turn": "Adult? Say adult, or give the age or the weight."
   },
   {
    "drug": "rocuronium",
@@ -3839,7 +3068,7 @@
    "heard_as": [
     "rocuronium"
    ],
-   "turn": "Weight?"
+   "turn": "Adult? Say adult, or give the age or the weight."
   },
   {
    "drug": "rocuronium",
@@ -3847,12 +3076,12 @@
    "primary": "rocuronium",
    "asks": [],
    "voice": "bf_lily",
-   "heard": "rock your roni him",
+   "heard": "rock your roni ems",
    "decoder": "spelled",
    "heard_as": [
     "rocuronium"
    ],
-   "turn": "Weight?"
+   "turn": "Adult? Say adult, or give the age or the weight."
   },
   {
    "drug": "rocuronium",
@@ -3880,7 +3109,7 @@
     "rocuronium"
    ],
    "voice": "am_liam",
-   "heard": "rog",
+   "heard": "rock",
    "decoder": "spelled",
    "heard_as": [
     "ceftriaxone",
@@ -3897,7 +3126,7 @@
     "rocuronium"
    ],
    "voice": "bf_lily",
-   "heard": "rog",
+   "heard": "rock",
    "decoder": "spelled",
    "heard_as": [
     "ceftriaxone",
@@ -3906,45 +3135,6 @@
    "turn": "Ceftriaxone or rocuronium?"
   },
   {
-   "drug": "rocuronium",
-   "name": "rocky onium",
-   "primary": "rocuronium",
-   "asks": [],
-   "voice": "af_nicole",
-   "heard": "rocky own am",
-   "decoder": "spelled",
-   "heard_as": [
-    "rocuronium"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "rocuronium",
-   "name": "rocky onium",
-   "primary": "rocuronium",
-   "asks": [],
-   "voice": "am_liam",
-   "heard": "rocky only ems",
-   "decoder": "spelled",
-   "heard_as": [
-    "rocuronium"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "rocuronium",
-   "name": "rocky onium",
-   "primary": "rocuronium",
-   "asks": [],
-   "voice": "bf_lily",
-   "heard": "rocky only ems",
-   "decoder": "spelled",
-   "heard_as": [
-    "rocuronium"
-   ],
-   "turn": "Weight?"
-  },
-  {
    "drug": "sodium bicarbonate",
    "name": "sodium bicarbonate",
    "primary": "sodium bicarbonate",
@@ -4042,7 +3232,7 @@
    "asks": [],
    "voice": "am_liam",
    "heard": "bicarbonate",
-   "decoder": "base",
+   "decoder": "spelled",
    "heard_as": [
     "sodium bicarbonate"
    ],
@@ -4099,201 +3289,6 @@
     "sodium bicarbonate"
    ],
    "turn": "Sodium bicarbonate is signed, but Pocket cannot say its dose yet."
-  },
-  {
-   "drug": "sodium chloride 3%",
-   "name": "hypertonic saline",
-   "primary": "hypertonic saline",
-   "asks": [],
-   "voice": "af_nicole",
-   "heard": "hypertonic ceiling",
-   "decoder": "spelled",
-   "heard_as": [
-    "sodium chloride 3%"
-   ],
-   "turn": "Adult? Say adult, or give the age or the weight."
-  },
-  {
-   "drug": "sodium chloride 3%",
-   "name": "hypertonic saline",
-   "primary": "hypertonic saline",
-   "asks": [],
-   "voice": "am_liam",
-   "heard": "fiber tonic sailing",
-   "decoder": "spelled",
-   "heard_as": [
-    "sodium chloride 3%"
-   ],
-   "turn": "Adult? Say adult, or give the age or the weight."
-  },
-  {
-   "drug": "sodium chloride 3%",
-   "name": "hypertonic saline",
-   "primary": "hypertonic saline",
-   "asks": [],
-   "voice": "bf_lily",
-   "heard": "viper tonic sailing",
-   "decoder": "spelled",
-   "heard_as": [
-    "sodium chloride 3%"
-   ],
-   "turn": "Adult? Say adult, or give the age or the weight."
-  },
-  {
-   "drug": "succinylcholine",
-   "name": "succinylcholine",
-   "primary": "succinylcholine",
-   "asks": [],
-   "voice": "af_nicole",
-   "heard": "sexennio colleen",
-   "decoder": "spelled",
-   "heard_as": [
-    "succinylcholine"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "succinylcholine",
-   "name": "succinylcholine",
-   "primary": "succinylcholine",
-   "asks": [],
-   "voice": "am_liam",
-   "heard": "sexennio colleen",
-   "decoder": "spelled",
-   "heard_as": [
-    "succinylcholine"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "succinylcholine",
-   "name": "succinylcholine",
-   "primary": "succinylcholine",
-   "asks": [],
-   "voice": "bf_lily",
-   "heard": "sexennio colleen",
-   "decoder": "spelled",
-   "heard_as": [
-    "succinylcholine"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "succinylcholine",
-   "name": "succs",
-   "primary": "succinylcholine",
-   "asks": [],
-   "voice": "af_nicole",
-   "heard": "sucks",
-   "decoder": "spelled",
-   "heard_as": [
-    "succinylcholine"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "succinylcholine",
-   "name": "succs",
-   "primary": "succinylcholine",
-   "asks": [],
-   "voice": "am_liam",
-   "heard": "zack's",
-   "decoder": "spelled",
-   "heard_as": [
-    "succinylcholine"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "succinylcholine",
-   "name": "succs",
-   "primary": "succinylcholine",
-   "asks": [],
-   "voice": "bf_lily",
-   "heard": "suggs it",
-   "decoder": "spelled",
-   "heard_as": [
-    "succinylcholine"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "succinylcholine",
-   "name": "sux",
-   "primary": "succinylcholine",
-   "asks": [],
-   "voice": "af_nicole",
-   "heard": "sucks",
-   "decoder": "spelled",
-   "heard_as": [
-    "succinylcholine"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "succinylcholine",
-   "name": "sux",
-   "primary": "succinylcholine",
-   "asks": [],
-   "voice": "am_liam",
-   "heard": "zack's",
-   "decoder": "spelled",
-   "heard_as": [
-    "succinylcholine"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "succinylcholine",
-   "name": "sux",
-   "primary": "succinylcholine",
-   "asks": [],
-   "voice": "bf_lily",
-   "heard": "suggs it",
-   "decoder": "spelled",
-   "heard_as": [
-    "succinylcholine"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "succinylcholine",
-   "name": "suxamethonium",
-   "primary": "succinylcholine",
-   "asks": [],
-   "voice": "af_nicole",
-   "heard": "suck semi though niamh",
-   "decoder": "spelled",
-   "heard_as": [
-    "succinylcholine"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "succinylcholine",
-   "name": "suxamethonium",
-   "primary": "succinylcholine",
-   "asks": [],
-   "voice": "am_liam",
-   "heard": "suck semi though niamh",
-   "decoder": "spelled",
-   "heard_as": [
-    "succinylcholine"
-   ],
-   "turn": "Weight?"
-  },
-  {
-   "drug": "succinylcholine",
-   "name": "suxamethonium",
-   "primary": "succinylcholine",
-   "asks": [],
-   "voice": "bf_lily",
-   "heard": "suck semi though niamh",
-   "decoder": "spelled",
-   "heard_as": [
-    "succinylcholine"
-   ],
-   "turn": "Weight?"
   },
   {
    "drug": "tranexamic acid",

@@ -23,10 +23,10 @@ import time
 from typing import Callable, Optional
 
 from engine import contracts, vials, words
-from engine.bank import Bank, BankRefused, load_bank, merge_banks
+from engine.bank import BANK_DIR, Bank, BankRefused, load_bank
 from engine.procedures import Procedure, ProceduresRefused, load_procedures
 from grammar.parser import Age, Parsed, parse
-from grammar.vocabulary import (CONDITION_PATTERNS, CONFUSABLE_ROUTE_TERMS, CONTROL_OF, MENU_CONTROLS, MENU_OF, SET_CONTROLS,
+from grammar.vocabulary import (CONDITION_PATTERNS, CONFUSABLE_ROUTE_TERMS, CONTROL_OF, MENU_CONTROLS, MENU_OF,
                                 PROCEDURE_TITLES, VOLUME_UNITS, build, label_tokens, names_condition)
 
 PEDIATRIC_WEIGHT_CEILING_KG = 40.0  # EdgeCDSS openai_client: not spoken, a gate
@@ -47,22 +47,20 @@ TEST_NOTICE = "Test set. Not for patient use."
 # hash go to the log, not the speaker. The bank names no set, so the kit does.
 START_UP_LINE = ("Pocket ready. Research prototype, not for patient care. "
                  "Say drugs, procedures, or help.")
-# The start-up line names the set loaded (owner, 2026-11-22), and so does a set change.
-SET_LOADED = "{name} loaded. Research prototype, not for patient care. Say drugs, procedures, or help."
-SET_KEYS = {"PFC": "PFC set", "EMS": "EMS set"}
-IN_OTHER_SET = "No signed dose of {name} in the {here}. It is in the {there}; say {there} to load it."
-
-
-def start_up_line(name: str) -> str:
-    return START_UP_LINE.replace("Pocket ready. ", f"Pocket ready. {name}. ", 1)
+# One drug list, the EMS set (owner, 2026-11-23): no set switching, and the start-up line
+# names no set. A procedure step's dose with no signed EMS entry holds.
+STEP_HELD = "No signed dose of {name} for this step."
+STEP_HELD_AFTER = "No signed dose at this step for {names}."
 HOME_LINE = "Pocket ready. Say drugs, procedures, or help."
 # Help (the owner's text, 2026-11-21). Shown with the letters; said with the owner's route
 # words (2026-11-19) and RSI letter by letter. Each example asks nothing first: the drug one
 # goes straight to its read-back (owner, 2026-11-21: agitation, not pain, which asks which one).
+# The one drug list, the EMS set (2026-11-23), signs ketamine for agitation IM only: the drug
+# example is now fentanyl for pain, IV, which reads straight back in the EMS set.
 HELP_WRITTEN = (
     "Pocket gives signed drug doses and procedure steps by voice. Press the button, wait for "
     "the beep, speak, then press again. For a drug, say the drug, what it is for, the route and "
-    "the weight. For example: ketamine for agitation, IV, eighty kilos. Pocket repeats what it heard. "
+    "the weight. For example: fentanyl for pain, IV, eighty kilos. Pocket repeats what it heard. "
     "Say yes to hear the dose, or no to cancel. For a procedure, say its name and the weight. For "
     "example: RSI, eighty kilos. Then say next, back or repeat. Say new patient to start again. "
     "Say drugs or procedures to hear what Pocket knows. Say what can I say at any time.")
@@ -183,6 +181,7 @@ class Request:
     # A drug said at a procedure step that names it: only the step's signed entries (Q5).
     only: tuple = ()
     step: tuple = ()          # (procedure, step id), for the log
+    step_held: str = ""       # a drug the step names with no signed entry: it holds
 
     @property
     def empty(self) -> bool:
@@ -327,21 +326,15 @@ def _on_route(entry: dict, route: str) -> bool:
 class Session:
     def __init__(self, bank: Optional[Bank], refused: Optional[str] = None,
                  log: Optional[Callable] = None, now: Optional[Callable] = None,
-                 clock: Optional[Callable] = None, procedures: Optional[dict] = None,
-                 sets: Optional[dict] = None, on_set: Optional[Callable] = None):
+                 clock: Optional[Callable] = None, procedures: Optional[dict] = None):
         self.bank, self.refused = bank, refused
-        self.sets = sets or {}             # {"PFC": (bank, procedures) or refusal text, ...}
-        self._on_set = on_set
         self.procedures = procedures or {}
         self._run = None
         self.records = []
         self._log = log if log is not None else self.records.append
         self._now = now or (lambda: datetime.datetime.now(datetime.timezone.utc).isoformat())
         self._logged = 0
-        # With both sets, Pocket hears every set's names (owner, 2026-11-22) and doses from
-        # the loaded one only.
-        loaded = [v[0] for v in self.sets.values() if not isinstance(v, str)]
-        self.vocab = (build(merge_banks(loaded)) if len(loaded) > 1 else build(bank)) if bank else None
+        self.vocab = build(bank) if bank else None
         self.patient, self.req = Patient(), Request()
         self._pending = None   # the entry a read-back is waiting on
         self._clock = clock or time.monotonic
@@ -361,7 +354,7 @@ class Session:
             return Turn("refused", f"Bank refused: {self.refused}. No doses.")
         bank, short = self.bank, self.bank.hash[:8]
         name = set_name(bank.kit_id)
-        say = start_up_line(name)
+        say = START_UP_LINE
         if bank.test:
             say = f"{TEST_NOTICE} {say}"
         self._log({"event": "boot", "time": self._now(), "set": name, "bank_version": bank.version,
@@ -413,39 +406,11 @@ class Session:
             return MENU_OF.get(p.controls[0], p.controls[0])
         return None
 
-    def _set_holding(self, drug: str) -> Optional[str]:
-        """The name of another set on this device that signs this drug, or None."""
-        for key, held in self.sets.items():
-            if isinstance(held, str) or held[0] is self.bank:
-                continue
-            if drug in held[0].signed_drugs or drug in held[0].silent_drugs:
-                return SET_KEYS[key]
-        return None
-
     @property
     def set_name(self) -> str:
         return set_name(self.bank.kit_id) if self.bank else ""
 
-    def _load_set(self, key: str) -> Turn:
-        """Load a set by its key, from anywhere: the read-back is cancelled and the patient
-        starts again, so one set's doses never meet the other's patient."""
-        name = SET_KEYS[key]
-        held = self.sets.get(key)
-        if held is None:
-            return Turn("menu", f"Only the {self.set_name} is on this device.")
-        if isinstance(held, str):
-            return Turn("menu", f"{name} refused: {held}. The {self.set_name} stays.")
-        self.bank, self.procedures = held
-        self.patient, self.req, self._run = Patient(), Request(), None
-        self._pending, self._misses, self._last_entry, self._last_volume = None, 0, None, False
-        self.announce = _said(self._boot_turn())
-        if self._on_set:
-            self._on_set(key)
-        return Turn("menu", SET_LOADED.format(name=name))
-
     def _menu(self, word: str) -> Turn:
-        if word in SET_CONTROLS:
-            return self._load_set(SET_CONTROLS[word])
         if word == "home":                    # from anywhere; the patient stays
             self.req, self._pending, self._misses, self._run = Request(), None, 0, None
             return Turn("menu", HOME_LINE)
@@ -702,6 +667,8 @@ class Session:
         after = []
         if step.doses:
             after.append(f"For the dose, say {_choice([words.say_name(d) for d in step.drugs])}.")
+        if step.held_drugs:
+            after.append(STEP_HELD_AFTER.format(names=_choice([words.say_name(d) for d in step.held_drugs], " and ")))
         return Turn("step", say, after, data={"step": step.id, "procedure": run.proc.name})
 
     def _move(self, by: int) -> Turn:
@@ -754,6 +721,8 @@ class Session:
         if req.drug in step.drugs:
             req.only = tuple(_key(e) for e in step.doses if e["drug"] == req.drug)
             req.step = (run.proc.name, step.id)
+        elif req.drug in step.held_drugs:
+            req.step_held, req.step = req.drug, (run.proc.name, step.id)
 
     # ── the gate ───────────────────────────────────────────────────────────
 
@@ -768,13 +737,11 @@ class Session:
             names = [words.say_name(o) for o in req.options]
             return Turn("ask", words.sentence(_choice(names)) + "?")
         drug = req.drug
+        if req.step_held:
+            return self._hold(STEP_HELD.format(name=words.say_name(req.step_held)))
         if drug not in self.bank.signed_drugs:
             if drug in self.bank.silent_drugs:
                 return self._hold(SIGNED_SILENT.format(name=words.say_name(drug).capitalize()))
-            other = self._set_holding(drug)
-            if other:
-                held = self._hold(IN_OTHER_SET.format(name=words.say_name(drug), here=self.set_name, there=other))
-                return dataclasses.replace(held, data={"letters": True})
             return self._hold(f"No signed dose for {req.heard}.")
         if req.route_options:
             return Turn("ask", _choice(list(req.route_options)) + "?")
@@ -1029,36 +996,11 @@ def _volume_words(vol: dict, withheld: bool) -> str:
     return NO_SIGNED_VIAL
 
 
-def boot_sets(dirs: dict, chosen: str = "PFC", log: Optional[Callable] = None,
-              now: Optional[Callable] = None, clock: Optional[Callable] = None,
-              on_set: Optional[Callable] = None) -> "Session":
-    """Both sets, the chosen one loaded ({"PFC": dir, "EMS": dir}). A set that is refused
-    is named when it is asked for; if the chosen one is refused, the other loads."""
-    sets = {}
-    for key, d in dirs.items():
-        try:
-            bank = load_bank(d)
-        except BankRefused as e:
-            sets[key] = str(e)
-            continue
-        try:
-            procedures = load_procedures(d, bank)
-        except ProceduresRefused:
-            procedures = {}
-        sets[key] = (bank, procedures)
-    order = [chosen] + [k for k in dirs if k != chosen]
-    key = next((k for k in order if not isinstance(sets.get(k), str) and k in sets), None)
-    if key is None:
-        return Session(None, refused=sets.get(chosen) or "no set", sets=sets)
-    bank, procedures = sets[key]
-    return Session(bank, log=log, now=now, clock=clock, procedures=procedures, sets=sets, on_set=on_set)
-
-
-def boot(bank_dir, log: Optional[Callable] = None, now: Optional[Callable] = None,
-         clock: Optional[Callable] = None) -> Session:
+def boot(bank_dir=BANK_DIR, log: Optional[Callable] = None, now: Optional[Callable] = None,
+         clock: Optional[Callable] = None, retired_ok: bool = False) -> Session:
     """A session, refused if the bank is. A refused session answers nothing else."""
     try:
-        bank = load_bank(bank_dir)
+        bank = load_bank(bank_dir, retired_ok=retired_ok)
     except BankRefused as e:
         return Session(None, refused=str(e))
     try:

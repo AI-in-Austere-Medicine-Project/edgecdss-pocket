@@ -11,9 +11,9 @@ Roadmap: see [ROADMAP.md](ROADMAP.md) for the build order and where help is welc
 <p align="center"><img src="docs/pocket-board.jpg" alt="EdgeCDSS Pocket: Radxa Zero 3W with Shokz bone-conduction headset" width="320"></p>
 A wearable that gives a signed drug dose in millilitres by voice. No language model, no network, no screen.
 
-Say "ketamine for moderate pain, IV, eighty kilos." It says "Ketamine, moderate to severe pain analgesia, eye vee, eighty kilos. Confirm?" Say "confirm." It says "Ketamine twenty milligrams. Zero point four mils of five hundred per ten. Use a one mil syringe." It logs the time.
+Say "fentanyl for pain, IV, twenty kilos." It says "Fentanyl, pain or fever, eye vee, child, twenty kilos. Confirm?" Say "confirm." It says "Fentanyl twenty micrograms. Zero point four mils of fifty micrograms per mil. Use a one mil syringe." It logs the time.
 
-That is the signed 0.25 mg/kg: 0.4 mL of the kit's 50 mg/mL vial. Pocket never dilutes (owner rule, 2026-11-22): a volume under 0.5 mL is said to the nearest 0.01 mL with "Use a one mil syringe.", and under 0.05 mL it is too small to draw. Volumes are rounded by band (under 1 mL to 0.01, 1 to 10 mL to 0.1, from 10 mL to 1 mL, never above the signed maximum), and the strength is said as the vial's label reads ("five hundred per ten").
+That is the signed 1 mcg/kg for a child (EMS-103): 0.4 mL of the kit's 50 mcg/mL vial. Pocket carries one drug list, the EMS set (owner, 2026-11-23); the PFC set is retired, kept unchanged in `bank/retired/pfc/` and never loaded. Pocket never dilutes (owner rule, 2026-11-22): a volume under 0.5 mL is said to the nearest 0.01 mL with "Use a one mil syringe.", and under 0.05 mL it is too small to draw. Volumes are rounded by band (under 1 mL to 0.01, 1 to 10 mL to 0.1, from 10 mL to 1 mL, never above the signed maximum), and the strength is said as the vial's label reads ("fifty micrograms per mil").
 
 Part of the [AI in Austere Medicine Project](https://github.com/AI-in-Austere-Medicine-Project). 
 
@@ -98,7 +98,7 @@ For someone who has never used Pocket (owner, 2026-11-21). None of it ever speak
 
 ## Procedure steps
 
-Signed steps are read one at a time (owner, 2026-11-20). They come from `bank/procedures.json`, signed by name from the RSI packet (JTS CPG ID39 p.28):
+Signed steps are read one at a time (owner, 2026-11-20). They come from `bank/ems/procedures.json`: the steps signed by name from the RSI packet (JTS CPG ID39 p.28), text unchanged, with each dose linked to an EMS entry or held (owner, 2026-11-23: "Change no doses. Steps with no EMS entry hold."). Only the child's ketamine (P3, EMS-135, 2 mg/kg) is linked; at the other dose steps Pocket reads the step, then says "No signed dose at this step for ...":
 - **"RSI"** reads the RSI steps.
   - The weight is asked once, at the start. Access is never asked.
   - An adult gets steps 1–10. A child gets P1 after step 1, P2 before the induction step, and P3 and P4 in place of 6 and 6b.
@@ -107,7 +107,8 @@ Signed steps are read one at a time (owner, 2026-11-20). They come from `bank/pr
   - For a child under 12, or a child of unknown age, P5 replaces only the surgical airway line.
 - **"next", "back" and "repeat"** move through the steps. "repeat" reads the current step again, unless a dose question at that step is open, or a read-back is waiting.
 - **"start over"** goes back to step one of the same procedure and keeps the patient. "cancel" or "new patient" ends the steps.
-- **A step with a dose names its signed drugs:** "For the dose, say rocuronium or succinylcholine." The drug the medic says is read back for that step's signed entry, and doses only on "confirm". The usual holds and questions apply, such as a contraindication or the age band. The log line names the procedure and step.
+- **A step with a dose names its signed drugs:** "For the dose, say ketamine." The drug the medic says is read back for that step's signed entry, and doses only on "confirm". The usual holds and questions apply, such as a contraindication or the age band. The log line names the procedure and step.
+- **A step's held dose is named and never computed:** "No signed dose at this step for rocuronium and succinylcholine." Asked for at that step, it holds: "No signed dose of rocuronium for this step."
 - **What is not spoken:**
   - unsigned drugs (etomidate, vecuronium);
   - the struck pretreat step;

@@ -28,8 +28,7 @@ import pathlib
 import subprocess
 import time
 
-from engine.bank import SET_DIRS
-from engine.session import boot, boot_sets, jsonl_log
+from engine.session import boot, jsonl_log
 from voice import device as dev
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -364,37 +363,6 @@ def stamped_log(path, board):
     return log
 
 
-# The set chosen on the device (owner, 2026-11-22), remembered across a power cut.
-SETS = SET_DIRS
-SET_FILE = pathlib.Path(os.environ.get("POCKET_SET_FILE", pathlib.Path.home() / ".config" / "edgecdss-pocket" / "set"))
-
-
-def saved_set(path) -> str:
-    """The set saved last, or the PFC set (nothing saved, or not a set)."""
-    try:
-        key = pathlib.Path(path).read_text().strip()
-    except OSError:
-        return "PFC"
-    return key if key in SETS else "PFC"
-
-
-def save_set(path, key: str) -> None:
-    """Written whole or not at all: a temporary file, fsynced, renamed, the directory fsynced."""
-    path = pathlib.Path(path)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    tmp = path.with_suffix(".tmp")
-    with open(tmp, "w", encoding="utf-8") as f:
-        f.write(key + "\n")
-        f.flush()
-        os.fsync(f.fileno())
-    os.replace(tmp, path)
-    fd = os.open(path.parent, os.O_RDONLY)
-    try:
-        os.fsync(fd)
-    finally:
-        os.close(fd)
-
-
 def main() -> None:
     board = Board()
     t0 = board.uptime()
@@ -410,13 +378,7 @@ def main() -> None:
     holder = []
     speaker = Later(lambda: Speaker(dev.PIPER, device="null"),       # the slowest: first
                     done=lambda: holder and holder[0].event("loaded", what="voice"))
-    hearing = None
-
-    def on_set(key):                    # remembered across a power cut; heard with its words
-        save_set(SET_FILE, key)
-        if hearing is not None:
-            hearing.vocab = session.vocab
-    session = boot_sets(SETS, saved_set(SET_FILE), log=log, on_set=on_set)
+    session = boot(log=log)             # the EMS set, the one drug list (owner, 2026-11-23)
     hearing = Hearing(vosk.Model(str(dev.MODEL)), json.loads(dev.GRAMMAR.read_text()), session.vocab)
     pocket = Pocket(board, session, hearing, speaker, out)
     holder.append(pocket)

@@ -1,4 +1,4 @@
-"""Dev tool: is every signed drug heard, in both sets? Synthetic held-out voices, the real grammar.
+"""Dev tool: is every signed drug heard? Synthetic held-out voices, the real grammar.
 
   python3 -m voice.tools.dryrun_drugs jobs JOBS.json
   ~/pi-cloud-cdss/.venv/bin/python voice/tools/synth_kokoro.py JOBS.json WAVDIR
@@ -16,8 +16,8 @@ import pathlib
 import sys
 import wave
 
-from engine.bank import SET_DIRS, load_sets, merge_banks
-from engine.session import boot_sets
+from engine.bank import BANK_DIR, load_bank
+from engine.session import boot
 from grammar.vocabulary import MEDIC_NAMES, _say_term, build
 from voice import spoken
 
@@ -26,7 +26,7 @@ VOICES = ("af_nicole", "am_liam", "bf_lily")
 
 
 def names():
-    bank = merge_banks(load_sets().values())       # both sets (owner, 2026-11-22)
+    bank = load_bank(BANK_DIR)       # the EMS set, the one drug list (owner, 2026-11-23)
     vocab = build(bank)
     groups = {}
     for e in bank.entries + bank.silent:
@@ -62,10 +62,8 @@ def score(model_dir, wavdir):
     gpath = ROOT / "grammar" / "vosk_grammar.json"
     g = json.loads(gpath.read_text())
     from voice.hear import Hearing
-    vocab = build(merge_banks(load_sets().values()))
+    vocab = build(load_bank(BANK_DIR))
     hearing = Hearing(vosk.Model(str(model_dir)), g, vocab)
-    sets = load_sets()
-    EMS_DRUGS = (sets["EMS"].signed_drugs | sets["EMS"].silent_drugs) - sets["PFC"].signed_drugs
     out = []
     for r in names():
         for v in VOICES:
@@ -73,7 +71,7 @@ def score(model_dir, wavdir):
             with wave.open(str(pathlib.Path(wavdir) / f"{clip_id(r['name'], v)}.wav")) as w:
                 u.feed(w.readframes(w.getnframes()))
             heard, text, which = u.finish()
-            s = boot_sets(SET_DIRS, "EMS" if r["drug"] in EMS_DRUGS else "PFC")   # the drug's own set
+            s = boot()
             parsed = s.parse(text)
             turn = s.handle(text, spoken=True)
             heard_as = [s.req.drug] if s.req.drug else list(s.req.options)

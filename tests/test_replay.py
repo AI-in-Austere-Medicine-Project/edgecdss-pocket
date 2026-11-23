@@ -8,6 +8,7 @@ import pytest
 
 from engine.session import SAY_CONFIRM_OR_CANCEL, boot
 from grammar.vocabulary import CONFIRM_WORDS
+from engine.bank import PFC_RETIRED  # the retired PFC set: fixture data (2026-11-23)
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 CORPUS = json.loads((ROOT / "tests" / "replay_corpus.json").read_text())
@@ -20,7 +21,7 @@ def test_the_corpus_has_fifty_cases():
 
 @pytest.mark.parametrize("case", CORPUS, ids=[c["id"] for c in CORPUS])
 def test_replay(case):
-    s = boot(ROOT / "bank")
+    s = boot(PFC_RETIRED, retired_ok=True)
     read_back = False
     for phrase, kind, say, *after in case["turns"]:
         turn = s.handle(phrase)
@@ -38,6 +39,6 @@ def test_replay(case):
 def test_a_dose_with_no_condition_stated_is_followed_by_nothing():
     # Owner ruling 2026-11-08: cautions follow the dose only when they name a stated
     # condition; otherwise they are in "why" (tests/test_cautions.py).
-    s = boot(ROOT / "bank")
+    s = boot(PFC_RETIRED, retired_ok=True)
     s.handle("ketamine for agitation iv eighty kilos")
     assert s.handle("confirm").after == []

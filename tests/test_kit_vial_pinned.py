@@ -17,14 +17,15 @@ import shutil
 import pytest
 
 from engine.session import PINNED_VIAL, boot
+from engine.bank import PFC_RETIRED, RETIRED_FILE  # the retired PFC set: fixture data (2026-11-23)
 
-BANK = pathlib.Path(__file__).resolve().parents[1] / "bank"
+BANK = PFC_RETIRED
 KETAMINE = "ketamine for agitation iv eighty kilos"
 
 
 def _bank_with(tmp_path, kit_vial, present=True):
     d = tmp_path / "bank"
-    shutil.copytree(BANK, d)
+    shutil.copytree(BANK, d, ignore=shutil.ignore_patterns(RETIRED_FILE))   # a scratch copy, not retired
     bank = json.loads((d / "bank.json").read_text())
     for e in bank["entries"]:
         if e["drug"] == "ketamine" and present:
@@ -63,6 +64,6 @@ def test_a_null_kit_vial_keeps_the_volume(tmp_path, monkeypatch):
 
 def test_an_entry_with_no_kit_vial_keeps_the_volume(monkeypatch):
     monkeypatch.delenv("POCKET_TEST", raising=False)
-    dose = _dose(boot(BANK))
+    dose = _dose(boot(BANK, retired_ok=True))
     assert "Three point two mils of five hundred per ten" in dose.say, dose.say
     assert dose.data["record"]["volume_ml"] == 3.2

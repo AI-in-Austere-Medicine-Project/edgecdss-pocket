@@ -15,6 +15,7 @@ import pytest
 
 from engine import vials as V
 from engine.session import boot
+from engine.bank import PFC_RETIRED  # the retired PFC set: fixture data (2026-11-23)
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 
@@ -85,14 +86,14 @@ def test_the_pfc_ketamine_dilution_cautions_are_not_said_and_stay_in_the_record(
     says; keep the signed text in the record." (No dilution in Pocket.)"""
     import json
     from engine.session import caution_lines
-    entries = [e for e in json.loads((ROOT / "bank" / "bank.json").read_text())["entries"]
+    entries = [e for e in json.loads((PFC_RETIRED / "bank.json").read_text())["entries"]
                if e["drug"] == "ketamine" and e["route"] == "IV"]
     held = [c for e in entries for c in e["serve_cautions"] if "dilution" in c.lower()]
     assert len(held) == 6                                             # still in the signed record
     for e in entries:
         said = " ".join(caution_lines(e, True))
         assert "dilution" not in said.lower()
-    s = boot(ROOT / "bank")
+    s = boot(PFC_RETIRED, retired_ok=True)
     s.handle("ketamine for moderate pain iv eighty kilos")
     s.handle("confirm")
     assert "dilution" not in " ".join(s.handle("why").after).lower()

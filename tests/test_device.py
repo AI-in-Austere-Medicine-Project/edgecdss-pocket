@@ -8,15 +8,15 @@ import pathlib
 
 import pytest
 
-from engine.session import HELP_SPOKEN, boot, jsonl_log
-from tests.test_sets import PFC_START as START_UP_LINE   # names the set (2026-11-22)
+from engine.session import HELP_SPOKEN, START_UP_LINE, boot, jsonl_log
 from voice import device as dev
 from voice import spoken
 from voice import speak
 from voice.speak import out_format, play_device, tone
+from engine.bank import PFC_RETIRED  # the retired PFC set: fixture data (2026-11-23)
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-BANK = ROOT / "bank"
+BANK = PFC_RETIRED
 
 
 class Done(Exception):
@@ -96,7 +96,7 @@ class Speaker:
 
 def make(tmp_path, heard, script, mode="toggle", stop_on=(), log=None):
     clock = Clock()
-    session = boot(BANK, clock=clock, log=log)
+    session = boot(BANK, retired_ok=True, clock=clock, log=log)
     speaker = Speaker(stop_on)
     d = dev.Device(session, Hearing(heard), Mic(), Button(script, clock, mode), speaker, tmp_path,
                    clock=clock, now=lambda: "2026-11-21T12:00:00Z")
@@ -185,7 +185,7 @@ def test_a_second_press_that_never_comes_stops_listening_after_the_limit(tmp_pat
 
 
 def test_a_press_while_it_speaks_stops_it_and_listens_at_once(tmp_path):
-    step_one = boot(BANK).handle("rsi eighty kilos").text
+    step_one = boot(BANK, retired_ok=True).handle("rsi eighty kilos").text
     # press, press (heard), a press during step one, press (heard "next")
     d, speaker = make(tmp_path, ["r s i eighty kilos", "next"], ["down", "down", "down", "down"],
                       stop_on={step_one})
@@ -271,7 +271,7 @@ def test_the_a2dp_speaker_stays_44_1_khz_stereo():
 
 def test_typed_mode_speaks_the_start_up_line_then_each_answer_in_the_spoken_form(tmp_path):
     speaker = Speaker()
-    dev.typed(boot(BANK), speaker, ["ketamine for agitation iv 80kg", "", "confirm"], print=lambda *a, **k: None)
+    dev.typed(boot(BANK, retired_ok=True), speaker, ["ketamine for agitation iv 80kg", "", "confirm"], print=lambda *a, **k: None)
     assert speaker.said[0] == START_UP_LINE
     assert speaker.said[1] == "Ketamine, agitation, eye vee, eighty kilos. Confirm?"
     assert speaker.said[2].startswith("Ketamine one hundred and sixty milligrams.")
@@ -280,7 +280,7 @@ def test_typed_mode_speaks_the_start_up_line_then_each_answer_in_the_spoken_form
 
 def test_typed_mode_runs_rsi(tmp_path):
     speaker = Speaker()
-    dev.typed(boot(BANK), speaker, ["rsi 80kg", "next", "repeat", "start over"], print=lambda *a, **k: None)
+    dev.typed(boot(BANK, retired_ok=True), speaker, ["rsi 80kg", "next", "repeat", "start over"], print=lambda *a, **k: None)
     assert speaker.said[1].startswith("Rapid sequence intubation, adult, eighty kilos. Step one of eleven.")
     assert speaker.said[3] == speaker.said[2] and speaker.said[4] == speaker.said[1]
 
@@ -327,7 +327,7 @@ class TypedSpeaker(Speaker):
 
 def test_enter_in_typed_mode_cuts_off_what_it_is_saying():
     speaker, presses = TypedSpeaker(), iter([False, True, False])   # Enter during help
-    dev.typed(boot(BANK), speaker, ["help", "", "home"], print=lambda *a, **k: None,
+    dev.typed(boot(BANK, retired_ok=True), speaker, ["help", "", "home"], print=lambda *a, **k: None,
               interrupted=lambda: next(presses))
     assert speaker.said == [START_UP_LINE, HELP_SPOKEN, "Pocket ready. Say drugs, procedures, or help."]
     assert speaker.stopped == [False, True, False]

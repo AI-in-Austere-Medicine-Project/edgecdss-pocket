@@ -1,7 +1,6 @@
 """Two forms of every answer (owner, 2026-11-19): the spoken form for the voice ("eye
 vee", "pee oh") and a written form for a screen, with the route letters IV, IM, IO, IN,
 PO and NEB. Only the routes differ; the written form is never spoken."""
-import dataclasses
 import re
 
 import pytest
@@ -10,6 +9,7 @@ from engine import words
 from engine.session import Session, boot
 from grammar.vocabulary import build, label_tokens
 from test_reachable import BANK, ROOT, key, request
+from engine.bank import PFC_RETIRED  # the retired PFC set: fixture data (2026-11-23)
 
 VOCAB = build(BANK)
 SPOKEN_ROUTE = re.compile(r"(?i)\b(eye vee|eye em|eye oh|pee oh|nebuliser)\b")
@@ -27,7 +27,7 @@ def _forms(turn):
 
 @pytest.mark.parametrize("e", BANK.entries, ids=key)
 def test_every_signed_entry_has_both_forms(e):
-    s = boot(ROOT / "bank")
+    s = boot(PFC_RETIRED, retired_ok=True)
     turn = s.handle(request(e))
     for _ in range(4):
         _forms(turn)
@@ -64,8 +64,7 @@ def test_questions_holds_and_the_pair_question_have_both_forms():
 
 def test_the_boot_line_and_an_expired_read_back_have_both_forms():
     s = Session(BANK)
-    a = s.announce                       # the set's letters are said one by one (2026-11-22)
-    _forms(dataclasses.replace(a, say=a.say.replace("P F C set", "PFC set")))
+    _forms(s.announce)
     t = [0.0]
     s = Session(BANK, clock=lambda: t[0])
     s.handle("ketamine for agitation iv eighty kilos")

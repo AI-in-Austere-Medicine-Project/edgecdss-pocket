@@ -22,9 +22,18 @@ _REQUIRED = ("drug", "aliases", "indication", "indication_class", "population", 
 
 
 TEST_SET = "EMS-TEST"
-# The sets on the device (owner, 2026-11-22): "P F C set", "E M S set".
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-SET_DIRS = {"PFC": ROOT / "bank", "EMS": ROOT / "bank" / "ems"}
+# One drug list on the device, the EMS set (owner, 2026-11-23: "Pocket carries one drug
+# list, the EMS set only").
+BANK_DIR = ROOT / "bank" / "ems"
+# Retired banks stay in the repo, signed and unchanged, and are never loaded by Pocket
+# (owner, 2026-11-23: "Retire the PFC bank: keep the file in the repo, unloaded and marked
+# retired with the date. Do not delete signed work."). Each holds a RETIRED.json marker.
+# Only a caller that says retired=True reads one: the tests that use its signed entries
+# as fixtures for the engine's own behaviour.
+RETIRED_DIR = ROOT / "bank" / "retired"
+PFC_RETIRED = RETIRED_DIR / "pfc"
+RETIRED_FILE = "RETIRED.json"
 SIGNED_NAMES = {"bank": "bank.json", "kit": "kit.json", "manifest": "manifest.json"}
 TEST_NAMES = {"bank": "bank-ems-test.json", "kit": "kit-ems-test.json",
               "manifest": "manifest-ems-test.json"}
@@ -162,10 +171,20 @@ def _json(blob: bytes, name: str):
         raise BankRefused(f"{name} is unreadable") from None
 
 
-def load_bank(directory, test=None) -> Bank:
-    """test: None reads POCKET_TEST. True loads the test bank and nothing else."""
+def retired(directory) -> dict:
+    """The retirement marker of a bank directory, or {}."""
+    path = pathlib.Path(directory) / RETIRED_FILE
+    return _json(_read(path), "retired marker") if path.exists() else {}
+
+
+def load_bank(directory, test=None, retired_ok=False) -> Bank:
+    """test: None reads POCKET_TEST. True loads the test bank and nothing else.
+    A retired bank is refused unless retired_ok (tests only)."""
     test = testing() if test is None else test
     d = pathlib.Path(directory)
+    mark = retired(d)
+    if mark and not retired_ok:
+        raise BankRefused(f"this bank was retired on {mark.get('date')}")
     names = TEST_NAMES if test else SIGNED_NAMES
     if not test and not (d / "manifest.json").exists() and (d / TEST_NAMES["manifest"]).exists():
         raise BankRefused(NOT_TESTING)
@@ -224,34 +243,3 @@ def load_bank(directory, test=None) -> Bank:
     return Bank(entries=entries, kit=vials, no_signed_dose=bank.get("no_signed_dose") or [],
                 version=version, hash=sums[names["bank"]], commit=commit, test=test,
                 kit_id=str(manifest.get("kit_id") or ""), silent=silent)
-
-
-def merge_banks(banks) -> Bank:
-    """Every set's names in one bank, for the words Pocket hears (owner, 2026-11-22: hearing
-    for every drug name in both sets). Never for doses: a session doses from its own set."""
-    banks = list(banks)
-    entries = [e for b in banks for e in b.entries]
-    # A drug one set signs and another only names keeps the names the other set lists
-    # ("2-pam", "benadryl"): they are its names, and a spelling must not hold them.
-    names = {}
-    for b in banks:
-        for n in b.no_signed_dose:
-            names.setdefault(n["drug"], [])
-            names[n["drug"]] += [a for a in n["aliases"] if a not in names[n["drug"]]]
-    unsigned = [{"drug": d, "aliases": a} for d, a in names.items()]
-    joined = "+".join(b.hash for b in banks)
-    return Bank(entries=entries, kit={}, no_signed_dose=unsigned,
-                version="+".join(b.version for b in banks),
-                hash=hashlib.sha256(joined.encode()).hexdigest(), commit=banks[0].commit,
-                silent=[s for b in banks for s in b.silent])
-
-
-def load_sets(dirs=None) -> dict:
-    """{key: Bank} for every set that loads (refused sets left out)."""
-    out = {}
-    for key, d in (dirs or SET_DIRS).items():
-        try:
-            out[key] = load_bank(d, test=False)
-        except BankRefused:
-            continue
-    return out

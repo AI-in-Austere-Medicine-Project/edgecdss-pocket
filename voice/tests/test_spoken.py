@@ -6,14 +6,14 @@ import sys
 
 import pytest
 
-from engine.bank import load_bank
+from engine.bank import PFC_RETIRED, load_bank
 from grammar.parser import parse
 from grammar.vocabulary import build
 from voice import bench, spoken
 from voice.grammar import grammar_words
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
-BANK = load_bank(ROOT / "bank")
+BANK = load_bank(PFC_RETIRED, retired_ok=True)
 VOCAB = build(BANK)
 CORPUS = json.loads((ROOT / "tests" / "replay_corpus.json").read_text())
 
@@ -83,11 +83,11 @@ def test_the_grammar_is_the_bank_words_the_model_knows_plus_letters_and_unk():
 
 
 def test_the_committed_grammar_file_matches_the_bank():
-    from engine.bank import load_sets, merge_banks
-    union = merge_banks(load_sets().values())        # both sets' names (2026-11-22)
-    words = build(union).words()
+    from engine.bank import BANK_DIR
+    ems = load_bank(BANK_DIR)                         # the one drug list (owner, 2026-11-23)
+    words = build(ems).words()
     g = json.loads((ROOT / "grammar" / "vosk_grammar.json").read_text())
-    assert g["bank_hash"] == union.hash
+    assert g["bank_hash"] == ems.hash
     phrases = set(spoken.spellings())
     assert set(g["words"]) - {"[unk]"} <= words | set("abcdefghijklmnopqrstuvwxyz") | phrases
     assert set(g["not_in_model"]) <= words
@@ -114,8 +114,8 @@ def test_the_spoken_replay_is_fifty_phrases_of_whole_cases_the_model_can_hear():
 def test_the_text_path_needs_no_vosk():
     code = ("import sys; sys.modules['vosk'] = None\n"
             "from engine.session import boot\n"
-            "s = boot('bank'); s.handle('ketamine for agitation iv eighty kilos')\n"
+            "s = boot(); s.handle('adenosine for svt iv adult')\n"
             "print(s.handle('confirm').say)")
     out = subprocess.run([sys.executable, "-c", code], cwd=ROOT, capture_output=True, text=True)
     assert out.returncode == 0, out.stderr
-    assert out.stdout.startswith("Ketamine one hundred and sixty milligrams.")
+    assert out.stdout.startswith("Adenosine twelve milligrams. Four mils of twelve per four.")

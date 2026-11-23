@@ -6,7 +6,7 @@ name and command word, one at a time, numbered, so I can note the ones that soun
 I will give you the numbers; you fix them with a spoken spelling and I listen again."
 """
 from engine import words
-from engine.bank import load_bank
+from engine.bank import BANK_DIR, load_bank
 from engine.session import boot
 from grammar.vocabulary import CONTROLS
 from voice.tools import say_all
@@ -28,8 +28,9 @@ def test_it_lists_every_drug_name_route_procedure_and_command_numbered():
     for n, group, written, _ in ROWS:
         groups.setdefault(group, []).append(written)
     assert [r[0] for r in ROWS] == list(range(1, len(ROWS) + 1))
-    sets = [load_bank(say_all.ROOT / "bank"), load_bank(say_all.ROOT / "bank" / "ems")]   # both sets (2026-11-22)
-    assert len(groups["drug"]) == len(set().union(*(b.signed_drugs | b.silent_drugs for b in sets))) == 45
+    ems = load_bank(BANK_DIR)                         # the one drug list (owner, 2026-11-23)
+    assert len(groups["drug"]) == len(ems.signed_drugs | ems.silent_drugs) == 32
+    assert len(ROWS) == 116                          # 148 with both sets and the set commands
     assert {"narcan", "versed", "txa", "epi", "levophed", "benadryl", "zofran", "bicarb"} <= set(groups["drug name"])
     assert groups["route"] == ["IV", "IM", "IO", "IN", "PO", "NEB"]
     assert groups["procedure"] == ["rapid sequence intubation", "failed airway", "RSI"]
@@ -38,32 +39,32 @@ def test_it_lists_every_drug_name_route_procedure_and_command_numbered():
 
 def test_the_numbers_stay_the_same_from_run_to_run():
     assert say_all.items() == ROWS
-    assert ROWS[0][2] == "acetaminophen" and ROWS[113][2:] == ("IV", "eye vee")
+    assert ROWS[0][2] == "acetaminophen" and ROWS[83][2:] == ("IV", "eye vee")
 
 
 def test_each_word_is_said_numbered_as_pocket_says_it():
     sp, out = Speaker(), []
-    say_all.run(sp, say_all.pick(ROWS, only=[1, 43, 114, 122, 147]), pause=0, sleep=lambda s: None,
+    say_all.run(sp, say_all.pick(ROWS, only=[1, 31, 84, 92, 116]), pause=0, sleep=lambda s: None,
                 print=lambda line, **k: out.append(line))
-    assert sp.said == ["Number one. acetaminophen.", "Number forty-three. sodium chloride three percent.",
-                       "Number one hundred and fourteen. eye vee.", "Number one hundred and twenty-two. R S I.",
-                       "Number one hundred and forty-seven. E M S set."]
-    assert out[2].startswith("114. [route] IV  (said: eye vee)")
+    assert sp.said == ["Number one. acetaminophen.", "Number thirty-one. sodium bicarbonate.",
+                       "Number eighty-four. eye vee.", "Number ninety-two. R S I.",
+                       "Number one hundred and sixteen. what can i say."]
+    assert out[2].startswith(" 84. [route] IV  (said: eye vee)")
 
 
 def test_from_restarts_part_way():
-    assert [r[0] for r in say_all.pick(ROWS, start=146)] == [146, 147, 148]
+    assert [r[0] for r in say_all.pick(ROWS, start=114)] == [114, 115, 116]
 
 
 def test_a_spoken_spelling_changes_what_is_said_and_never_what_is_shown(monkeypatch):
-    monkeypatch.setattr(words, "SAY_AS", {"phytomenadione": "fy toe menna dye own",
+    monkeypatch.setattr(words, "SAY_AS", {"pralidoxime": "pral ih dox eem",
                                           "norepinephrine": "nor eppy neff rin"})
-    turn = boot(say_all.ROOT / "bank").handle("epinephrine", spoken=True)
+    turn = boot().handle("epinephrine", spoken=True)
     assert turn.text == "Epinephrine or nor eppy neff rin?"            # said
     assert turn.written_text == "Epinephrine or norepinephrine?"       # shown
     sp = Speaker()
-    say_all.run(sp, say_all.pick(ROWS, only=[38]), pause=0, sleep=lambda s: None, print=lambda *a, **k: None)
-    assert sp.said == ["Number thirty-eight. fy toe menna dye own."]
+    say_all.run(sp, say_all.pick(ROWS, only=[29]), pause=0, sleep=lambda s: None, print=lambda *a, **k: None)
+    assert sp.said == ["Number twenty-nine. pral ih dox eem."]
 
 
 def test_no_spoken_spelling_is_set_until_the_owner_has_listened():

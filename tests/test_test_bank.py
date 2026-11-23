@@ -19,8 +19,9 @@ import pytest
 
 from engine.bank import BankRefused, load_bank
 from engine.session import TEST_NOTICE, boot, jsonl_log
+from engine.bank import PFC_RETIRED  # the retired PFC set: fixture data (2026-11-23)
 
-BANK = pathlib.Path(__file__).resolve().parents[1] / "bank"
+BANK = PFC_RETIRED
 NAMES = {"bank": "bank-ems-test.json", "kit": "kit-ems-test.json",
          "manifest": "manifest-ems-test.json"}
 KETAMINE = ("ketamine for agitation iv eighty kilos",)  # a read-back on the PFC bank
@@ -109,11 +110,11 @@ def test_with_pocket_test_it_loads(tmp_path, testing):
 def test_with_pocket_test_a_signed_bank_is_not_loaded_as_a_test_bank(testing):
     """POCKET_TEST=1 loads a test bank only: a signed bank never boots announced as test."""
     with pytest.raises(BankRefused, match="test"):
-        load_bank(BANK)
+        load_bank(BANK, retired_ok=True)
 
 
 def test_the_signed_bank_still_loads_without_pocket_test(not_testing):
-    b = load_bank(BANK)
+    b = load_bank(BANK, retired_ok=True)
     assert b.test is False
 
 
@@ -153,7 +154,7 @@ def test_every_read_back_starts_with_it(tmp_path, testing):
 
 
 def test_the_signed_bank_says_neither(not_testing):
-    s = boot(BANK)
+    s = boot(BANK, retired_ok=True)
     assert TEST_NOTICE not in s.announce.text
     readback, dose = _dose(s, *KETAMINE)
     assert TEST_NOTICE not in readback.text

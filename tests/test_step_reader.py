@@ -22,9 +22,10 @@ import pytest
 
 from engine.procedures import ProceduresRefused, load_procedures
 from engine.session import boot
+from engine.bank import PFC_RETIRED, RETIRED_FILE  # the retired PFC set: fixture data (2026-11-23)
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-BANK = ROOT / "bank"
+BANK = PFC_RETIRED
 
 # The signed text, word for word (the packet, with the owner's amendments).
 SIGNED = {
@@ -105,7 +106,7 @@ def test_only_steps_6_6b_p2_p3_p4_compute_a_dose_and_step_10_does_not():
 
 
 def test_every_dose_a_step_names_is_one_signed_bank_entry():
-    procs = load_procedures(BANK)
+    procs = load_procedures(BANK, retired_ok=True)
     bank = json.loads((BANK / "bank.json").read_text())["entries"]
     for proc in procs.values():
         for step in proc.steps.values():
@@ -117,7 +118,7 @@ def test_every_dose_a_step_names_is_one_signed_bank_entry():
 
 def _copy_bank(tmp_path, edit):
     d = tmp_path / "bank"
-    shutil.copytree(BANK, d)
+    shutil.copytree(BANK, d, ignore=shutil.ignore_patterns(RETIRED_FILE))   # a scratch copy, not retired
     data = json.loads((d / "procedures.json").read_text())
     edit(data)
     (d / "procedures.json").write_text(json.dumps(data))
@@ -143,7 +144,7 @@ def test_a_procedure_that_is_not_wholly_signed_is_refused_and_rsi_holds(tmp_path
 
 def test_with_no_step_file_rsi_holds(tmp_path):
     d = tmp_path / "bank"
-    shutil.copytree(BANK, d)
+    shutil.copytree(BANK, d, ignore=shutil.ignore_patterns(RETIRED_FILE))   # a scratch copy, not retired
     (d / "procedures.json").unlink()
     assert boot(d).handle("rsi eighty kilos").kind == "hold"
 
@@ -160,7 +161,7 @@ def test_the_ems_test_bank_has_no_rsi_steps(tmp_path, monkeypatch):
 # ── reading the steps ───────────────────────────────────────────────────────
 
 def test_rsi_asks_the_weight_once_at_the_start_and_never_the_access():
-    s = boot(BANK)
+    s = boot(BANK, retired_ok=True)
     first = s.handle("rsi")
     assert (first.kind, first.text) == ("ask", "Weight?")
     turns = [s.handle("eighty kilos")] + play(s, *["next"] * 5, "ketamine", "confirm",
@@ -170,7 +171,7 @@ def test_rsi_asks_the_weight_once_at_the_start_and_never_the_access():
 
 
 def test_the_adult_steps_are_read_in_the_signed_order_written_as_signed():
-    s = boot(BANK)
+    s = boot(BANK, retired_ok=True)
     turn = s.handle("rsi eighty kilos")
     assert turn.kind == "step"
     assert turn.written.startswith("Rapid sequence intubation, adult, eighty kilos. Step one of eleven.")
@@ -185,7 +186,7 @@ def test_the_adult_steps_are_read_in_the_signed_order_written_as_signed():
 
 
 def test_the_child_steps_replace_6_and_6b_and_put_p1_and_p2_in_place():
-    s = boot(BANK)
+    s = boot(BANK, retired_ok=True)
     turn = s.handle("rsi child twenty kilos")
     assert turn.written.startswith("Rapid sequence intubation, child, twenty kilos. Step one of thirteen.")
     seen = [turn] + [s.handle("next") for _ in CHILD[1:]]
@@ -195,7 +196,7 @@ def test_the_child_steps_replace_6_and_6b_and_put_p1_and_p2_in_place():
 
 
 def test_next_back_and_repeat_move_and_repeat_one_step():
-    s = boot(BANK)
+    s = boot(BANK, retired_ok=True)
     s.handle("rsi eighty kilos")
     two = s.handle("next")
     assert SIGNED["2"] in two.written
@@ -207,11 +208,11 @@ def test_next_back_and_repeat_move_and_repeat_one_step():
 
 
 def test_the_spoken_form_says_the_symbols_and_routes_and_the_written_keeps_them():
-    s = boot(BANK)
+    s = boot(BANK, retired_ok=True)
     s.handle("rsi eighty kilos")
     two = s.handle("next")
     assert "≈ 3 minutes" in two.written and "about three minutes" in two.text and "≈" not in two.text
-    six = _to_step(boot(BANK), "6", ADULT)
+    six = _to_step(boot(BANK, retired_ok=True), "6", ADULT)
     assert "2 mg/kg IV/IO" in six.written
     assert "eye vee or eye oh" in six.text and "IV/IO" not in six.text
 
@@ -219,7 +220,7 @@ def test_the_spoken_form_says_the_symbols_and_routes_and_the_written_keeps_them(
 # ── a dose at its step (Q5) ─────────────────────────────────────────────────
 
 def test_step_6_names_ketamine_and_computes_only_the_signed_id39_dose():
-    s = boot(BANK)
+    s = boot(BANK, retired_ok=True)
     six = _to_step(s, "6", ADULT)
     assert six.after == ["For the dose, say ketamine."]
     rb = s.handle("ketamine")
@@ -232,7 +233,7 @@ def test_step_6_names_ketamine_and_computes_only_the_signed_id39_dose():
 @pytest.mark.parametrize("drug,said", [("rocuronium", "Rocuronium ninety-six milligrams."),
                                        ("succinylcholine", "Succinylcholine one hundred and twenty milligrams.")])
 def test_step_6b_names_both_signed_paralytics_and_computes_the_one_said(drug, said):
-    s = boot(BANK)
+    s = boot(BANK, retired_ok=True)
     sixb = _to_step(s, "6b", ADULT)
     assert sixb.after == ["For the dose, say rocuronium or succinylcholine."]
     assert s.handle(drug).kind == "readback"
@@ -242,7 +243,7 @@ def test_step_6b_names_both_signed_paralytics_and_computes_the_one_said(drug, sa
 
 
 def test_a_dose_is_never_spoken_without_its_read_back_and_confirm():
-    s = boot(BANK)
+    s = boot(BANK, retired_ok=True)
     _to_step(s, "6", ADULT)
     assert s.handle("ketamine").kind == "readback"
     assert s.handle("next").kind == "ask"          # a miss, not the next step
@@ -251,14 +252,14 @@ def test_a_dose_is_never_spoken_without_its_read_back_and_confirm():
 
 
 def test_after_a_dose_next_goes_on_to_the_next_step():
-    s = boot(BANK)
+    s = boot(BANK, retired_ok=True)
     _to_step(s, "6", ADULT)
     play(s, "ketamine", "confirm")
     assert SIGNED["6b"] in s.handle("next").written
 
 
 def test_step_10_and_the_other_steps_offer_no_dose():
-    s = boot(BANK)
+    s = boot(BANK, retired_ok=True)
     turns = [s.handle("rsi eighty kilos")] + [s.handle("next") for _ in ADULT[1:]]
     for step_id, t in zip(ADULT, turns):
         if step_id not in ("6", "6b"):
@@ -266,7 +267,7 @@ def test_step_10_and_the_other_steps_offer_no_dose():
 
 
 def test_child_atropine_ketamine_and_succinylcholine_by_age_band():
-    s = boot(BANK)
+    s = boot(BANK, retired_ok=True)
     p2 = _to_step(s, "P2", CHILD, "rsi child twenty kilos")
     assert p2.after == ["For the dose, say atropine."]
     play(s, "atropine")
@@ -285,21 +286,21 @@ def test_child_atropine_ketamine_and_succinylcholine_by_age_band():
 
 
 def test_a_stated_contraindication_still_holds_the_dose_at_its_step():
-    s = boot(BANK)
+    s = boot(BANK, retired_ok=True)
     _to_step(s, "6b", ADULT, "rsi eighty kilos burns")
     turn = s.handle("succinylcholine")
     assert turn.kind == "hold" and "contraindicated with burns" in turn.text
 
 
 def test_cancel_ends_the_steps():
-    s = boot(BANK)
+    s = boot(BANK, retired_ok=True)
     s.handle("rsi eighty kilos")
     assert s.handle("cancel").text == "Cancelled."
     assert s.handle("next").text == "No steps running."
 
 
 def test_new_patient_ends_the_steps_and_clears_the_weight():
-    s = boot(BANK)
+    s = boot(BANK, retired_ok=True)
     s.handle("rsi eighty kilos")
     s.handle("new patient")
     assert s.handle("next").text == "No steps running."
@@ -307,7 +308,7 @@ def test_new_patient_ends_the_steps_and_clears_the_weight():
 
 
 def test_a_dose_asked_for_by_drug_and_indication_is_unchanged():
-    s = boot(BANK)
+    s = boot(BANK, retired_ok=True)
     turn = s.handle("rocuronium for rsi eighty kilos")
     assert turn.kind == "readback"
 
@@ -315,7 +316,7 @@ def test_a_dose_asked_for_by_drug_and_indication_is_unchanged():
 # ── failed airway (Q7) ──────────────────────────────────────────────────────
 
 def test_failed_airway_is_its_own_procedure_and_asks_no_weight():
-    s = boot(BANK)
+    s = boot(BANK, retired_ok=True)
     turn = s.handle("failed airway")
     assert turn.kind == "step" and turn.written.startswith("Failed airway. Step one of three.")
     lines = [turn, s.handle("next")]
@@ -331,7 +332,7 @@ def test_failed_airway_is_its_own_procedure_and_asks_no_weight():
                                       ("failed airway eighty kilos", False)])
 def test_p5_replaces_only_the_surgical_airway_line_for_a_child_under_12(start, p5):
     def read(answer):
-        s = boot(BANK)
+        s = boot(BANK, retired_ok=True)
         return [s.handle(start), s.handle("next"), s.handle("next"), s.handle(answer)]
     text = " ".join(t.written for t in read("yes") + read("no"))
     assert (SIGNED["P5"] in text) is p5

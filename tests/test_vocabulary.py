@@ -4,12 +4,12 @@ import pathlib
 
 import pytest
 
-from engine.bank import load_bank
+from engine.bank import PFC_RETIRED, RETIRED_FILE, load_bank
 from grammar.parser import parse
 from grammar.vocabulary import build
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-BANK = load_bank(ROOT / "bank")
+BANK = load_bank(PFC_RETIRED, retired_ok=True)
 VOCAB = build(BANK)
 
 
@@ -93,7 +93,7 @@ def test_a_bank_unit_with_no_words_refuses_the_bank(tmp_path):
     import shutil
     from engine.session import boot
     d = tmp_path / "bank"
-    shutil.copytree(ROOT / "bank", d)
+    shutil.copytree(PFC_RETIRED, d, ignore=shutil.ignore_patterns(RETIRED_FILE))   # a scratch copy, not retired
     bank = json.loads((d / "bank.json").read_text())
     bank["entries"][0]["rule"]["units"] = "mcg/fortnight/min"
     (d / "bank.json").write_text(json.dumps(bank))

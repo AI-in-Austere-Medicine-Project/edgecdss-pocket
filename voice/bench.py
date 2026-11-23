@@ -115,7 +115,7 @@ def run(args):
     import vosk
     from voice.hear import Hearing
     vosk.SetLogLevel(-1)
-    hearing = Hearing(vosk.Model(str(args.model)), g, boot(ROOT / "bank").vocab)
+    hearing = Hearing(vosk.Model(str(args.model)), g, boot().vocab)
 
     mic = button = None
     if not args.wavs:
@@ -134,7 +134,7 @@ def run(args):
     results = out / "results.jsonl"
     for k, (cid, ti, phrase, kind, say) in enumerate(todo):
         if cid != case_now:
-            session, case_now = boot(ROOT / "bank"), cid
+            session, case_now = boot(), cid
         if k < args.start:
             if kind is not None and not args.names:
                 session.handle(phrase)        # replay the typed turn to keep the session's state

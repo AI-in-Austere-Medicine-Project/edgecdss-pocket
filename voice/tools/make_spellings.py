@@ -21,7 +21,7 @@ import pathlib
 import sys
 import wave
 
-from engine.bank import load_sets, merge_banks
+from engine.bank import BANK_DIR, load_bank
 from grammar.vocabulary import CONTROLS, build
 from voice import spoken
 from voice.grammar import grammar_words, model_id
@@ -56,7 +56,7 @@ def main(model_dir, wavdir):
     import vosk
     vosk.SetLogLevel(-1)
     model = vosk.Model(str(model_dir))
-    vocab = build(merge_banks(load_sets().values()))       # every set's names (2026-11-22)
+    vocab = build(load_bank(BANK_DIR))       # the EMS set's names (one drug list, 2026-11-23)
     meaningful = vocab.words() | {w for c in CONTROLS for w in c.split()}
     wavs = sorted(pathlib.Path(wavdir).glob("*__*.wav"))
     cache_path = pathlib.Path(wavdir) / "decodes.json"

@@ -10,7 +10,7 @@ import json
 import pathlib
 import sys
 
-from engine.bank import load_bank, load_sets, merge_banks
+from engine.bank import BANK_DIR, load_bank
 from grammar.vocabulary import build
 from voice.spoken import JOINED, SPELLED, prompt, spellings
 
@@ -81,11 +81,11 @@ def unsayable_drugs(vocab, known) -> list:
 
 
 def generate(model_dir, bank_dir=None) -> dict:
-    """Every set's names (owner, 2026-11-22), or one bank's with bank_dir."""
+    """The EMS set's names (owner, 2026-11-23: one drug list), or another bank's with bank_dir."""
     import vosk
     vosk.SetLogLevel(-1)
     model = vosk.Model(str(model_dir))
-    bank = load_bank(bank_dir) if bank_dir else merge_banks(load_sets().values())
+    bank = load_bank(bank_dir or BANK_DIR)
     vocab = build(bank)
 
     def known(w):

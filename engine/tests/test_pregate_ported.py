@@ -7,13 +7,14 @@ import pathlib
 import pytest
 
 from engine.session import boot
+from engine.bank import PFC_RETIRED  # the retired PFC set: fixture data (2026-11-23)
 
-BANK = pathlib.Path(__file__).resolve().parents[2] / "bank"
+BANK = PFC_RETIRED
 
 
 @pytest.fixture
 def s():
-    return boot(BANK)
+    return boot(BANK, retired_ok=True)
 
 
 # ── which indication (owner, 2026-10-15) ───────────────────────────────────
@@ -84,7 +85,7 @@ def test_a_known_age_decides_child_in_both_directions(s):
 
 def test_40_kg_is_not_a_child_39_is(s):
     assert "child" not in s.handle("morphine for pain iv forty kilos").say
-    s2 = boot(BANK)
+    s2 = boot(BANK, retired_ok=True)
     assert "child" in s2.handle("morphine for pain iv thirty nine kilos").say
 
 
@@ -134,7 +135,7 @@ def test_the_read_back_comes_before_any_number_of_the_dose(s):
 
 def test_a_dose_is_logged_with_a_time():
     records = []
-    s = boot(BANK, log=records.append, now=lambda: "2026-11-04T12:00:00Z")
+    s = boot(BANK, retired_ok=True, log=records.append, now=lambda: "2026-11-04T12:00:00Z")
     s.handle("ketamine for agitation iv eighty kilos")
     s.handle("confirm")
     assert [r["event"] for r in records[:1]] == ["boot"]   # the start-up line, then the dose
@@ -147,7 +148,7 @@ def test_a_dose_is_logged_with_a_time():
 
 def test_a_cancelled_dose_is_not_logged():
     records = []
-    s = boot(BANK, log=records.append)
+    s = boot(BANK, retired_ok=True, log=records.append)
     s.handle("ketamine for agitation iv eighty kilos")
     s.handle("cancel")
     assert [r.get("event") for r in records] == ["boot"]

@@ -8,9 +8,9 @@ import pathlib
 import pytest
 
 from engine import contracts as dc
-from engine.bank import load_bank
+from engine.bank import PFC_RETIRED, load_bank
 
-BANK = load_bank(pathlib.Path(__file__).resolve().parents[2] / "bank")
+BANK = load_bank(PFC_RETIRED, retired_ok=True)
 
 
 def entry_for(drug, **match):

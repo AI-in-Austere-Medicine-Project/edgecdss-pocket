@@ -9,6 +9,12 @@ A test bank (POCKET_TEST=1) never loads steps: no RSI step is signed for it (Q9)
 Steps are read as signed, one at a time. A step with doses names its signed drugs; the
 medic says which, and that one entry is read back and confirmed like any other dose (Q5).
 
+One drug list, the EMS set (owner, 2026-11-23): "RSI and failed airway keep their signed
+step text ... Change no doses. Steps with no EMS entry hold." A dose a step names is
+either linked to one signed entry ({"ems_id": ...}, or drug, indication and population)
+or held ({"drug": ..., "held": why}). A held dose is named after the step ("No signed
+dose at this step for ..."), and asking for it at the step holds; it is never computed.
+
 A procedure may end on a question (owner, 2026-11-21: failed airway asks "Can you mask
 ventilate?"): `branch` is {"ask", "yes", "no"}. The question must be words of a signed
 step; "yes" and "no" each name one signed step, read only on that answer.
@@ -30,10 +36,15 @@ class Step:
     id: str
     text: str
     doses: tuple            # bank entries, in the order the step names them
+    held: tuple = ()        # (drug, why): doses the step names with no signed entry to give
 
     @property
     def drugs(self) -> list:
         return list(dict.fromkeys(e["drug"] for e in self.doses))
+
+    @property
+    def held_drugs(self) -> list:
+        return [d for d in dict.fromkeys(h[0] for h in self.held) if d not in self.drugs]
 
 
 @dataclasses.dataclass(frozen=True)
@@ -51,7 +62,7 @@ class Procedure:
 
     @property
     def needs_weight(self) -> bool:
-        return any(s.doses for s in self.steps.values())
+        return any(s.doses or s.held for s in self.steps.values())
 
     def for_patient(self, child: bool, years) -> list:
         """The steps for this patient, in the signed order. For a child under
@@ -71,11 +82,23 @@ class Procedure:
 
 
 def _entry(bank, ref: dict, where: str) -> dict:
-    hits = [e for e in bank.entries if e["drug"] == ref.get("drug")
-            and e["indication"] == ref.get("indication") and e["population"] == ref.get("population")]
+    if "ems_id" in ref:
+        hits = [e for e in bank.entries if e.get("ems_id") == ref["ems_id"]]
+        if len(hits) == 1 and ref.get("drug") not in (None, hits[0]["drug"]):
+            raise ProceduresRefused(f"{where}: {ref['ems_id']} is not {ref.get('drug')}")
+    else:
+        hits = [e for e in bank.entries if e["drug"] == ref.get("drug")
+                and e["indication"] == ref.get("indication") and e["population"] == ref.get("population")]
     if len(hits) != 1:
-        raise ProceduresRefused(f"{where}: {ref.get('drug')} is not one signed entry")
+        raise ProceduresRefused(f"{where}: {ref.get('ems_id') or ref.get('drug')} is not one signed entry")
     return hits[0]
+
+
+def _held(ref: dict, where: str) -> tuple:
+    drug, why = str(ref.get("drug") or "").strip(), str(ref.get("held") or "").strip()
+    if not drug or not why:
+        raise ProceduresRefused(f"{where}: a held dose needs its drug and why")
+    return (drug, why)
 
 
 def _procedure(raw: dict, bank) -> Procedure:
@@ -91,8 +114,11 @@ def _procedure(raw: dict, bank) -> Procedure:
         text = str(s.get("text") or "").strip()
         if not text:
             raise ProceduresRefused(f"{name} step {s.get('id')}: no text")
-        doses = tuple(_entry(bank, d, f"{name} step {s['id']}") for d in s.get("doses") or [])
-        steps[s["id"]] = Step(s["id"], text, doses)
+        where = f"{name} step {s['id']}"
+        refs = s.get("doses") or []
+        doses = tuple(_entry(bank, d, where) for d in refs if "held" not in d)
+        held = tuple(_held(d, where) for d in refs if "held" in d)
+        steps[s["id"]] = Step(s["id"], text, doses, held)
     order = raw.get("order") or {}
     if set(order) != {"adult", "child"}:
         raise ProceduresRefused(f"{name}: no adult and child order")
@@ -114,10 +140,10 @@ def _procedure(raw: dict, bank) -> Procedure:
                      steps, dict(cu), dict(branch))
 
 
-def load_procedures(bank_dir, bank=None) -> dict:
+def load_procedures(bank_dir, bank=None, retired_ok=False) -> dict:
     """{name: Procedure}; raises ProceduresRefused. No file: no procedures."""
     from engine.bank import load_bank
-    bank = bank if bank is not None else load_bank(bank_dir)
+    bank = bank if bank is not None else load_bank(bank_dir, retired_ok=retired_ok)
     path = pathlib.Path(bank_dir) / FILE
     if bank.test or not path.exists():
         return {}
