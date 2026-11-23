@@ -33,6 +33,11 @@
    "date": "2026-11-23",
    "by": "owner",
    "what": "RSI holds whole for a child: \"No signed RSI steps for a child.\" No step of the child order (1, P1, 2-5, P2-P4, 7-10) is read. No step text changed."
+   },
+   {
+    "date": "2026-11-23",
+    "by": "owner",
+   "what": "RSI steps 6 and 6b use the formulary's fixed doses: ketamine EMS-130 (200 mg IV/IO) and rocuronium EMS-201 (100 mg IV/IO), both individually read. The per-kg numbers are removed from the step text; succinylcholine is not offered. The original JTS wording and dose references are kept in each step (original_text, original_signed, original_doses)."
   }
  ],
  "procedures": [
@@ -107,9 +112,27 @@
     },
     {
      "id": "6",
-     "signed": "amended: unsigned drugs (etomidate) are not spoken",
-     "text": "Administer medications: Initiate RSI. ALWAYS SEDATE PRIOR TO PARALYZING. Sedative/hypnotic: Ketamine (First Line): 2 mg/kg IV/IO. Unstable patients require reduced dosage of induction agent.",
+     "signed": "amended by owner, 2026-11-23",
+     "text": "Administer medications: Initiate RSI. ALWAYS SEDATE PRIOR TO PARALYZING. Sedative/hypnotic: Ketamine (First Line) IV/IO. Unstable patients require reduced dosage of induction agent.",
+     "original_text": "Administer medications: Initiate RSI. ALWAYS SEDATE PRIOR TO PARALYZING. Sedative/hypnotic: Ketamine (First Line): 2 mg/kg IV/IO. Unstable patients require reduced dosage of induction agent.",
+     "original_signed": "amended: unsigned drugs (etomidate) are not spoken",
+     "amended": {
+      "by": "owner",
+      "date": "2026-11-23",
+      "what": "Owner ruling: use the formulary dose. The per-kg number (2 mg/kg) is removed; the dose said is EMS-130, 200 mg fixed IV/IO (p.36), individually read."
+     },
      "doses": [
+      {
+       "drug": "ketamine",
+       "ems_id": "EMS-130",
+       "was": {
+        "drug": "ketamine",
+        "indication": "RSI induction",
+        "population": "adult"
+       }
+      }
+     ],
+     "original_doses": [
       {
        "drug": "ketamine",
        "held": "EMS-130 (Rapid Sequence Induction, adult, IV/IO, p.36) gives 200 mg fixed; the step states 2 mg/kg",
@@ -123,9 +146,27 @@
     },
     {
      "id": "6b",
-     "signed": "amended: unsigned drugs (vecuronium) are not spoken",
-     "text": "Neuromuscular Blockade: Rocuronium: 1.2 mg/kg IV/IO or Succinylcholine: 1.5 mg/kg IV/IO",
+     "signed": "amended by owner, 2026-11-23",
+     "text": "Neuromuscular Blockade: Rocuronium IV/IO",
+     "original_text": "Neuromuscular Blockade: Rocuronium: 1.2 mg/kg IV/IO or Succinylcholine: 1.5 mg/kg IV/IO",
+     "original_signed": "amended: unsigned drugs (vecuronium) are not spoken",
+     "amended": {
+      "by": "owner",
+      "date": "2026-11-23",
+      "what": "Owner ruling: use the formulary dose. The per-kg number (1.2 mg/kg) is removed; the dose said is EMS-201, 100 mg fixed IV/IO (p.57), individually read. Rocuronium is the only paralytic; succinylcholine is not offered."
+     },
      "doses": [
+      {
+       "drug": "rocuronium",
+       "ems_id": "EMS-201",
+       "was": {
+        "drug": "rocuronium",
+        "indication": "RSI paralytic",
+        "population": "adult"
+       }
+      }
+     ],
+     "original_doses": [
       {
        "drug": "rocuronium",
        "held": "EMS-201 (Rapid Sequence Induction, adult, IV/IO, p.57) gives 100 mg fixed; the step states 1.2 mg/kg",

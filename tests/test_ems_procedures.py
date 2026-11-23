@@ -4,7 +4,8 @@ signed EMS entry exists for that drug and indication, and what dose it gives com
 the step. Change no doses. Steps with no EMS entry hold; list them for me."
 
 A step's dose links to an EMS entry only when it is the same drug, indication and
-population and gives the dose the step states; every other dose holds, with why, until the
+population and gives the dose the step states, or the owner has amended the step to that
+entry's dose (6 and 6b, 2026-11-23); every other dose holds, with why, until the
 owner rules. Pocket never computes a dose that disagrees with the step it has just read.
 """
 import copy
@@ -21,9 +22,10 @@ EMS_FILE = BANK_DIR / "procedures.json"
 RAW = json.loads(EMS_FILE.read_text())
 SIGNED = json.loads((PFC_RETIRED / "procedures.json").read_text())
 # (procedure, step, drug) -> the EMS entry it gives, or None: held
-LINKS = {("rsi", "6", "ketamine"): None,          # EMS-130: 200 mg fixed; the step: 2 mg/kg
-         ("rsi", "6b", "rocuronium"): None,       # EMS-201: 100 mg fixed; the step: 1.2 mg/kg
-         ("rsi", "6b", "succinylcholine"): None,  # not in the EMS set
+# 6 and 6b: amended by the owner to the formulary's fixed doses, 2026-11-23
+# (tests/test_rsi_adult_fixed_doses.py); succinylcholine is no longer offered at 6b.
+LINKS = {("rsi", "6", "ketamine"): "EMS-130",     # 200 mg fixed
+         ("rsi", "6b", "rocuronium"): "EMS-201",  # 100 mg fixed
          ("rsi", "P2", "atropine"): None,         # no EMS RSI pre-dose entry
          ("rsi", "P3", "ketamine"): "EMS-135",    # 2 mg/kg, as the step
          ("rsi", "P4", "succinylcholine"): None,  # not in the EMS set (two refs: under 5, 5 and above)
@@ -36,7 +38,8 @@ def _steps(raw):
 
 def test_every_step_keeps_its_signed_text_order_and_branch():
     ems, signed = _steps(RAW), _steps(SIGNED)
-    assert {k: s["text"] for k, s in ems.items()} == {k: s["text"] for k, s in signed.items()}
+    assert {k: s.get("original_text", s["text"]) for k, s in ems.items()} == {k: s["text"] for k, s in signed.items()}
+    assert {k for k, s in ems.items() if "original_text" in s} == {("rsi", "6"), ("rsi", "6b")}   # amended by owner
     for a, b in zip(RAW["procedures"], SIGNED["procedures"]):
         for key in ("name", "title", "source", "page", "signer", "date", "order", "child_under", "branch"):
             assert a.get(key) == b.get(key), key
@@ -47,14 +50,14 @@ def test_each_dose_is_linked_or_held_as_ruled_and_remembers_what_it_was():
     seen = {}
     for (proc, sid), s in _steps(RAW).items():
         old = _steps(SIGNED)[(proc, sid)].get("doses") or []
-        assert [d["was"] for d in s.get("doses") or []] == old
+        assert [d["was"] for d in s.get("original_doses", s.get("doses")) or []] == old
         for d in s.get("doses") or []:
             seen[(proc, sid, d["drug"])] = d.get("ems_id")
             assert ("held" in d) != ("ems_id" in d)
     assert seen == LINKS
 
 
-def test_the_one_linked_dose_gives_the_dose_the_step_states():
+def test_the_childs_linked_dose_gives_the_dose_the_step_states():
     bank = load_bank(BANK_DIR)
     e = next(x for x in bank.entries if x.get("ems_id") == "EMS-135")
     assert (e["drug"], e["indication_class"], e["population"]) == ("ketamine", "RSI", "peds")
@@ -69,16 +72,10 @@ def _walk(*said):
     return t
 
 
-def test_the_adult_dose_steps_read_their_text_then_say_what_holds():
-    t = _walk("rsi eighty kilos", *["next"] * 5)
-    assert "Ketamine (First Line): two milligrams per kilogram" in t.say
-    assert t.after == [STEP_HELD_AFTER.format(names="ketamine")]
-    assert _walk("rsi eighty kilos", *["next"] * 5, "ketamine").say == STEP_HELD.format(name="ketamine")
-    t = _walk("rsi eighty kilos", *["next"] * 6)
-    assert t.after == ["No signed dose at this step for rocuronium and succinylcholine."]
-    for drug in ("rocuronium", "succinylcholine"):
-        held = _walk("rsi eighty kilos", *["next"] * 6, drug)
-        assert (held.kind, held.say) == ("hold", f"No signed dose of {drug} for this step.")
+def test_the_adult_dose_steps_say_the_formulary_doses():
+    """Steps 6 and 6b, amended by the owner (tests/test_rsi_adult_fixed_doses.py)."""
+    assert _walk("rsi eighty kilos", *["next"] * 5).after == ["For the dose, say ketamine."]
+    assert _walk("rsi eighty kilos", *["next"] * 6).after == ["For the dose, say rocuronium."]
 
 
 def test_the_child_steps_are_recorded_but_rsi_holds_whole_for_a_child():
