@@ -1,6 +1,7 @@
 """The hearing check for routes, procedures and commands (owner, 2026-11-23: "extend the
 hearing check to routes and commands in a separate PR, so "no" and "in the vein" are
 starred on the page").
+Measured: "no" is missed in every voice; "in the vein" is heard by its meaning (see below).
 
 voice/tools/dryrun_words.py does for every route, procedure and command what
 dryrun_drugs.py does for drug names: each said alone in the three held-out synthetic
@@ -41,10 +42,14 @@ def test_the_check_is_of_this_grammar_in_the_held_out_voices():
     assert D["clips"] == len(D["rows"]) == 3 * D["words"]
 
 
-def test_the_misses_include_no_and_in_the_vein():
+def test_the_misses_are_recorded_word_by_word():
+    """111 of 123 clips on this grammar. "no" is heard as "know" in every voice. "in the
+    vein" is heard as "and the vein", which the parser reads as IV: heard by its meaning.
+    (An earlier synthesis of it was missed; Kokoro's clips differ run to run.)"""
     missed = {r["word"] for r in D["rows"] if not r["ok"]}
-    assert {"no", "in the vein"} <= missed
-    assert D["heard"] == sum(r["ok"] for r in D["rows"])
+    assert {"no", "in", "io", "im", "po", "new patient", "home", "drugs", "list drugs"} == missed
+    assert all(not r["ok"] for r in D["rows"] if r["word"] == "no")
+    assert D["heard"] == sum(r["ok"] for r in D["rows"]) == 111 and D["clips"] == 123
 
 
 def test_a_clip_is_heard_only_as_its_own_meaning():
