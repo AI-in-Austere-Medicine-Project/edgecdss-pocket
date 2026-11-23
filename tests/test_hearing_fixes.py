@@ -252,17 +252,38 @@ def _owner_rows(hearing):
 @needs_model
 @needs_owner
 def test_no_owner_clip_is_heard_as_another_drug(owner_rows):
+    """Since the one drug list (2026-11-23) the grammar holds the EMS set's words only. A
+    clip of a drug outside it may be heard as several drugs at once ("calcium gluconate"
+    as "calcium glucagon eight"); Pocket then asks "One drug at a time." and reads nothing
+    back. No clip is heard as one other drug."""
     for name, heard, got, want in owner_rows:
         allowed = set(want) | {x for g in want for x in VOCAB.confusable.get(g, ())}
-        assert got <= allowed, (name, heard, sorted(got))
+        if got <= allowed:
+            continue
+        assert len(got) > 1, (name, heard, sorted(got))
+        assert boot().handle(heard, spoken=True).say == "One drug at a time.", (name, heard)
 
 
 @needs_model
 @needs_owner
-def test_the_ertapenem_clip_is_not_rifampin_and_the_cefazolin_clip_is_cefazolin(owner_rows):
+def test_every_owner_clip_of_an_ems_drug_is_heard_as_that_drug(owner_rows):
+    ems = {e["drug"] for e in json.loads((BANK_DIR / "bank.json").read_text())["entries"]}
+    checked = 0
+    for name, heard, got, want in owner_rows:
+        if want and want <= ems:
+            assert got == want, (name, heard, sorted(got))
+            checked += 1
+    assert checked >= 13
+
+
+@needs_model
+@needs_owner
+def test_the_ertapenem_and_cefazolin_clips_are_heard_as_no_drug(owner_rows):
+    """Both left with the PFC set (2026-11-23): their words are out of the grammar, and
+    the clips are heard as no drug at all (ertapenem was once heard as rifampin)."""
     rows = {name: (heard, got) for name, heard, got, _ in owner_rows}
-    assert "rifampin" not in rows["ertapenem"][1] and "rifampin" not in rows["ertapenem"][0]
-    assert rows["cefazolin"][1] == {"cefazolin"}, rows["cefazolin"]
+    assert "rifampin" not in rows["ertapenem"][0]
+    assert rows["ertapenem"][1] == set() and rows["cefazolin"][1] == set(), rows
 
 
 # ── 5. the owner's gate misses (2026-11-20) ─────────────────────────────────
@@ -297,7 +318,8 @@ def test_the_synthetic_dry_run_still_hears_no_drug_as_another():
 
 @needs_model
 @needs_owner
-def test_the_owners_gate_misses_are_now_heard_as_their_drug(owner_rows):
+def test_the_owners_gate_misses_left_with_the_pfc_set_and_are_heard_as_no_drug(owner_rows):
+    """Heard as their drug while the PFC set was loaded; all three were signed only there."""
     rows = {name: got for name, _, got, _ in owner_rows}
     for drug in OWNER_SPELLINGS:
-        assert rows[drug] == {drug}, (drug, rows[drug])
+        assert rows[drug] == set(), (drug, rows[drug])
