@@ -27,19 +27,9 @@ def test_every_signed_drug_has_a_name_the_model_can_hear():
     assert GRAMMAR["signed_drugs_not_sayable"] == []
 
 
-# Spellings with a word the EMS parser reads (a stem of two drugs, or a label word). They
-# entered the grammar with the EMS names (2026-11-22), when this test still read the PFC
-# vocabulary only. Checked against the live vocabulary since the one drug list (2026-11-23):
-# dropping them cost 4 of 258 dry-run clips (bicarb in all three voices, one
-# diphenhydramine), so they stay, named here, for the owner to rule on.
-KNOWN_MEANINGFUL = {"acetaminophen": {"as time often"}, "bicarb": {"they car be", "they carb"},
-                    "decadron": {"they car dream"},
-                    "diphenhydramine": {"different hydra mean", "different hydra means",
-                                        "different hydro mean", "given hydra mean"},
-                    "midaz": {"may does"}, "pralidoxime": {"product same"}}
-
-
 def test_a_spelling_uses_only_words_that_mean_nothing_else_to_the_parser():
+    """Every spelling Pocket can hear (owner ruling, 2026-11-23: the nine that held a word
+    the EMS parser reads are removed)."""
     # Its own name's words excepted: "push dose amie" spells "push dose epi". Fillers
     # ("the", "and") are skipped by the parser, so they mean nothing: "i the" spells "iv".
     # The words only the home menu's longer commands use ("what can i say", "list drugs")
@@ -54,8 +44,6 @@ def test_a_spelling_uses_only_words_that_mean_nothing_else_to_the_parser():
             continue
         own = set(name.split()) | set(spoken.SPELLED.get(name, "").split())  # "iv" is said "i v"
         for s in spellings:
-            if s in KNOWN_MEANINGFUL.get(name, ()):
-                continue
             assert not (set(s.split()) - own) & meaningful, (name, s)
             for c in CONTROLS:
                 assert f" {c} " not in f" {s} ", (name, s, c)
@@ -105,7 +93,7 @@ def test_the_dry_run_is_of_this_grammar():
 # The synthetic dry run missed 6 of 183 clips (3 drugs, 3 medic forms, see
 # voice/dryrun_drugs.json). The owner made the medic's own voice the gate instead (phase 2):
 # these stay as written, expected to fail on this record, and turn red if they pass.
-SYNTHETIC_GATE = pytest.mark.xfail(strict=True, reason="synthetic dry run 246/258; the owner's voice is the gate")
+SYNTHETIC_GATE = pytest.mark.xfail(strict=True, reason="synthetic dry run 242/258; the owner's voice is the gate")
 
 
 @SYNTHETIC_GATE

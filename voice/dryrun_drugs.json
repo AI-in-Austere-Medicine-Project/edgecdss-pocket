@@ -1,5 +1,5 @@
 {
- "grammar_sha256": "6cff08c1c16de1ff4819cf250681bca41a53d44a1c9fd844b529c0705897dfae",
+ "grammar_sha256": "76a8ae14da07e3571563a1d957fc45e861e4fa591e80dac03e2ea61239c5d011",
  "voices": [
   "af_nicole",
   "am_liam",
@@ -7,7 +7,7 @@
  ],
  "names": 86,
  "clips": 258,
- "heard": 246,
+ "heard": 242,
  "heard_as_another_drug": 0,
  "rows": [
   {
@@ -834,7 +834,7 @@
    "primary": "dexamethasone",
    "asks": [],
    "voice": "am_liam",
-   "heard": "they car dream",
+   "heard": "they capron",
    "decoder": "spelled",
    "heard_as": [
     "dexamethasone"
@@ -847,7 +847,7 @@
    "primary": "dexamethasone",
    "asks": [],
    "voice": "bf_lily",
-   "heard": "they car dream",
+   "heard": "they capron",
    "decoder": "spelled",
    "heard_as": [
     "dexamethasone"
@@ -1014,12 +1014,10 @@
    "primary": "diphenhydramine",
    "asks": [],
    "voice": "af_nicole",
-   "heard": "different hydra mean",
+   "heard": "defend hide remained",
    "decoder": "spelled",
-   "heard_as": [
-    "diphenhydramine"
-   ],
-   "turn": "Weight?"
+   "heard_as": [],
+   "turn": "Not recognised."
   },
   {
    "drug": "diphenhydramine",
@@ -1027,7 +1025,7 @@
    "primary": "diphenhydramine",
    "asks": [],
    "voice": "am_liam",
-   "heard": "different hydra means",
+   "heard": "defend hide remains",
    "decoder": "spelled",
    "heard_as": [
     "diphenhydramine"
@@ -2349,7 +2347,7 @@
    "primary": "midazolam",
    "asks": [],
    "voice": "bf_lily",
-   "heard": "may does",
+   "heard": "me does",
    "decoder": "spelled",
    "heard_as": [
     "midazolam"
@@ -3179,12 +3177,10 @@
    "primary": "sodium bicarbonate",
    "asks": [],
    "voice": "af_nicole",
-   "heard": "they carb",
+   "heard": "they care",
    "decoder": "spelled",
-   "heard_as": [
-    "sodium bicarbonate"
-   ],
-   "turn": "Sodium bicarbonate is signed, but Pocket cannot say its dose yet."
+   "heard_as": [],
+   "turn": "Not recognised."
   },
   {
    "drug": "sodium bicarbonate",
@@ -3192,12 +3188,10 @@
    "primary": "sodium bicarbonate",
    "asks": [],
    "voice": "am_liam",
-   "heard": "they carb",
+   "heard": "big arm",
    "decoder": "spelled",
-   "heard_as": [
-    "sodium bicarbonate"
-   ],
-   "turn": "Sodium bicarbonate is signed, but Pocket cannot say its dose yet."
+   "heard_as": [],
+   "turn": "Not recognised."
   },
   {
    "drug": "sodium bicarbonate",
@@ -3205,12 +3199,10 @@
    "primary": "sodium bicarbonate",
    "asks": [],
    "voice": "bf_lily",
-   "heard": "they carb",
+   "heard": "big arm",
    "decoder": "spelled",
-   "heard_as": [
-    "sodium bicarbonate"
-   ],
-   "turn": "Sodium bicarbonate is signed, but Pocket cannot say its dose yet."
+   "heard_as": [],
+   "turn": "Not recognised."
   },
   {
    "drug": "sodium bicarbonate",
@@ -3257,7 +3249,7 @@
    "primary": "sodium bicarbonate",
    "asks": [],
    "voice": "af_nicole",
-   "heard": "sodium they carb",
+   "heard": "sodium big arm",
    "decoder": "spelled",
    "heard_as": [
     "sodium bicarbonate"
@@ -3270,8 +3262,8 @@
    "primary": "sodium bicarbonate",
    "asks": [],
    "voice": "am_liam",
-   "heard": "sodium bicarbonate",
-   "decoder": "base",
+   "heard": "sodium big arm",
+   "decoder": "spelled",
    "heard_as": [
     "sodium bicarbonate"
    ],
@@ -3283,7 +3275,7 @@
    "primary": "sodium bicarbonate",
    "asks": [],
    "voice": "bf_lily",
-   "heard": "sodium they carb",
+   "heard": "sodium big arm",
    "decoder": "spelled",
    "heard_as": [
     "sodium bicarbonate"

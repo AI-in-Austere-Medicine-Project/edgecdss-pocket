@@ -25,7 +25,7 @@ def test_the_vocabulary_is_the_ems_set():
 def test_the_grammar_is_built_from_the_ems_set_and_every_signed_drug_can_be_said():
     assert (GRAMMAR["bank_version"], GRAMMAR["bank_hash"]) == (EMS.version, EMS.hash)
     assert GRAMMAR["signed_drugs_not_sayable"] == []
-    assert len(GRAMMAR["words"]) == 748                         # 1,041 with both sets
+    assert len(GRAMMAR["words"]) == 738      # 1,041 with both sets; 748 before the nine spellings went
 
 
 def test_no_word_only_a_retired_drug_used_is_in_the_grammar():
@@ -51,11 +51,13 @@ def test_a_signed_but_silent_drug_is_heard_and_says_it_cannot_say_its_dose():
 
 
 def test_the_dry_run_covers_the_ems_set_and_hears_no_drug_as_another():
-    """Before, with both sets' grammar, the same 258 EMS clips: 246 heard, 0 as another drug."""
+    """Before, with both sets' grammar, the same 258 EMS clips: 246 heard, 0 as another drug.
+    246 with the EMS grammar; 242 once the nine rule-breaking spellings were removed (owner
+    ruling, 2026-11-23): bicarb in all three voices and one diphenhydramine."""
     d = json.loads((ROOT / "voice" / "dryrun_drugs.json").read_text())
     assert {r["drug"] for r in d["rows"]} == VOCAB.signed
     assert (d["names"], d["clips"]) == (86, 258)
-    assert d["heard"] >= 246 and d["heard_as_another_drug"] == 0
+    assert d["heard"] >= 242 and d["heard_as_another_drug"] == 0
 
 
 def test_an_indication_longer_than_a_drug_name_is_read_as_the_indication():
