@@ -206,8 +206,7 @@
  "spellings": {
   "acetaminophen": [
    "as determine often",
-   "as determined often",
-   "as time often"
+   "as determined often"
   ],
   "acetylcysteine": [
    "acetate stein",
@@ -399,9 +398,7 @@
    "bennett drilled"
   ],
   "bicarb": [
-   "they call me",
-   "they car be",
-   "they carb"
+   "they call me"
   ],
   "bupivacaine": [
    "butte or vague can",
@@ -605,8 +602,7 @@
   ],
   "decadron": [
    "dick capron",
-   "they capron",
-   "they car dream"
+   "they capron"
   ],
   "deferoxamine": [
    "differ ox mean",
@@ -675,11 +671,7 @@
   "diphenhydramine": [
    "defend hide remains",
    "different hide remained",
-   "different hide remains",
-   "different hydra mean",
-   "different hydra means",
-   "different hydro mean",
-   "given hydra mean"
+   "different hide remains"
   ],
   "diprivan": [
    "deborah van",
@@ -1214,7 +1206,6 @@
   "midaz": [
    "made as",
    "made us",
-   "may does",
    "me does",
    "me those",
    "meadows",
@@ -1468,7 +1459,6 @@
    "probably doc same",
    "probably dogs i'm",
    "probably same",
-   "product same",
    "products i'm",
    "products same",
    "rarely dogs i'm"
@@ -2055,5 +2045,30 @@
   "bm_daniel",
   "bm_george",
   "bm_lewis"
- ]
+ ],
+ "meaningful_spellings_dropped": {
+  "acetaminophen": [
+   "as time often"
+  ],
+  "bicarb": [
+   "they car be",
+   "they carb"
+  ],
+  "decadron": [
+   "they car dream"
+  ],
+  "diphenhydramine": [
+   "different hydra mean",
+   "different hydra means",
+   "different hydro mean",
+   "given hydra mean"
+  ],
+  "midaz": [
+   "may does"
+  ],
+  "pralidoxime": [
+   "product same"
+  ]
+ },
+ "meaningful_spellings_dropped_note": "2026-11-23 (owner ruling): spellings that hold a word the EMS parser reads (a stem of two drugs, or a word of a signed indication) are removed. Before: 246 of 258 dry-run clips; after: 242 (bicarb in all three voices, one diphenhydramine)."
 }
