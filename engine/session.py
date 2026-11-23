@@ -248,10 +248,47 @@ def _not_said(e: dict, line: str) -> bool:
     return e.get("drug") == "ketamine" and e.get("set", "PFC") != "EMS" and "dilution" in line.lower()
 
 
+# Owner rule, 2026-11-23, the whole EMS list: Pocket ignores provider levels (PL) and online
+# medical control (OLMC). It never gates a dose on them and never says them. The signed
+# text keeps them; a clause that names one is left out of what is said.
+_PL_OLMC = re.compile(r"\bPL\s?\d|≥\s?PL|\bPLs?\b|OLMC|provider level|medical control", re.I)
+_OLMC_EXCEPT = re.compile(r",?\s*except (?:for|with) OLMC\b[^;,.]*", re.I)
+_CLAUSE = re.compile(r"(?<=[;,.])\s+")
+_PROVIDERS = re.compile(r"\s*(?:—\s*)?\b(?:ALS|BLS) PROVIDERS\b", re.I)
+
+
+def said_indication(label: str) -> str:
+    """An indication as Pocket says it: without a provider group ("Anaphylaxis — ALS
+    providers (infusion)" -> "Anaphylaxis (infusion)"), under the PL/OLMC rule."""
+    return _PROVIDERS.sub("", label).strip()
+
+
+def without_pl_olmc(text: str):
+    """A signed line as Pocket says it under the PL/OLMC rule: a "Provider level:" line is
+    not said; a clause naming OLMC is dropped ("Infusion over 10 min; OLMC required." ->
+    "Infusion over 10 min."); "except for OLMC approval" is cut. None when nothing is left.
+    A "Repeat:" line whose only repeat is through OLMC is not said."""
+    if text.strip().lower().startswith("provider level"):
+        return None
+    text = _PROVIDERS.sub("", _OLMC_EXCEPT.sub("", text))
+    if not _PL_OLMC.search(text):
+        return text
+    label = ""
+    m = re.match(r"(Repeat:\s*)", text)
+    if m:
+        label, text = m.group(1), text[m.end():]
+    kept = [c for c in _CLAUSE.split(text) if not _PL_OLMC.search(c)]
+    if not kept:
+        return None
+    out = " ".join(kept).rstrip(";,. ")
+    return label + out + "."
+
+
 def caution_lines(e: dict, volume: bool, conditions=None) -> list:
     """Contraindications, then cautions, as spoken lines. With `conditions`, only the
     lines that name one of them; without, every line ("why")."""
     def pick(lines):
+        lines = [x for x in (without_pl_olmc(x) for x in lines) if x]
         lines = [x for x in lines if conditions is None or names_condition(x, conditions)]
         return [s for s in (spoken_line(x, volume) for x in lines) if s]
     out = []
@@ -269,7 +306,8 @@ def why_text(e: dict) -> str:
     if e["page"] is not None:
         parts.append(f"Page {words.number_words(str(e['page']))}.")
     if e["quote"]:
-        parts.append(f"Quote: {e['quote']}")
+        cells = [c for c in (without_pl_olmc(c) for c in e["quote"].split(" | ")) if c]
+        parts.append(f"Quote: {' | '.join(cells)}")
     parts.append(f"Signed by {e['signer']}, {e['date']}.")
     return " ".join(parts)
 
@@ -828,7 +866,7 @@ class Session:
             exact = [lb for lb in labels if label_tokens(lb) == said]
             if len(exact) != 1:
                 return Turn("ask", "Which one: "
-                            + _choice([words.say_name(lb) for lb in labels], ", or ") + "?")
+                            + _choice([words.say_name(said_indication(lb)) for lb in labels], ", or ") + "?")
             labels = exact
         entry = [e for e in fit if e["indication"] == labels[0]]
         if len(entry) != 1:
@@ -865,7 +903,7 @@ class Session:
     def _read_back(self, entry, name, cls, name_label, route_said) -> Turn:
         self._pending = entry
         self._pending_at, self._misses = self._clock(), 0
-        what = words.say_name(entry["indication"]) if name_label else _say_class(cls)
+        what = words.say_name(said_indication(entry["indication"])) if name_label else _say_class(cls)
         parts = [words.sentence(name), what, route_said, *self.patient.said()]
         say = ", ".join(parts) + "."
         if self.bank.test:
