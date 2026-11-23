@@ -30,7 +30,7 @@ def test_pocket_never_says_a_provider_level_or_olmc():
 
 def test_the_conditions_path_says_none_either():
     for e in BANK.entries:
-        for line in caution_lines(e, True, conditions=["hemorrhage", "shock", "burns", "asthma"]):
+        for line in caution_lines(e, True, conditions=["hypovolaemia", "burns", "asthma", "head injury", "hypertension"]):
             assert not PL_OLMC.search(line), (e["ems_id"], line)
 
 
@@ -53,6 +53,7 @@ def test_the_conditions_path_says_none_either():
     ("OLMC required; ≥3 months.", "≥3 months."),
     ("hypovolemic shock from hemorrhage except for OLMC approval", "hypovolemic shock from hemorrhage"),
     ("Repeat: IM every 30 min, to pain relief or nystagmus.", "Repeat: IM every 30 min, to pain relief or nystagmus."),
+    ("Anaphylaxis ALS PROVIDERS", "Anaphylaxis"),
 ])
 def test_only_the_pl_or_olmc_part_of_a_line_is_left_out(signed, said):
     assert without_pl_olmc(signed) == said
@@ -74,11 +75,21 @@ def test_no_entry_is_held_or_left_out_for_a_pl_or_olmc_note():
                 assert s["ems_id"] == "EMS-183" and "is not one amount" in why, (s["ems_id"], why)
 
 
-def test_norepinephrine_for_a_bleeding_patient_is_still_contraindicated_without_the_olmc_exception():
+def test_norepinephrine_is_still_contraindicated_in_hemorrhagic_shock_without_the_olmc_exception():
     e = next(x for x in BANK.entries if x["ems_id"] == "EMS-181")
-    lines = caution_lines(e, True, conditions=["hemorrhage"])
-    assert any(l.startswith("Contraindicated: hypovolemic shock from hemorrhage") for l in lines), lines
-    assert not any("OLMC" in l for l in lines)
+    lines = caution_lines(e, True)
+    assert any("hypovolemic shock from hemorrhage" in l and l.startswith("Contraindicated:") for l in lines), lines
+    assert not any("OLMC" in l or "except" in l for l in lines)
+
+
+def test_an_indication_is_said_without_its_provider_group():
+    s = boot()
+    s.handle("epinephrine for anaphylaxis im child twenty kilos")
+    t = s.handle("why")
+    assert "PROVIDERS" not in t.say.upper() and "Quote: Anaphylaxis | 0.01 mg/kg" in t.say
+    from engine.session import said_indication
+    assert said_indication("Anaphylaxis — ALS providers (infusion)") == "Anaphylaxis (infusion)"
+    assert said_indication("Anaphylaxis — BLS providers") == "Anaphylaxis"
 
 
 def test_the_weight_floors_from_the_dose_tables_stay():
