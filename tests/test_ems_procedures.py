@@ -81,16 +81,12 @@ def test_the_adult_dose_steps_read_their_text_then_say_what_holds():
         assert (held.kind, held.say) == ("hold", f"No signed dose of {drug} for this step.")
 
 
-def test_the_childs_ketamine_step_gives_the_ems_dose_and_the_rest_hold():
-    t = _walk("rsi child twenty kilos", *["next"] * 6)
-    assert t.after == ["No signed dose at this step for atropine."]
-    t = _walk("rsi child twenty kilos", *["next"] * 7)
-    assert t.after == ["For the dose, say ketamine."]
-    assert _walk("rsi child twenty kilos", *["next"] * 7, "ketamine").say == "Ketamine, RSI, eye vee, child, twenty kilos. Confirm?"
-    dose = _walk("rsi child twenty kilos", *["next"] * 7, "ketamine", "confirm")
-    assert dose.kind == "dose" and dose.say.startswith("Ketamine forty milligrams.")     # 2 mg/kg x 20 kg
-    t = _walk("rsi child twenty kilos", *["next"] * 8)
-    assert t.after == ["No signed dose at this step for succinylcholine and rocuronium."]
+def test_the_child_steps_are_recorded_but_rsi_holds_whole_for_a_child():
+    """Owner, 2026-11-23: the child's RSI holds whole (tests/test_rsi_child_holds.py). The
+    child steps keep their links and holds in the file; none is read."""
+    t = _walk("rsi child twenty kilos")
+    assert (t.kind, t.say) == ("hold", "No signed RSI steps for a child.")
+    assert _walk("rsi child twenty kilos", *["next"] * 7, "ketamine").kind != "dose"
 
 
 def test_failed_airway_is_unchanged():

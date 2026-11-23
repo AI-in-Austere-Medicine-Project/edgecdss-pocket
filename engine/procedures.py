@@ -59,6 +59,7 @@ class Procedure:
     steps: dict             # step id -> Step
     child_under: dict       # {"years", "replace", "with"} or {}
     branch: dict = dataclasses.field(default_factory=dict)   # {"ask", "yes", "no"} or {}
+    child_held: str = ""    # said instead of any step for a child (owner, 2026-11-23); "" reads the child order
 
     @property
     def needs_weight(self) -> bool:
@@ -135,9 +136,12 @@ def _procedure(raw: dict, bank) -> Procedure:
     for i in used:
         if i not in steps:
             raise ProceduresRefused(f"{name}: step {i} is not signed")
+    held = raw.get("child_held")
+    if held is not None and not all(str(held.get(k) or "").strip() for k in ("say", "by", "date", "why")):
+        raise ProceduresRefused(f"{name}: a child hold needs its line, the owner, a date and why")
     return Procedure(name, str(raw.get("title") or name), raw["source"], raw["page"],
                      raw["signer"], raw["date"], {k: list(v) for k, v in order.items()},
-                     steps, dict(cu), dict(branch))
+                     steps, dict(cu), dict(branch), str(held["say"]).strip() if held else "")
 
 
 def load_procedures(bank_dir, bank=None, retired_ok=False) -> dict:

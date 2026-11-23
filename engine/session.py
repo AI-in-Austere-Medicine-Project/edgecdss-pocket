@@ -374,6 +374,21 @@ class Session:
         return _said(self._turn(text, spoken))
 
     def _turn(self, text: str, spoken: bool) -> Turn:
+        return self._child_held(self._turn_for(text, spoken))
+
+    def _child_held(self, turn: Turn) -> Turn:
+        """A procedure held whole for a child (RSI, owner, 2026-11-23): once the patient
+        is a child, however that was learned, the run ends and only its hold line is said.
+        No step of it is read."""
+        run = self._run
+        if run is None or not run.proc.child_held or not self.patient.is_child:
+            return turn
+        self._run = None
+        turn = self._hold(run.proc.child_held)
+        self._last_say = turn
+        return turn
+
+    def _turn_for(self, text: str, spoken: bool) -> Turn:
         self._spoken = spoken
         if self.refused:
             return self.announce

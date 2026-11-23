@@ -26,11 +26,13 @@ def _walk(*said):
 
 @pytest.mark.parametrize("said", [("rsi child twenty kilos",), ("rsi", "twenty kilos"),
                                   ("rsi", "child", "twenty kilos"), ("rsi twenty kilos",),
-                                  ("rapid sequence intubation five years old eighteen kilos",)])
+                                  ("rsi five years eighteen kilos",), ("rsi eighty kilos", "four years")])
 def test_a_child_hears_the_hold_and_no_step(said):
+    """The hold comes as soon as the patient is a child, before the weight is asked."""
     s, turns = _walk(*said)
-    assert (turns[-1].kind, turns[-1].say) == ("hold", CHILD_HELD)
-    assert all(t.kind != "step" for t in turns)
+    held = next(t for t in turns if t.say == CHILD_HELD)
+    assert held.kind == "hold" and all(t.kind != "step" for t in turns[turns.index(held):])
+    assert [t.say for t in turns].count(CHILD_HELD) == 1
     assert s.handle("next").say == "No steps running."
 
 
