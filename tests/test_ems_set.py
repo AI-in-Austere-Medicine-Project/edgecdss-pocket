@@ -123,7 +123,7 @@ def test_silent_entries_carry_no_dose_pocket_could_serve():
 
 def test_the_declared_adenosine_vial_gives_its_volume():
     t = _say("adenosine for svt iv adult", "confirm")
-    assert t.say == "Adenosine twelve milligrams. Four mils of three."
+    assert t.say == "Adenosine twelve milligrams. Four mils of twelve per four."
     v = [v for v in KIT["vials"] if v["drug"] == "adenosine"]
     assert len(v) == 1 and v[0]["concentration_mg_ml"] == 3.0 and v[0]["owner_declared"] is True
 

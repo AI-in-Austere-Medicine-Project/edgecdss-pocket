@@ -221,3 +221,21 @@ def below_weight_floor(entry: dict, weight_kg) -> bool:
     if not floor or weight_kg is None:
         return False
     return weight_kg <= floor["kg"] if floor["exclusive"] else weight_kg < floor["kg"]
+
+
+def signed_max_mg(entry: dict, weight_kg: Optional[float]) -> Optional[float]:
+    """The most this entry signs for this patient, in mg, that a volume never rounds above:
+    the single-dose cap, and for a range its top (per kg times the weight). A fixed dose with
+    no cap has none: its volume rounds to the nearest step, as in the owner's examples
+    (2026-11-22: 1.75 mL is 1.8)."""
+    rng = entry.get("rule") or {}
+    kind, mass_unit, _ = classify_units(rng.get("units"), bool(rng.get("per_kg")))
+    if kind not in (MASS, MASS_PER_KG) or (kind == MASS_PER_KG and weight_kg is None):
+        return None
+    limits = []
+    cap, why = _limit_mg((entry.get("cap") or {}).get("max_single"), weight_kg)
+    if cap is not None and not why:
+        limits.append(cap)
+    if rng.get("max") is not None and rng.get("min") is not None and rng["max"] > rng["min"]:
+        limits.append(to_mg(rng["max"] * (weight_kg if kind == MASS_PER_KG else 1), mass_unit))
+    return min(limits) if limits else None

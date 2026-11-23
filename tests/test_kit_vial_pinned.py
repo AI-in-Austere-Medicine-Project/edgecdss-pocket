@@ -57,12 +57,12 @@ def test_an_entry_pinned_to_a_vial_speaks_milligrams_only(tmp_path, pin, monkeyp
 def test_a_null_kit_vial_keeps_the_volume(tmp_path, monkeypatch):
     monkeypatch.delenv("POCKET_TEST", raising=False)
     dose = _dose(boot(_bank_with(tmp_path, None)))
-    assert "mils of fifty" in dose.say, dose.say
+    assert "mils of five hundred per ten" in dose.say, dose.say
     assert PINNED_VIAL not in dose.say
 
 
 def test_an_entry_with_no_kit_vial_keeps_the_volume(monkeypatch):
     monkeypatch.delenv("POCKET_TEST", raising=False)
     dose = _dose(boot(BANK))
-    assert "Three point two mils of fifty" in dose.say, dose.say
+    assert "Three point two mils of five hundred per ten" in dose.say, dose.say
     assert dose.data["record"]["volume_ml"] == 3.2

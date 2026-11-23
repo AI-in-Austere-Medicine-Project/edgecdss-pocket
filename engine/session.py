@@ -243,6 +243,12 @@ def admin_time(e: dict):
     return None
 
 
+def _not_said(e: dict, line: str) -> bool:
+    """Signed text Pocket keeps in the record and does not say (owner ruling, 2026-11-22):
+    the PFC ketamine dilution cautions, since there is no dilution in Pocket."""
+    return e.get("drug") == "ketamine" and e.get("set", "PFC") != "EMS" and "dilution" in line.lower()
+
+
 def caution_lines(e: dict, volume: bool, conditions=None) -> list:
     """Contraindications, then cautions, as spoken lines. With `conditions`, only the
     lines that name one of them; without, every line ("why")."""
@@ -255,7 +261,7 @@ def caution_lines(e: dict, volume: bool, conditions=None) -> list:
         out.append("Contraindicated: " + "; ".join(ci) + ".")
     elif conditions is None:
         out.append(NO_CONTRAINDICATIONS)
-    cautions = ["Caution: " + c for c in pick(e["serve_cautions"])]
+    cautions = ["Caution: " + c for c in pick([x for x in e["serve_cautions"] if not _not_said(e, x)])]
     return cautions + out if conditions is None else out + cautions
 
 
@@ -917,7 +923,8 @@ class Session:
             if r["floor_applied"]:
                 parts.append(RAISED.replace("signed", signed))
             pinned = entry.get("kit_vial") is not None
-            vol = vials.dose_volume(self.bank.kit, entry, round(r["dose_mg"], 4))
+            vol = vials.dose_volume(self.bank.kit, entry, round(r["dose_mg"], 4),
+                                    contracts.signed_max_mg(entry, weight))
             withheld = pinned or not self._stated_vial_is_signed(entry["drug"])
             parts.append(PINNED_VIAL if pinned else _volume_words(vol, withheld))
             timed = admin_time(entry)
@@ -1011,7 +1018,7 @@ def _volume_words(vol: dict, withheld: bool) -> str:
         return "Stated vial not used, no volume."   # K1: not the signed vial
     if vol["volume_ml"] is not None:
         said = (f"{words.sentence(words.mils(vol['volume_ml']))} of "
-                f"{words.num(vol['concentration_mg_ml'])}.")
+                f"{vol['strength'] or words.num(vol['concentration_mg_ml'])}.")   # as the label reads
         return f"{said} {ONE_MIL_SYRINGE}" if vol["volume_ml"] < vials.ONE_MIL_BELOW_ML else said
     if vol["refusal"] == vials.TOO_SMALL:
         return "Too small to draw. No volume."

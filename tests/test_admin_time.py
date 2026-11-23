@@ -64,7 +64,7 @@ def test_every_signed_pfc_entry_that_states_a_time_says_it():
 def test_the_time_follows_the_dose_and_volume():
     s = boot(BANK)
     s.handle("tranexamic acid for haemorrhage iv adult")
-    assert s.handle("confirm").say == "Tranexamic acid two grams. Twenty mils of one hundred. Over ten minutes."
+    assert s.handle("confirm").say == "Tranexamic acid two grams. Twenty mils of one thousand per ten. Over ten minutes."
     s = boot(BANK)
     s.handle("ceftriaxone for sepsis iv adult")
     assert s.handle("confirm").say == ("Ceftriaxone two grams. No signed vial, no volume. "
@@ -79,4 +79,4 @@ def test_ems_entries_say_their_time_including_the_owners_four_rulings():
     assert said["EMS-149"] == said["EMS-150"] == said["EMS-151"] == "Over five minutes."
     s = boot(BANK / "ems")
     s.handle("magnesium sulfate for torsades iv twenty kilos")
-    assert s.handle("confirm").say.endswith("Two mils of five hundred. Over five minutes.")   # declared 500 mg/mL
+    assert s.handle("confirm").say.endswith("Two mils of five hundred per mil. Over five minutes.")   # declared 500 mg/mL

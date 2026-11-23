@@ -71,8 +71,8 @@ def test_b1_the_spoken_amount_is_read_back_as_spoken(s):
 
 def test_b1_the_engines_own_dose_is_given(s):
     _, _, dose = _b1(s, "five hundred milligrams")
-    assert dose.say == "Ketamine one hundred and sixty milligrams. Three point two mils of fifty."
-    assert "five hundred" not in dose.text
+    assert dose.say == "Ketamine one hundred and sixty milligrams. Three point two mils of five hundred per ten."
+    assert "five hundred milligrams" not in dose.text      # the label's "five hundred per ten" is the vial
 
 
 @pytest.mark.parametrize("spoken", ["one milligram", "five hundred milligrams",
@@ -81,7 +81,7 @@ def test_b1_the_engines_own_dose_is_given(s):
 def test_b1_the_spoken_number_is_never_computed_on(spoken):
     """Same dose, same volume, whatever was said."""
     _, _, dose = _b1(boot(BANK), spoken)
-    assert dose.say == "Ketamine one hundred and sixty milligrams. Three point two mils of fifty."
+    assert dose.say == "Ketamine one hundred and sixty milligrams. Three point two mils of five hundred per ten."
 
 
 def test_b1_the_parser_keeps_the_amount_as_words_only(s):
@@ -99,7 +99,7 @@ def test_b1_a_stated_vial_that_is_the_signed_vial_gives_the_volume(s, vial):
     # words; the volume is the kit's, never worked out from what was said.
     play(s, f"ketamine for agitation iv eighty kilos {vial}")
     dose = s.handle("confirm")
-    assert dose.say == "Ketamine one hundred and sixty milligrams. Three point two mils of fifty."
+    assert dose.say == "Ketamine one hundred and sixty milligrams. Three point two mils of five hundred per ten."
     assert dose.data["record"]["volume_ml"] == 3.2
 
 
