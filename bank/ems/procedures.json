@@ -28,6 +28,11 @@
    "date": "2026-11-21",
    "by": "owner",
    "what": "failed airway asks \"Can you mask ventilate?\" after FA2 and reads only the answer's step: yes FA3 (P5 for a child under 12 or of unknown age), no FA4. No step text changed."
+  },
+  {
+   "date": "2026-11-23",
+   "by": "owner",
+   "what": "RSI holds whole for a child: \"No signed RSI steps for a child.\" No step of the child order (1, P1, 2-5, P2-P4, 7-10) is read. No step text changed."
   }
  ],
  "procedures": [
@@ -67,6 +72,12 @@
      "9",
      "10"
     ]
+   },
+   "child_held": {
+    "say": "No signed RSI steps for a child.",
+    "by": "owner",
+    "date": "2026-11-23",
+    "why": "The formulary prints NONE for a child paralytic (rocuronium, p.57; succinylcholine is not in it) and has no atropine pre-dose for RSI, so no partial procedure is read. The child order and its steps stay for the record."
    },
    "steps": [
     {

@@ -101,7 +101,8 @@ For someone who has never used Pocket (owner, 2026-11-21). None of it ever speak
 Signed steps are read one at a time (owner, 2026-11-20). They come from `bank/ems/procedures.json`: the steps signed by name from the RSI packet (JTS CPG ID39 p.28), text unchanged, with each dose linked to an EMS entry or held (owner, 2026-11-23: "Change no doses. Steps with no EMS entry hold."). Only the child's ketamine (P3, EMS-135, 2 mg/kg) is linked; at the other dose steps Pocket reads the step, then says "No signed dose at this step for ...":
 - **"RSI"** reads the RSI steps.
   - The weight is asked once, at the start. Access is never asked.
-  - An adult gets steps 1–10. A child gets P1 after step 1, P2 before the induction step, and P3 and P4 in place of 6 and 6b.
+  - An adult gets steps 1–10.
+  - A child gets no steps: "No signed RSI steps for a child." (owner, 2026-11-23). The formulary prints NONE for a child paralytic and has no atropine pre-dose, so Pocket does not read a partial procedure. The hold comes as soon as Pocket knows the patient is a child (said, an age under 18, or a weight under the child ceiling), and it ends a run already under way. The child steps (P1–P4) stay in the file for the record.
 - **"failed airway"** is its own procedure and needs no weight. After its first two steps it asks "Can you mask ventilate? Say yes or no." (owner, 2026-11-21).
   - Only "yes" or "no" answers. "yes" reads the surgical airway step, and "no" reads the emergency pathway step, each in its signed text.
   - For a child under 12, or a child of unknown age, P5 replaces only the surgical airway line.
